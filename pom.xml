@@ -6,13 +6,15 @@
 
     <groupId>com.sowell.security</groupId>
     <artifactId>sw-security</artifactId>
-    <version>1.0.0</version>
+    <version>${sw-security.version}</version>
+
     <modules>
         <module>sw-security-common</module>
         <module>sw-security-core</module>
         <module>sw-security-starter</module>
         <module>sw-security-plugins</module>
     </modules>
+
     <packaging>pom</packaging>
 
     <properties>
@@ -20,9 +22,15 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
+        <sw-security.version>1.0.1</sw-security.version>
+
         <sw-common-core.version>0.0.10</sw-common-core.version>
         <fastjson.version>1.2.75</fastjson.version>
         <lombok.version>1.18.20</lombok.version>
+        <sw-security-common.version>1.0.0</sw-security-common.version>
+        <sw-security-core.version>1.0.0</sw-security-core.version>
+        <sw-security-plugins-redis.version>1.0.0</sw-security-plugins-redis.version>
+        <sw-security-spring-boot-starter.version>1.0.0</sw-security-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -30,25 +38,25 @@
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-common</artifactId>
-                <version>1.0.0</version>
+                <version>${sw-security-common.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-core</artifactId>
-                <version>1.0.0</version>
+                <version>${sw-security-core.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-plugins-redis</artifactId>
-                <version>1.0.0</version>
+                <version>${sw-security-plugins-redis.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-spring-boot-starter</artifactId>
-                <version>1.0.0</version>
+                <version>${sw-security-spring-boot-starter.version}</version>
             </dependency>
 
 
