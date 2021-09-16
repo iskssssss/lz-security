@@ -5,7 +5,7 @@
     <parent>
         <artifactId>sw-security-plugins</artifactId>
         <groupId>com.sowell.security</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,7 +14,6 @@
     <artifactId>sw-security-plugins-redis</artifactId>
 
     <dependencies>
-        <!--SpringBoot Redis引入-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>

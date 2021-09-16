@@ -6,7 +6,7 @@
 
     <groupId>com.sowell.security</groupId>
     <artifactId>sw-security</artifactId>
-    <version>${sw-security.version}</version>
+    <version>1.0.1</version>
 
     <modules>
         <module>sw-security-common</module>
@@ -22,15 +22,14 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <sw-security.version>1.0.1</sw-security.version>
-
         <sw-common-core.version>0.0.10</sw-common-core.version>
         <fastjson.version>1.2.75</fastjson.version>
         <lombok.version>1.18.20</lombok.version>
-        <sw-security-common.version>1.0.0</sw-security-common.version>
-        <sw-security-core.version>1.0.0</sw-security-core.version>
-        <sw-security-plugins-redis.version>1.0.0</sw-security-plugins-redis.version>
-        <sw-security-spring-boot-starter.version>1.0.0</sw-security-spring-boot-starter.version>
+
+        <sw-security-common.version>1.0.1</sw-security-common.version>
+        <sw-security-core.version>1.0.1</sw-security-core.version>
+        <sw-security-plugins-redis.version>1.0.1</sw-security-plugins-redis.version>
+        <sw-security-spring-boot-starter.version>1.0.1</sw-security-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -58,7 +57,6 @@
                 <artifactId>sw-security-spring-boot-starter</artifactId>
                 <version>${sw-security-spring-boot-starter.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>com.sowell.common</groupId>
