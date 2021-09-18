@@ -13,7 +13,7 @@ import java.io.IOException;
  * @Author: 孔胜
  * @Date: 2021/7/12 13:08
  */
-public class IoUtil extends cn.hutool.core.io.IoUtil {
+public final class IoUtil extends cn.hutool.core.io.IoUtil {
 
     /**
      * 从{@link BufferedReader}中读取String

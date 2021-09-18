@@ -1,9 +1,8 @@
 package com.sowell.security.auth;
 
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -14,5 +13,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface LoginErrorHandler {
 
-    void error(HttpServletRequest request, HttpServletResponse response, SecurityException securityException);
+    void error(
+            BaseRequest<?> request,
+            BaseResponse<?> response,
+            SecurityException securityException
+    );
 }

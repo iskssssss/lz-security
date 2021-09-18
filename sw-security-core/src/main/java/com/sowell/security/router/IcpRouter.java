@@ -2,12 +2,10 @@ package com.sowell.security.router;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.base.AbstractInterfacesFilter;
-import com.sowell.security.context.IcpContextHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.sowell.security.context.IcpContext;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.SecurityException;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -23,16 +21,31 @@ public class IcpRouter {
 	 *
 	 * @param params 参数
 	 * @return 过滤结果
-	 * @throws IllegalAccessException 异常1
-	 * @throws ServletException       异常2
-	 * @throws IOException            异常3
+	 * @throws SecurityException 异常
 	 */
 	public static boolean filter(
 			Object... params
-	) throws IllegalAccessException, ServletException, IOException {
-		HttpServletRequest servletRequest = IcpContextHandler.getServletRequest();
-		HttpServletResponse servletResponse = IcpContextHandler.getServletResponse();
+	) throws SecurityException {
+		final IcpContext icpContext = IcpManager.getIcpContext();
+		BaseRequest<?> request = icpContext.getRequest();
+		BaseResponse<?> response = icpContext.getResponse();
 		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
-		return interfacesFilter.doFilter(servletRequest, servletResponse, params);
+		return interfacesFilter.doFilter(request, response, params);
+	}
+
+	public static void init() {
+		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
+		while (interfacesFilter.hasNext()) {
+			interfacesFilter.init();
+			interfacesFilter = interfacesFilter.next();
+		}
+	}
+
+	public static void destroy() {
+		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
+		while (interfacesFilter.hasNext()) {
+			interfacesFilter.destroy();
+			interfacesFilter = interfacesFilter.next();
+		}
 	}
 }

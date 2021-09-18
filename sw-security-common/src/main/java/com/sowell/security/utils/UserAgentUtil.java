@@ -11,7 +11,7 @@ import com.sowell.security.model.UserAgentInfo;
  * @Author: 孔胜
  * @Date: 2021/09/10 14:23
  */
-public class UserAgentUtil {
+public final class UserAgentUtil {
 
 	public static UserAgentInfo getUserAgentInfo(String ua) {
 		UserAgent userAgent = UserAgentParser.parse(ua);

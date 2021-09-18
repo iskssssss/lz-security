@@ -1,6 +1,6 @@
 package com.sowell.security.log;
 
-import javax.servlet.http.HttpServletRequest;
+import com.sowell.security.context.model.BaseRequest;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -15,7 +15,7 @@ public interface BaseFilterLogHandler {
      * 过滤前处理
      */
     Object beforeHandler(
-            HttpServletRequest request
+            BaseRequest<?> request
     );
 
     /**
@@ -24,7 +24,7 @@ public interface BaseFilterLogHandler {
     void afterHandler(
             Object logEntity,
             long requestTime,
-            HttpServletRequest request,
+            BaseRequest<?> request,
             int responseStatus,
             byte[] responseBytes,
             Exception ex

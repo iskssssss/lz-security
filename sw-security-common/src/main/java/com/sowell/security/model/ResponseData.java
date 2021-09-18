@@ -1,8 +1,8 @@
 package com.sowell.security.model;
 
+import com.sowell.security.enums.HttpStatus;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 

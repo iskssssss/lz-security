@@ -1,7 +1,7 @@
 package com.sowell.security.auth;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -12,5 +12,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface LogoutService {
 
-    boolean logout(HttpServletRequest request, HttpServletResponse response);
+    boolean logout(
+            BaseRequest<?> request,
+            BaseResponse<?> response
+    );
 }

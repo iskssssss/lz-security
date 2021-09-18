@@ -1,6 +1,8 @@
 package com.sowell.security.exception;
 
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
  * @ClassName:
@@ -11,10 +13,18 @@ package com.sowell.security.exception;
 public class CredentialsExpiredException extends SecurityException {
 
     public CredentialsExpiredException() {
-        super("user.login.credentials.expired");
+        this(null);
     }
 
-    public CredentialsExpiredException(Object object) {
-        super("user.login.credentials.expired", object);
+    public CredentialsExpiredException(Throwable cause) {
+        this(null, cause);
+    }
+
+    public CredentialsExpiredException(Object responseData) {
+        this(responseData, null);
+    }
+
+    private CredentialsExpiredException(Object responseData, Throwable cause) {
+        super(RCode.TOKEN_EXPIRE.getCode(), RCode.TOKEN_EXPIRE.getMessage(), responseData, cause);
     }
 }

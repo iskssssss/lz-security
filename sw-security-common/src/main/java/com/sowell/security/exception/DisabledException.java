@@ -1,6 +1,8 @@
 package com.sowell.security.exception;
 
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
  * @ClassName:
@@ -11,10 +13,18 @@ package com.sowell.security.exception;
 public class DisabledException extends SecurityException {
 
     public DisabledException() {
-        super("user.login.account.disable");
+        this(null);
     }
 
-    public DisabledException(Object object) {
-        super("user.login.account.disable", object);
+    public DisabledException(Throwable cause) {
+        this(null, cause);
+    }
+
+    public DisabledException(Object responseData) {
+        this(responseData, null);
+    }
+
+    private DisabledException(Object responseData, Throwable cause) {
+        super(RCode.TOKEN_EXPIRE.getCode(), RCode.TOKEN_EXPIRE.getMessage(), responseData, cause);
     }
 }

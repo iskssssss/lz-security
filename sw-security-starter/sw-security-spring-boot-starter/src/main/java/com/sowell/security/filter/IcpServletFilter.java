@@ -1,18 +1,21 @@
 package com.sowell.security.filter;
 
 import com.sowell.security.IcpManager;
-import com.sowell.security.auth.impl.LogoutHandler;
+import com.sowell.security.cache.utils.GlobalScheduled;
 import com.sowell.security.config.FilterConfigurer;
-import com.sowell.security.context.IcpSecurityContextHandler;
+import com.sowell.security.lang.IcpRunnable;
+import com.sowell.security.mode.SwRequest;
+import com.sowell.security.mode.SwResponse;
 import com.sowell.security.router.IcpRouter;
-import com.sowell.security.utils.ServletUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -33,40 +36,20 @@ public class IcpServletFilter extends BaseFilter {
 		super.authorizationHandler = IcpManager.getAuthorizationHandler();
 		super.filterUrl = filterConfigurer.filterUrl();
 		super.abstractLogoutHandler = IcpManager.getLogoutHandler();
+		IcpRouter.init();
 	}
 
 	@Override
 	public void doFilter(
-			HttpServletRequest request,
-			HttpServletResponse response,
+			SwRequest swRequest,
+			SwResponse swResponse,
 			FilterChain chain
 	) throws Exception {
-		boolean isDoFilter = true;
-		if (request instanceof HttpServletRequestWrapper && IcpSecurityContextHandler.isUrl(super.filterUrl.loginUrl)) {
-			// 登录处理
-			boolean loginResult = super.authorizationHandler.authorization(request, response);
-			if (!loginResult){
-				return;
-			}
-			isDoFilter = false;
-		}
-		if (!isDoFilter) {
-			final String authorizationToken = IcpSecurityContextHandler.getAuthorizationToken();
-			final boolean filterResult = IcpRouter.filter(authorizationToken);
-			if (!filterResult) {
-				return;
-			}
-			isDoFilter = true;
-			boolean isLogoutUrl = IcpSecurityContextHandler.isUrl(super.filterUrl.logoutUrl);
-			// 登出过滤
-			if (isLogoutUrl) {
-				if (!abstractLogoutHandler.logout(request, response)) {
-					return;
-				}
-				isDoFilter = false;
-			}
-		}
-		if (!isDoFilter) {
+		final HttpServletRequest request = swRequest.getRequest();
+		final HttpServletResponse response = swResponse.getResponse();
+
+		final boolean filterResult = IcpRouter.filter();
+		if (!filterResult) {
 			return;
 		}
 		chain.doFilter(request, response);
@@ -74,6 +57,21 @@ public class IcpServletFilter extends BaseFilter {
 
 	@Override
 	public void destroy() {
+		IcpRouter.destroy();
+		final List<Runnable> runnableList = GlobalScheduled.INSTANCE.shutdownNow();
 
+		if (runnableList == null || runnableList.isEmpty()) {
+			return;
+		}
+		for (Runnable runnable : runnableList) {
+			if (!(runnable instanceof IcpRunnable)) {
+				continue;
+			}
+			final IcpRunnable icpRunnable = (IcpRunnable) runnable;
+			try {
+				icpRunnable.close();
+			} catch (IOException ignored) {
+			}
+		}
 	}
 }

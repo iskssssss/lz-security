@@ -12,7 +12,7 @@ import java.util.Date;
  * @Author: 孔胜
  * @Date: 2021/6/24 10:50
  */
-public class DateUtil {
+public final class DateUtil {
 
     /**
      * 日期转换

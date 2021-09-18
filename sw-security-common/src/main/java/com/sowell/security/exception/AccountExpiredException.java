@@ -1,5 +1,7 @@
 package com.sowell.security.exception;
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @ClassName:
@@ -10,14 +12,18 @@ package com.sowell.security.exception;
 public class AccountExpiredException extends SecurityException {
 
 	public AccountExpiredException() {
-		super("Token已过期");
+		this(null);
+	}
+
+	public AccountExpiredException(Throwable cause) {
+		this(null, cause);
 	}
 
 	public AccountExpiredException(Object responseData) {
-		super(responseData);
+		this(responseData, null);
 	}
 
-	public AccountExpiredException(String message, Object responseData) {
-		super(message, responseData);
+	private AccountExpiredException(Object responseData, Throwable cause) {
+		super(RCode.TOKEN_EXPIRE.getCode(), RCode.TOKEN_EXPIRE.getMessage(), responseData, cause);
 	}
 }

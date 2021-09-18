@@ -1,14 +1,12 @@
 package com.sowell.security.filter;
 
-import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.base.AbstractInterfacesFilter;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.SecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,11 +17,11 @@ import java.util.List;
  * @Date: 2021/7/19 11:19
  */
 public class ExcludeFilter extends AbstractInterfacesFilter {
-    protected final Logger logger = LoggerFactory.getLogger(ExcludeFilter.class);
 
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<String> excludeUrls = null;
 
-    private List<String> getExcludeUrls() {
+    private List<String> excludeUrls() {
         if (this.excludeUrls == null) {
             this.excludeUrls = super.filterConfigurer.filterUrl().excludeUrls;
         }
@@ -32,20 +30,19 @@ public class ExcludeFilter extends AbstractInterfacesFilter {
 
     @Override
     public void init() {
-        logger.info("匿名过滤器初始化。");
+        logger.info("exclude filter init.");
     }
 
     @Override
     public boolean doFilter(
-            HttpServletRequest request,
-            HttpServletResponse response,
+            BaseRequest<?> request,
+            BaseResponse<?> response,
             Object... params
-    ) throws IOException, IllegalAccessException, ServletException {
-        logger.info("开始过滤匿名访问接口");
-        String lookupPath = ServletUtil.getLookupPathForRequest(request);
-        for (String excludeUrl : getExcludeUrls()) {
+    ) throws SecurityException {
+        final List<String> excludeUrls = excludeUrls();
+        for (String excludeUrl : excludeUrls) {
             final String securityInterface = excludeUrl.replace(" ", "");
-            if (ServletUtil.urlMatch(securityInterface, lookupPath)) {
+            if (request.isPath(securityInterface)) {
                 return discharged(request);
             }
         }
@@ -54,6 +51,7 @@ public class ExcludeFilter extends AbstractInterfacesFilter {
 
     @Override
     public void destroy() {
-        logger.info("匿名过滤器销毁。");
+        logger.info("exclude filter destroy.");
+        this.excludeUrls = null;
     }
 }

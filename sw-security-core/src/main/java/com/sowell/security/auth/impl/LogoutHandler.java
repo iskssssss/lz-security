@@ -4,9 +4,8 @@ import com.sowell.security.IcpManager;
 import com.sowell.security.auth.AbstractLogoutHandler;
 import com.sowell.security.auth.LogoutService;
 import com.sowell.security.config.FilterConfigurer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -19,8 +18,8 @@ public class LogoutHandler extends AbstractLogoutHandler {
 
     @Override
     public boolean logout(
-            HttpServletRequest request,
-            HttpServletResponse response
+            BaseRequest<?> request,
+            BaseResponse<?> response
     ) {
         FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
         final FilterConfigurer.LogoutHandlerInfo logoutHandlerInfo = filterConfigurer.logout();

@@ -1,6 +1,8 @@
 package com.sowell.security.exception;
 
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
  * @ClassName:
@@ -11,10 +13,18 @@ package com.sowell.security.exception;
 public class VerificationException extends SecurityException {
 
     public VerificationException() {
-        super("user.login.account.verification");
+        this(null);
     }
 
-    public VerificationException(Object object) {
-        super("user.login.account.verification", object);
+    public VerificationException(Throwable cause) {
+        this(null, cause);
+    }
+
+    public VerificationException(Object responseData) {
+        this(responseData, null);
+    }
+
+    private VerificationException(Object responseData, Throwable cause) {
+        super(RCode.TOKEN_EXPIRE.getCode(), RCode.TOKEN_EXPIRE.getMessage(), responseData, cause);
     }
 }

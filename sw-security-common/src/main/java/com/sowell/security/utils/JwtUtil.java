@@ -2,7 +2,7 @@ package com.sowell.security.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.sowell.security.fun.SFunction;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +22,7 @@ import java.util.*;
  * @Date: 2021/08/23 10:02
  */
 @SuppressWarnings("unchecked")
-public class JwtUtil {
+public final class JwtUtil {
 	private static final String SOURCE_CLASS_KEY = "SOURCE_CLASS_TYPE";
 	private static final String KEY = "756e3f5b251448f4a0f0dd6e9cb08794";
 	private static final byte[] KEY_BYTE_LIST = KEY.getBytes(StandardCharsets.UTF_8);

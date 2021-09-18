@@ -1,7 +1,5 @@
 package com.sowell.security.utils;
 
-import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +11,7 @@ import java.nio.charset.StandardCharsets;
  * @Author: 孔胜
  * @Date: 2021/7/12 12:45
  */
-public class StringUtil extends StringUtils {
+public final class StringUtil {
 
     /**
      * 判断字符串是否为空.
@@ -31,7 +29,7 @@ public class StringUtil extends StringUtils {
      * @param object 对象
      * @return 是否不为空
      */
-    public static boolean isNotEmpty(String object) {
+    public static boolean isNotEmpty(Object object) {
         return !isEmpty(object);
     }
 

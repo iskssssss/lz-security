@@ -1,7 +1,6 @@
 package com.sowell.security.enums;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sowell.common.core.web.result.ICode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -16,7 +15,7 @@ import java.lang.reflect.Modifier;
  * @author: sowell
  * @date: 2021年3月30日19:19:02
  */
-public enum RCode implements ICode {
+public enum RCode {
     /**
      * 操作成功
      */
@@ -33,6 +32,10 @@ public enum RCode implements ICode {
      * 发生未知错误
      */
     UNKNOWN_MISTAKE(3, "发生未知错误"),
+    /**
+     * 请求失败
+     */
+    REQUEST_ERROR(4, "请求失败。"),
 
     /**
      * appId或appSecret错误
@@ -58,6 +61,14 @@ public enum RCode implements ICode {
      * 您的IP未添加至白名单中，请联系管理员。
      */
     NOT_WHITE_IP(6006, "您的IP未添加至白名单中，请联系管理员。"),
+    /**
+     * 访问该URL只可在匿名状态下。
+     */
+    ANONYMOUS(6007, "访问该URL只可在匿名状态下。"),
+    /**
+     * 访问该URL需认证。
+     */
+    AUTHORIZATION(6008, "访问该URL需认证。"),
 
     /**
      * 用户不存在
@@ -80,7 +91,6 @@ public enum RCode implements ICode {
         this.message = message;
     }
 
-    @Override
     public Integer getCode() {
         return code;
     }
@@ -89,7 +99,6 @@ public enum RCode implements ICode {
         this.code = code;
     }
 
-    @Override
     public String getMessage() {
         return message;
     }

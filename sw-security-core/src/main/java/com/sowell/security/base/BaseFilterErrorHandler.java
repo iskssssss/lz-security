@@ -1,7 +1,7 @@
 package com.sowell.security.base;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 public interface BaseFilterErrorHandler<T> {
 
     T errorHandler(
-            HttpServletRequest request,
-            HttpServletResponse response,
+            BaseRequest<?> request,
+            BaseResponse<?> response,
             Exception error
     );
 }

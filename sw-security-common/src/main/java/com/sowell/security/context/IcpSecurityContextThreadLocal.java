@@ -1,10 +1,10 @@
 package com.sowell.security.context;
 
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.context.model.Box;
-import com.sowell.security.context.model.IcpAbstractStorage;
+import com.sowell.security.context.model.IcpStorage;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -15,16 +15,16 @@ import java.util.Optional;
  * @Author: 孔胜
  * @Date: 2021/08/20 15:49
  */
-public class IcpSecurityContext {
+public class IcpSecurityContextThreadLocal {
 
 	private static final ThreadLocal<Box> BOX_THREAD_LOCAL = new InheritableThreadLocal<>();
 
 	public static void setBox(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse,
-			IcpAbstractStorage icpAbstractStorage
+			BaseRequest request,
+			BaseResponse response,
+			IcpStorage icpStorage
 	) {
-		BOX_THREAD_LOCAL.set(new Box(httpServletRequest, httpServletResponse, icpAbstractStorage));
+		BOX_THREAD_LOCAL.set(new Box(request, response, icpStorage));
 	}
 
 	public static void remove() {
@@ -41,15 +41,15 @@ public class IcpSecurityContext {
 		return box.orElse(new Box());
 	}
 
-	public static HttpServletRequest getServletRequest() {
+	public static BaseRequest getServletRequest() {
 		return getBox().getRequest();
 	}
 
-	public static HttpServletResponse getServletResponse() {
+	public static BaseResponse getServletResponse() {
 		return getBox().getResponse();
 	}
 
-	public static IcpAbstractStorage getIcpAbstractStorage() {
-		return getBox().getIcpAbstractStorage();
+	public static IcpStorage getIcpStorage() {
+		return getBox().getIcpStorage();
 	}
 }

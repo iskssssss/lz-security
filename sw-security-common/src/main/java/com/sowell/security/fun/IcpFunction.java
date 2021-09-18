@@ -12,8 +12,6 @@ public interface IcpFunction {
 
 	/**
 	 * 执行的方法
-	 *
-	 * @throws Exception 异常
 	 */
 	void run();
 }

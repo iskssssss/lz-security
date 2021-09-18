@@ -9,27 +9,30 @@ package com.sowell.security.exception;
  */
 public class SecurityException extends RuntimeException {
 
+    private final Integer code;
     private Object responseData;
 
-    public SecurityException(String message) {
-        super(message);
-        this.responseData = null;
+    public SecurityException(Integer code, String message) {
+        this(code, message, null);
     }
 
-    public SecurityException(Object responseData) {
-        super("");
-        this.responseData = responseData;
+    public SecurityException(Integer code, Object responseData) {
+        this(code, "", responseData);
     }
 
-    public SecurityException(String message, Object responseData) {
-        super(message);
-        this.responseData = responseData;
+    public SecurityException(Integer code, String message, Throwable cause) {
+        this(code, message, null, cause);
     }
 
-    public SecurityException(String message, Throwable cause){
+    public SecurityException(Integer code, String message, Object responseData) {
+        this(code, message, responseData, null);
+    }
+
+    public SecurityException(Integer code, String message, Object responseData, Throwable cause) {
         super(message, cause);
+        this.code = code;
+        this.responseData = responseData;
     }
-
 
     public Object getResponseData() {
         return responseData;
@@ -37,5 +40,9 @@ public class SecurityException extends RuntimeException {
 
     public void setResponseData(Object responseData) {
         this.responseData = responseData;
+    }
+
+    public Integer getCode() {
+        return code;
     }
 }

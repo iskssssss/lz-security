@@ -1,5 +1,7 @@
 package com.sowell.security.exception;
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
  * @ClassName:
@@ -7,26 +9,21 @@ package com.sowell.security.exception;
  * @Author: 孔胜
  * @Date: 2021/7/14 14:11
  */
-public class ResponseException extends RuntimeException {
+public class ResponseException extends SecurityException {
 
-    private final Object responseData;
-
-    public ResponseException(String message) {
-        super(message);
-        this.responseData = null;
+    public ResponseException(RCode rCode) {
+        this(rCode, null);
     }
 
-    public ResponseException(Object responseData) {
-        super("");
-        this.responseData = responseData;
+    public ResponseException(RCode rCode, Throwable cause) {
+        this(rCode, null, cause);
     }
 
-    public ResponseException(String message, Object responseData) {
-        super(message);
-        this.responseData = responseData;
+    public ResponseException(RCode rCode, Object responseData) {
+        this(rCode, responseData, null);
     }
 
-    public Object getResponseData() {
-        return responseData;
+    private ResponseException(RCode rCode, Object responseData, Throwable cause) {
+        super(rCode.getCode(), rCode.getMessage(), responseData, cause);
     }
 }

@@ -1,19 +1,19 @@
 package com.sowell.security.base;
 
-import com.sowell.common.core.web.result.ICode;
-import com.sowell.security.annotation.LogBeforeFilter;
-import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
+import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.config.FilterConfigurer;
-import com.sowell.security.context.IcpContextHandler;
+import com.sowell.security.context.IcpContext;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.enums.RCode;
+import com.sowell.security.exception.SecurityException;
 import com.sowell.security.log.BaseFilterLogHandler;
+import com.sowell.security.utils.ServletUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -32,7 +32,7 @@ public abstract class AbstractInterfacesFilter {
     /**
      * 链接下一过滤器
      */
-    public AbstractInterfacesFilter linkFilter(AbstractInterfacesFilter nextFilter) {
+    public final AbstractInterfacesFilter linkFilter(AbstractInterfacesFilter nextFilter) {
         this.nextFilter = nextFilter;
         return nextFilter;
     }
@@ -40,33 +40,33 @@ public abstract class AbstractInterfacesFilter {
     /**
      * 进入下一步过滤
      */
-    protected boolean next(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    protected final boolean next(
+            BaseRequest<?> request,
+            BaseResponse<?> response,
             Object... params
-    ) throws IOException, IllegalAccessException, ServletException {
+    ) throws SecurityException {
         if (null == nextFilter) {
             return true;
         }
         // 日志处理
-        if (IcpContextHandler.isSaveRequestLog()) {
-            final Class<? extends AbstractInterfacesFilter> nextFilterClass = nextFilter.getClass();
-            final LogBeforeFilter logBeforeFilter = nextFilterClass.getAnnotation(LogBeforeFilter.class);
-            if (logBeforeFilter != null) {
-                final BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
-                final Object logEntity = filterLogHandler.beforeHandler(request);
-                // 暂缓
-                IcpContextHandler.setAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY, logEntity);
-            }
+        final Class<? extends AbstractInterfacesFilter> nextFilterClass = nextFilter.getClass();
+        final LogBeforeFilter logBeforeFilter = nextFilterClass.getAnnotation(LogBeforeFilter.class);
+        if (logBeforeFilter != null) {
+            final IcpContext<Object, Object> icpContext = IcpManager.getIcpContext();
+            final BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
+            final Object logEntity = filterLogHandler.beforeHandler(request);
+            // 暂缓
+            icpContext.setAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY, logEntity);
         }
+
         return nextFilter.doFilter(request, response, params);
     }
 
-    public boolean hasNext() {
+    public final boolean hasNext() {
         return nextFilter != null;
     }
 
-    public AbstractInterfacesFilter next() {
+    public final AbstractInterfacesFilter next() {
         return nextFilter;
     }
 
@@ -79,15 +79,15 @@ public abstract class AbstractInterfacesFilter {
      * 过滤
      */
     public abstract boolean doFilter(
-            HttpServletRequest request,
-            HttpServletResponse response,
+            BaseRequest<?> request,
+            BaseResponse<?> response,
             Object... params
-    ) throws IOException, IllegalAccessException, ServletException;
+    ) throws SecurityException;
 
     /**
      * 是否认证
      */
-    public boolean isAuth(HttpServletRequest request) {
+    public boolean isAuth(BaseRequest<?> request) {
         return true;
     }
 
@@ -102,9 +102,8 @@ public abstract class AbstractInterfacesFilter {
      * @param request 请求流
      * @return 拦截
      */
-    public boolean headOff(HttpServletRequest request) {
-        String lookupPath = ServletUtil.getLookupPathForRequest(request);
-        logger.info("拦截接口：" + lookupPath);
+    public final boolean headOff(BaseRequest<?> request) {
+        logger.info("拦截接口：" + request.getRequestPath());
         logger.info("============================== 访问接口过滤结束 ==============================");
         return false;
     }
@@ -118,11 +117,11 @@ public abstract class AbstractInterfacesFilter {
      * @return
      * @throws IOException
      */
-    public boolean headOff(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            ICode rCode
-    ) throws IOException {
+    public final boolean headOff(
+            BaseRequest<?> request,
+            BaseResponse<?> response,
+            RCode rCode
+    ) throws SecurityException {
         ServletUtil.printResponse(response, rCode);
         logger.info("拦截信息：" + rCode.getMessage());
         headOff(request);
@@ -135,9 +134,8 @@ public abstract class AbstractInterfacesFilter {
      * @param request 请求流
      * @return 放行
      */
-    public boolean discharged(HttpServletRequest request) {
-        String lookupPath = ServletUtil.getLookupPathForRequest(request);
-        logger.info("放行接口：" + lookupPath);
+    public final boolean discharged(BaseRequest<?> request) {
+        logger.info("放行接口：" + request.getRequestPath());
         logger.info("访问接口过滤结束。");
         logger.info("============================== 访问接口过滤结束 ==============================");
         return true;

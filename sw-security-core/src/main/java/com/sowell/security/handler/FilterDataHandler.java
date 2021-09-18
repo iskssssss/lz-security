@@ -1,19 +1,17 @@
 package com.sowell.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sowell.security.utils.ByteUtil;
-import com.sowell.security.utils.ServletUtil;
-import com.sowell.security.utils.StringUtil;
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
+import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.base.BaseFilterErrorHandler;
-import com.sowell.security.context.IcpContextHandler;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.enums.RCode;
 import com.sowell.security.log.BaseFilterLogHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sowell.security.utils.ByteUtil;
+import com.sowell.security.utils.StringUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +25,6 @@ import java.util.Optional;
  * @Date: 2021/08/02 09:31
  */
 public class FilterDataHandler {
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private BaseFilterLogHandler filterLogHandler;
 	private BaseFilterErrorHandler<?> filterErrorHandler;
@@ -47,8 +44,8 @@ public class FilterDataHandler {
 	}
 
 	public byte[] handler(
-			HttpServletRequest request,
-			HttpServletResponse response,
+			BaseRequest<?> request,
+			BaseResponse<?> response,
 			byte[] responseBytes,
 			Exception ex
 	) {
@@ -63,27 +60,27 @@ public class FilterDataHandler {
 			}
 			return errorBytes;
 		} catch (Exception exception) {
+			ServletUtil.printResponse(response, RCode.UNKNOWN_MISTAKE);
 			return null;
 		} finally {
 			if (responseBytes != null) {
-				response.resetBuffer();
 				ServletUtil.printResponse(response, responseBytes);
 			}
 		}
 	}
 
 	private void handlerAfterLog(
-			HttpServletRequest request,
-			HttpServletResponse response,
+			BaseRequest<?> request,
+			BaseResponse<?> response,
 			byte[] errorBytes,
 			Exception ex
 	) {
-		byte[] responseDataBytes = ServletUtil.getResponseDataBytes(response, errorBytes);
-		if (!IcpContextHandler.isSaveRequestLog()) {
-			return;
+		byte[] responseDataBytes = null;
+		if (errorBytes == null) {
+			responseDataBytes = response.getResponseDataBytes();
 		}
-		final Object logEntity = IcpContextHandler.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY);
-		final Optional<Long> timeOptional = Optional.ofNullable(IcpContextHandler.getAttribute(IcpConstant.REQUEST_TIME_CACHE_KEY, Long.class));
+		final Object logEntity = request.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY);
+		final Optional<Long> timeOptional = Optional.ofNullable(request.getAttribute(IcpConstant.REQUEST_TIME_CACHE_KEY, Long.class));
 		if (logEntity == null) {
 			return;
 		}
@@ -98,13 +95,13 @@ public class FilterDataHandler {
 	}
 
 	private byte[] errorHandler(
-			HttpServletRequest requestWrapper,
-			HttpServletResponse responseWrapper,
+			BaseRequest<?> request,
+			BaseResponse<?> response,
 			Exception e
 	) throws IOException {
 		Object errorHandler;
 		// 异常数据处理
-		errorHandler = this.getFilterErrorHandler().errorHandler(requestWrapper, responseWrapper, e);
+		errorHandler = this.getFilterErrorHandler().errorHandler(request, response, e);
 		if (StringUtil.isEmpty(errorHandler)) {
 			return null;
 		}
@@ -118,6 +115,6 @@ public class FilterDataHandler {
 			return JSONObject.toJSONString(errorHandler).getBytes(StandardCharsets.UTF_8);
 		}
 		// 处理其它数据
-		return ByteUtil.object2bytes(errorHandler);
+		return ByteUtil.toBytes(errorHandler);
 	}
 }

@@ -1,5 +1,7 @@
 package com.sowell.security.exception;
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @ClassName:
@@ -9,17 +11,19 @@ package com.sowell.security.exception;
  */
 public class AccountNotExistException extends SecurityException {
 
-	private final static String MESSAGE = "AccessToken不存在或已过期";
-
 	public AccountNotExistException() {
-		super(MESSAGE);
+		this(null);
+	}
+
+	public AccountNotExistException(Throwable cause) {
+		this(null, cause);
 	}
 
 	public AccountNotExistException(Object responseData) {
-		super(MESSAGE, responseData);
+		this(responseData, null);
 	}
 
-	public AccountNotExistException(String message, Object responseData) {
-		super(message, responseData);
+	private AccountNotExistException(Object responseData, Throwable cause) {
+		super(RCode.TOKEN_EXPIRE.getCode(), RCode.TOKEN_EXPIRE.getMessage(), responseData, cause);
 	}
 }

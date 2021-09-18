@@ -1,6 +1,6 @@
 package com.sowell.security.model;
 
-import cn.hutool.json.JSONUtil;
+import com.sowell.security.utils.JsonUtil;
 
 import java.io.Serializable;
 
@@ -19,21 +19,14 @@ public abstract class AuthDetails<T> implements Serializable {
 	 */
 	private String id;
 	/**
-	 * appKey
-	 */
-	private String appKey;
-	/**
-	 * appSecret
-	 */
-	private String appSecret;
-	/**
 	 * 用户名
 	 */
 	private String username;
 	/**
-	 * 用户名
+	 * 密码
 	 */
 	private String password;
+
 	/**
 	 * 源类名称
 	 */
@@ -57,22 +50,6 @@ public abstract class AuthDetails<T> implements Serializable {
 		this.id = id;
 	}
 
-	public String getAppKey() {
-		return appKey;
-	}
-
-	public void setAppKey(String appKey) {
-		this.appKey = appKey;
-	}
-
-	public String getAppSecret() {
-		return appSecret;
-	}
-
-	public void setAppSecret(String appSecret) {
-		this.appSecret = appSecret;
-	}
-
 	public String getUsername() {
 		return username;
 	}
@@ -94,6 +71,6 @@ public abstract class AuthDetails<T> implements Serializable {
 	}
 
 	public String toJson() {
-		return JSONUtil.toJsonStr(this);
+		return JsonUtil.toJsonString(this);
 	}
 }

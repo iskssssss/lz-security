@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONObject;
  * @Author eternity
  * @Date 2020/4/21 22:50
  */
-public class JsonUtil extends JSONObject {
+public final class JsonUtil extends JSONObject {
     private static final String ERROR_INFO = "传入参数不可为空.";
 
     public static String toJsonString(Object object) {

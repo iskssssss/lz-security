@@ -1,7 +1,8 @@
 package com.sowell.security.config;
 
 
-import com.sowell.security.utils.ServletUtil;
+import com.sowell.security.IcpManager;
+import com.sowell.security.context.IcpContext;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -41,11 +42,11 @@ public final class InterfacesMethodMap extends HashMap<String, Method> {
 		if (method != null) {
 			return method;
 		}
+		final IcpContext icpContext = IcpManager.getIcpContext();
 		final Set<Entry<String, Method>> entrySet = this.entrySet();
 		for (Entry<String, Method> stringMethodEntry : entrySet) {
 			final String key = stringMethodEntry.getKey();
-
-			if (ServletUtil.urlMatch(key, url)) {
+			if (icpContext.matchUrl(key, url)) {
 				return stringMethodEntry.getValue();
 			}
 		}

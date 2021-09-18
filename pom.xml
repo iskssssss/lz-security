@@ -6,7 +6,7 @@
 
     <groupId>com.sowell.security</groupId>
     <artifactId>sw-security</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
 
     <modules>
         <module>sw-security-common</module>
@@ -26,10 +26,10 @@
         <fastjson.version>1.2.75</fastjson.version>
         <lombok.version>1.18.20</lombok.version>
 
-        <sw-security-common.version>1.0.1</sw-security-common.version>
-        <sw-security-core.version>1.0.1</sw-security-core.version>
-        <sw-security-plugins-redis.version>1.0.1</sw-security-plugins-redis.version>
-        <sw-security-spring-boot-starter.version>1.0.1</sw-security-spring-boot-starter.version>
+        <sw-security-common.version>1.0.17</sw-security-common.version>
+        <sw-security-core.version>1.0.17</sw-security-core.version>
+        <sw-security-plugins-redis.version>1.0.10</sw-security-plugins-redis.version>
+        <sw-security-spring-boot-starter.version>1.0.28</sw-security-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>

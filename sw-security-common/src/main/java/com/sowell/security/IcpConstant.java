@@ -12,4 +12,13 @@ public final class IcpConstant {
 	public static final String REQUEST_TIME_CACHE_KEY = "REQUEST_TIME_CACHE_KEY";
 
 	public static final String LOG_ENTITY_CACHE_KEY = "LOG_ENTITY_CACHE_KEY";
+
+	/**
+	 * token类型 uuid
+	 */
+	public static final String ACCESS_TOKEN_TYPE_BY_UUID = "UUID";
+	/**
+	 * token类型 jwt
+	 */
+	public static final String ACCESS_TOKEN_TYPE_BY_JWT = "JWT";
 }

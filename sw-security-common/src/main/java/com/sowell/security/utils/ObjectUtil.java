@@ -14,7 +14,7 @@ import java.util.Set;
  * @Date: 2021/08/23 11:05
  */
 @SuppressWarnings("unchecked")
-public class ObjectUtil {
+public final class ObjectUtil {
 
 	public static void getFieldList(Set<Field> fieldList, Class<?> tClass) {
 		if (tClass == null) {
