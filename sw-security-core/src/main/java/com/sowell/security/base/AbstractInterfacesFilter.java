@@ -10,9 +10,9 @@ import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.log.BaseFilterLogHandler;
+import com.sowell.security.log.IcpLogger;
+import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.utils.ServletUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
  * @Date: 2021/7/7 11:26
  */
 public abstract class AbstractInterfacesFilter {
-    protected final Logger logger = LoggerFactory.getLogger(AbstractInterfacesFilter.class);
+    protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbstractInterfacesFilter.class);
     protected final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
 
     private AbstractInterfacesFilter nextFilter;
@@ -54,7 +54,7 @@ public abstract class AbstractInterfacesFilter {
         if (logBeforeFilter != null) {
             final IcpContext<Object, Object> icpContext = IcpManager.getIcpContext();
             final BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
-            final Object logEntity = filterLogHandler.beforeHandler(request);
+            final Object logEntity = filterLogHandler.beforeHandler(request, response);
             // 暂缓
             icpContext.setAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY, logEntity);
         }
@@ -103,8 +103,8 @@ public abstract class AbstractInterfacesFilter {
      * @return 拦截
      */
     public final boolean headOff(BaseRequest<?> request) {
-        logger.info("拦截接口：" + request.getRequestPath());
-        logger.info("============================== 访问接口过滤结束 ==============================");
+        icpLogger.info("拦截接口：" + request.getRequestPath());
+        icpLogger.info("============================== 访问接口过滤结束 ==============================");
         return false;
     }
 
@@ -123,7 +123,7 @@ public abstract class AbstractInterfacesFilter {
             RCode rCode
     ) throws SecurityException {
         ServletUtil.printResponse(response, rCode);
-        logger.info("拦截信息：" + rCode.getMessage());
+        icpLogger.info("拦截信息：" + rCode.getMessage());
         headOff(request);
         return false;
     }
@@ -135,9 +135,9 @@ public abstract class AbstractInterfacesFilter {
      * @return 放行
      */
     public final boolean discharged(BaseRequest<?> request) {
-        logger.info("放行接口：" + request.getRequestPath());
-        logger.info("访问接口过滤结束。");
-        logger.info("============================== 访问接口过滤结束 ==============================");
+        icpLogger.info("放行接口：" + request.getRequestPath());
+        icpLogger.info("访问接口过滤结束。");
+        icpLogger.info("============================== 访问接口过滤结束 ==============================");
         return true;
     }
 }

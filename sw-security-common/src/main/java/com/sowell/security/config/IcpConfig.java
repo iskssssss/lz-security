@@ -20,30 +20,45 @@ import java.util.stream.Collectors;
 public class IcpConfig {
 	private static final long DEFAULT_TIMEOUT = 3600;
 
+	/**
+	 * 是否在控制台打印日志信息
+	 */
+	private Boolean consoleLogPrint = true;
+	/**
+	 * accessToken 在请求头中的键名
+	 */
 	private String headerName;
+	/**
+	 * AccessToken 相关信息
+	 */
 	private Token accessToken;
+	/**
+	 * 接口方法扫描位置
+	 */
 	private String controllerMethodScanPathList;
 
+	public void setConsoleLogPrint(Boolean consoleLogPrint) {
+		this.consoleLogPrint = consoleLogPrint;
+	}
 	public void setHeaderName(String headerName) {
 		this.headerName = headerName;
 	}
-
 	public void setAccessToken(Token accessToken) {
 		this.accessToken = accessToken;
 	}
-
 	public void setControllerMethodScanPathList(String controllerMethodScanPathList) {
 		this.controllerMethodScanPathList = controllerMethodScanPathList;
 	}
 
+	public Boolean getConsoleLogPrint() {
+		return consoleLogPrint;
+	}
 	public String getHeaderName() {
 		return headerName;
 	}
-
 	public Token getAccessToken() {
 		return accessToken;
 	}
-
 	public Set<String> getControllerMethodScanPathSet() {
 		final String controllerMethodScanPath = this.controllerMethodScanPathList;
 		if (StringUtil.isEmpty(controllerMethodScanPath)) {
@@ -56,7 +71,6 @@ public class IcpConfig {
 		}
 		return Arrays.stream(cmsplSplit).filter(StringUtil::isNotEmpty).collect(Collectors.toSet());
 	}
-
 	public String getAccessTokenType() {
 		if (this.accessToken == null || StringUtil.isEmpty(this.accessToken.accessTokenType)) {
 			return IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID;
@@ -107,7 +121,7 @@ public class IcpConfig {
 		/**
 		 * AccessToken过期时间（秒）
 		 */
-		private Long timeout;
+		private Long timeout = DEFAULT_TIMEOUT;
 
 		public void setAccessTokenType(String accessTokenType) {
 			this.accessTokenType = accessTokenType;

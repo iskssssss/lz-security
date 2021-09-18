@@ -4,6 +4,8 @@ import com.sowell.security.base.AbstractInterfacesFilter;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
+import com.sowell.security.log.IcpLogger;
+import com.sowell.security.log.IcpLoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @Date: 2021/6/25 15:24
  */
 public class EndFilter extends AbstractInterfacesFilter {
-    protected final Logger logger = LoggerFactory.getLogger(EndFilter.class);
+    protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(EndFilter.class);
 
     @Override
     public void init() {
@@ -28,8 +30,8 @@ public class EndFilter extends AbstractInterfacesFilter {
             BaseResponse<?> response,
             Object... params
     ) throws SecurityException {
-        logger.info("放行接口：" + request.getRequestPath());
-        logger.info("============================== 访问接口过滤结束 ==============================");
+        icpLogger.info("放行接口：" + request.getRequestPath());
+        icpLogger.info("============================== 访问接口过滤结束 ==============================");
         return true;
     }
 

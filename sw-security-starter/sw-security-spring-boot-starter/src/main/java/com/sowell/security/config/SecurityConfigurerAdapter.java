@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Import;
  */
 @Import({BeanRegister.class, BeanInject.class, ControllerExceptionHandler.class})
 public abstract class SecurityConfigurerAdapter {
-    protected final Logger logger = LoggerFactory.getLogger(SecurityConfigurerAdapter.class);
 
     private FilterRegistrationBean<IcpServletFilter> registration;
     private IcpServletFilter filterContainer;

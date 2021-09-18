@@ -69,7 +69,7 @@ public class IcpSpringContextHolder {
 		IcpSecurityContextThreadLocal.setBox(
 				request,
 				response,
-				new IcpStorage(request.getRequest())
+				new IcpStorage(request)
 		);
 	}
 
@@ -131,18 +131,16 @@ public class IcpSpringContextHolder {
 
 	public static UserAgentInfo getUserAgentInfo() {
 		final IcpStorage storage = getStorage();
-		if (storage == null) {
-			return new UserAgentInfo();
-		}
-		final UserAgentInfo userAgentInfo = storage.getUserAgentInfo();
-		if (userAgentInfo == null) {
-			return new UserAgentInfo();
-		}
-		return userAgentInfo;
+		return storage.getUserAgentInfo();
 	}
 
 	public static Method getControllerMethod() {
 		SwRequest request = getRequest();
 		return request.getControllerMethod();
+	}
+
+	public static Long getRequestTime() {
+		final IcpStorage storage = getStorage();
+		return storage.getRequestTime();
 	}
 }

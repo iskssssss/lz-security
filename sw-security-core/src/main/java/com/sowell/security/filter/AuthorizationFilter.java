@@ -6,8 +6,8 @@ import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sowell.security.log.IcpLogger;
+import com.sowell.security.log.IcpLoggerUtil;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @Date: 2021/09/16 16:11
  */
 public class AuthorizationFilter extends AbstractInterfacesFilter {
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbstractInterfacesFilter.class);
 
 	private List<String> authorizationUrls = null;
 	private ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
@@ -33,7 +33,7 @@ public class AuthorizationFilter extends AbstractInterfacesFilter {
 
 	@Override
 	public void init() {
-		logger.info("authorization filter init.");
+		icpLogger.info("authorization filter init.");
 		checkAccessAuthStatusHandler = super.filterConfigurer.login().getCheckAccessAuthStatusHandler();
 	}
 
@@ -58,7 +58,7 @@ public class AuthorizationFilter extends AbstractInterfacesFilter {
 
 	@Override
 	public void destroy() {
-		logger.info("authorization filter destroy.");
+		icpLogger.info("authorization filter destroy.");
 		this.checkAccessAuthStatusHandler = null;
 		this.authorizationUrls = null;
 	}

@@ -9,7 +9,7 @@ package com.sowell.security;
  */
 public final class IcpConstant {
 
-	public static final String REQUEST_TIME_CACHE_KEY = "REQUEST_TIME_CACHE_KEY";
+	//public static final String START_REQUEST_TIME_CACHE_KEY = "START_REQUEST_TIME_CACHE_KEY";
 
 	public static final String LOG_ENTITY_CACHE_KEY = "LOG_ENTITY_CACHE_KEY";
 

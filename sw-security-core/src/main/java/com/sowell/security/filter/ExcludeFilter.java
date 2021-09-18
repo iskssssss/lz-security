@@ -4,8 +4,8 @@ import com.sowell.security.base.AbstractInterfacesFilter;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sowell.security.log.IcpLogger;
+import com.sowell.security.log.IcpLoggerUtil;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import java.util.List;
  * @Date: 2021/7/19 11:19
  */
 public class ExcludeFilter extends AbstractInterfacesFilter {
+    protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbstractInterfacesFilter.class);
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     private List<String> excludeUrls = null;
 
     private List<String> excludeUrls() {
@@ -30,7 +30,7 @@ public class ExcludeFilter extends AbstractInterfacesFilter {
 
     @Override
     public void init() {
-        logger.info("exclude filter init.");
+        icpLogger.info("exclude filter init.");
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ExcludeFilter extends AbstractInterfacesFilter {
 
     @Override
     public void destroy() {
-        logger.info("exclude filter destroy.");
+        icpLogger.info("exclude filter destroy.");
         this.excludeUrls = null;
     }
 }

@@ -6,10 +6,9 @@ import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.enums.HttpStatus;
 import com.sowell.security.exception.SecurityException;
+import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.model.ResponseData;
 import com.sowell.security.utils.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.Map;
  */
 public class DefaultFilterErrorHandler
 		implements BaseFilterErrorHandler<String> {
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public String errorHandler(
@@ -49,7 +47,7 @@ public class DefaultFilterErrorHandler
 			setHttpStatus(HttpStatus.UNAUTHORIZED);
 		}};
 		response.setStatus(responseData.getHttpStatus().value());
-		log.error(responseData.getMsg(), error);
+		IcpLoggerUtil.error(getClass(), responseData.getMsg(), error);
 		return JSONObject.toJSONString(responseData.getBodyData());
 	}
 }

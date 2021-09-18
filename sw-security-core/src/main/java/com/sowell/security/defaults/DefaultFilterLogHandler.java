@@ -1,7 +1,12 @@
 package com.sowell.security.defaults;
 
+import com.sowell.security.IcpManager;
+import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.context.model.IcpStorage;
 import com.sowell.security.log.BaseFilterLogHandler;
+import com.sowell.security.log.IcpLoggerUtil;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -12,22 +17,28 @@ import com.sowell.security.log.BaseFilterLogHandler;
  */
 public class DefaultFilterLogHandler implements BaseFilterLogHandler {
 
+	final IcpStorage<?> storage;
+
+	public DefaultFilterLogHandler() {
+		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
+		storage = icpContext.getStorage();
+	}
+
 	@Override
 	public Object beforeHandler(
-			BaseRequest<?> request
+			BaseRequest<?> request,
+			BaseResponse<?> response
 	) {
-		return "beforeHandler";
+		IcpLoggerUtil.info(getClass(), "客户端信息：" + storage.getUserAgentInfo().toJson());
+		return null;
 	}
 
 	@Override
 	public void afterHandler(
-			Object logEntity,
-			long requestTime,
 			BaseRequest<?> request,
-			int responseStatus,
-			byte[] responseBytes,
-			Exception ex
+			BaseResponse<?> response,
+			Object logEntity
 	) {
-		System.out.println(logEntity);
+		IcpLoggerUtil.info(getClass(), "本次请求总时间：" + storage.getRequestTime().toString());
 	}
 }

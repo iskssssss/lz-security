@@ -1,21 +1,18 @@
 package com.sowell.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
-import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.base.BaseFilterErrorHandler;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.enums.RCode;
-import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.utils.ByteUtil;
+import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -25,16 +22,7 @@ import java.util.Optional;
  * @Date: 2021/08/02 09:31
  */
 public class FilterDataHandler {
-
-	private BaseFilterLogHandler filterLogHandler;
 	private BaseFilterErrorHandler<?> filterErrorHandler;
-
-	public BaseFilterLogHandler getFilterLogHandler() {
-		if (this.filterLogHandler == null) {
-			this.filterLogHandler = IcpManager.getFilterLogHandler();
-		}
-		return this.filterLogHandler;
-	}
 
 	public BaseFilterErrorHandler<?> getFilterErrorHandler() {
 		if (this.filterErrorHandler == null) {
@@ -54,7 +42,6 @@ public class FilterDataHandler {
 			if (ex != null) {
 				errorBytes = errorHandler(request, response, ex);
 			}
-			this.handlerAfterLog(request, response, errorBytes, ex);
 			if (ex != null && errorBytes != null) {
 				responseBytes = errorBytes;
 			}
@@ -67,31 +54,6 @@ public class FilterDataHandler {
 				ServletUtil.printResponse(response, responseBytes);
 			}
 		}
-	}
-
-	private void handlerAfterLog(
-			BaseRequest<?> request,
-			BaseResponse<?> response,
-			byte[] errorBytes,
-			Exception ex
-	) {
-		byte[] responseDataBytes = null;
-		if (errorBytes == null) {
-			responseDataBytes = response.getResponseDataBytes();
-		}
-		final Object logEntity = request.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY);
-		final Optional<Long> timeOptional = Optional.ofNullable(request.getAttribute(IcpConstant.REQUEST_TIME_CACHE_KEY, Long.class));
-		if (logEntity == null) {
-			return;
-		}
-		this.getFilterLogHandler().afterHandler(
-				logEntity,
-				System.currentTimeMillis() - timeOptional.orElse(System.currentTimeMillis()),
-				request,
-				response.getStatus(),
-				responseDataBytes,
-				ex
-		);
 	}
 
 	private byte[] errorHandler(

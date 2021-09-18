@@ -1,5 +1,6 @@
 package com.sowell.security.filter;
 
+import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
 import com.sowell.security.auth.AbstractLogoutHandler;
 import com.sowell.security.auth.impl.AuthorizationHandler;
@@ -8,6 +9,7 @@ import com.sowell.security.context.IcpSpringContextHolder;
 import com.sowell.security.enums.HttpStatus;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.handler.FilterDataHandler;
+import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
 import com.sowell.security.wrapper.HttpServletResponseWrapper;
@@ -15,6 +17,7 @@ import com.sowell.security.wrapper.HttpServletResponseWrapper;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -76,6 +79,11 @@ public abstract class BaseFilter implements Filter {
 							ex = exception;
 						} finally {
 							this.getFilterDataHandler().handler(swRequest, swResponse, responseBytes, ex);
+							final Optional<Object> logEntityOptional = Optional.ofNullable(swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY));
+							if (logEntityOptional.isPresent()) {
+								BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
+								filterLogHandler.afterHandler(swRequest, swResponse, logEntityOptional.get());
+							}
 							this.filterAfterHandler.run();
 						}
 					}

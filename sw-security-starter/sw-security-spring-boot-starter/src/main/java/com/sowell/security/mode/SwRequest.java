@@ -102,6 +102,11 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 		}
 	}
 
+	@Override
+	public String getRemoteAddr() {
+		return getRequest().getRemoteAddr();
+	}
+
 	public Method getControllerMethod() {
 		return IcpManager.getMethodByInterfaceUrl(getRequestPath());
 	}

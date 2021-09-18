@@ -1,6 +1,10 @@
 package com.sowell.security.context.model;
 
+import com.sowell.security.model.UserAgentInfo;
 import com.sowell.security.utils.BeanUtil;
+import com.sowell.security.utils.IpUtil;
+import com.sowell.security.utils.StringUtil;
+import com.sowell.security.utils.UserAgentUtil;
 
 import java.io.Closeable;
 
@@ -13,23 +17,39 @@ import java.io.Closeable;
  */
 public abstract class IcpStorage<T> implements Closeable {
 
+	protected Long startRequestTime;
 	protected BaseRequest<T> request;
+	protected UserAgentInfo userAgentInfo = null;
 
 	protected IcpStorage(BaseRequest<T> request) {
+		this.startRequestTime = System.currentTimeMillis();
 		this.request = request;
 	}
 
-	void setAttribute(String key, Object value) {
+	public UserAgentInfo getUserAgentInfo() {
+		if (this.userAgentInfo == null) {
+			String ua = request.getHeader("User-Agent");
+			if (StringUtil.isEmpty(ua)) {
+				return null;
+			}
+			this.userAgentInfo = UserAgentUtil.getUserAgentInfo(ua);
+			String clientIp = IpUtil.getIp(request);
+			userAgentInfo.setIpAddr(clientIp);
+		}
+		return this.userAgentInfo;
+	}
+
+	public final void setAttribute(String key, Object value) {
 		request.setAttribute(key, value);
 	}
 
-	<T> T getAttribute(String key, Class<T> tClass) {
+	public final <AttributeType> AttributeType getAttribute(String key, Class<AttributeType> tClass) {
 		final Object attribute = request.getAttribute(key);
 		if (attribute == null) {
 			return null;
 		}
 		try {
-			return (T) attribute;
+			return (AttributeType) attribute;
 		} catch (Exception e) {
 			if (attribute instanceof CharSequence) {
 				return BeanUtil.toBean(attribute.toString(), tClass);
@@ -38,7 +58,15 @@ public abstract class IcpStorage<T> implements Closeable {
 		return null;
 	}
 
-	public Object getAttribute(String key) {
+	public final Object getAttribute(String key) {
 		return request.getAttribute(key);
+	}
+
+	public Long getRequestTime() {
+		return System.currentTimeMillis() - startRequestTime;
+	}
+
+	public final Long getStartRequestTime() {
+		return startRequestTime;
 	}
 }

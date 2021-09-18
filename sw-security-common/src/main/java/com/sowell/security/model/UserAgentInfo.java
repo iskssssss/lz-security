@@ -7,7 +7,7 @@ package com.sowell.security.model;
  * @Author: 孔胜
  * @Date: 2021/09/10 14:19
  */
-public class UserAgentInfo {
+public class UserAgentInfo extends BaseModel {
 	/**
 	 * ua
 	 */

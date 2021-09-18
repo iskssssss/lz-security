@@ -60,4 +60,6 @@ public abstract class BaseRequest<T> {
 	}
 
 	public abstract byte[] getBodyBytes();
+
+	public abstract String getRemoteAddr();
 }

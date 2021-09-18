@@ -1,9 +1,6 @@
 package com.sowell.security.context;
 
 import com.sowell.security.mode.SwRequest;
-import com.sowell.security.model.UserAgentInfo;
-import com.sowell.security.utils.StringUtil;
-import com.sowell.security.utils.UserAgentUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -17,41 +14,16 @@ import java.io.IOException;
  */
 public class IcpStorage extends com.sowell.security.context.model.IcpStorage<HttpServletRequest> {
 
-	private String requestUrl;
-
-	private UserAgentInfo userAgentInfo = null;
-
 	public IcpStorage(
-			HttpServletRequest request
+			SwRequest request
 	) {
-		super(new SwRequest(request));
-	}
-
-	public UserAgentInfo getUserAgentInfo() {
-		if (this.userAgentInfo == null) {
-			synchronized (IcpStorage.class) {
-				if (this.userAgentInfo == null) {
-					String ua = super.request.getHeader("User-Agent");
-					if (StringUtil.isEmpty(ua)) {
-						return null;
-					}
-					this.userAgentInfo = UserAgentUtil.getUserAgentInfo(ua);
-					//String clientIp = ServletUtil.getClientIP(super.request);
-					//userAgentInfo.setIpAddr(clientIp);
-				}
-			}
-		}
-		return this.userAgentInfo;
-	}
-
-	public String getRequestUrl() {
-		return this.requestUrl;
+		super(request);
 	}
 
 	@Override
 	public void close() throws IOException {
 		super.request = null;
-		this.requestUrl = null;
-		this.userAgentInfo = null;
+		super.startRequestTime = null;
+		super.userAgentInfo = null;
 	}
 }

@@ -1,6 +1,5 @@
 package com.sowell.security.context;
 
-import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.context.model.IcpStorage;

@@ -6,8 +6,8 @@ import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sowell.security.log.IcpLogger;
+import com.sowell.security.log.IcpLoggerUtil;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * @Date: 2021/09/16 16:11
  */
 public class AnonymousFilter extends AbstractInterfacesFilter {
-	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbstractInterfacesFilter.class);
 
 	private List<String> anonymousUrls = null;
 	private ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
@@ -33,7 +33,7 @@ public class AnonymousFilter extends AbstractInterfacesFilter {
 
 	@Override
 	public void init() {
-		logger.info("anonymous filter init.");
+		icpLogger.info("anonymous filter init.");
 		this.checkAccessAuthStatusHandler = super.filterConfigurer.login().getCheckAccessAuthStatusHandler();
 	}
 
@@ -58,7 +58,7 @@ public class AnonymousFilter extends AbstractInterfacesFilter {
 
 	@Override
 	public void destroy() {
-		logger.info("anonymous filter destroy.");
+		icpLogger.info("anonymous filter destroy.");
 		this.checkAccessAuthStatusHandler = null;
 		this.anonymousUrls = null;
 	}
