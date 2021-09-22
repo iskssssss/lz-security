@@ -1,8 +1,8 @@
 package com.sowell.security.defaults;
 
+import cn.hutool.crypto.SmUtil;
 import com.sowell.security.IcpManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.security.model.AuthDetails;
 import com.sowell.security.token.IAccessTokenHandler;
@@ -28,12 +28,24 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler {
 	}
 
 	@Override
+	public <T extends AuthDetails<T>> String generateAccessToken(T authDetails) {
+		String accessToken = getAccessToken();
+		if (cacheManager.existKey(accessToken)) {
+			return getAccessToken();
+		}
+		cacheManager.remove(accessToken);
+		accessToken = SmUtil.sm3(authDetails.toJson());
+		cacheManager.put(accessToken, authDetails);
+		return accessToken;
+	}
+
+	@Override
 	public <T extends AuthDetails<T>> T getAuthDetails(String accessToken) {
 		final Object authDetails = this.cacheManager.get(accessToken);
 		if (authDetails instanceof AuthDetails) {
 			return (T) authDetails;
 		}
-		throw new AccountNotExistException(RCode.TOKEN_EXPIRE);
+		throw new AccountNotExistException();
 	}
 
 	@Override
@@ -46,12 +58,12 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler {
 	/**
 	 *
 	 if (accessToken == null) {
-	 throw new AccountNotExistException(RCode.TOKEN_EXPIRE);
+	 throw new AccountNotExistException();
 	 }
 	 final JSONObject jsonObject = JSONObject.parseObject(accessToken);
 	 final String sourceClassName = ((String) jsonObject.get("sourceClassName"));
 	 if (sourceClassName == null) {
-	 throw new AccountNotExistException(RCode.AppIdNotExist);
+	 throw new AccountNotExistException();
 	 }
 	 final Class<?> aClass = JwtUtil.forName(sourceClassName);
 	 return (AuthDetails<?>) BeanUtil.toBean(jsonObject, aClass);

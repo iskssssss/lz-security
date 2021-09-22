@@ -3,7 +3,6 @@ package com.sowell.security.context;
 import com.sowell.security.IcpManager;
 import com.sowell.security.annotation.RecordRequestData;
 import com.sowell.security.annotation.RecordResponseData;
-import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
@@ -31,15 +30,17 @@ import java.lang.reflect.Method;
 public class IcpSpringContextHolder {
 
 	public static void setContext(
-			HttpServletRequest request,
-			HttpServletResponse response
+			ServletRequest request,
+			ServletResponse response,
+			long startRequestTime
 	) {
-		IcpSpringContextHolder.setContext(request, response, null);
+		IcpSpringContextHolder.setContext(request, response, startRequestTime, null);
 	}
 
 	public static void setContext(
 			ServletRequest request,
 			ServletResponse response,
+			long startRequestTime,
 			IcpFilterFunction<SwRequest, SwResponse> function
 	) {
 		try {
@@ -50,7 +51,7 @@ public class IcpSpringContextHolder {
 			SwRequest swRequest = handlerRequest(method, httpServletRequest);
 			SwResponse swResponse = handlerResponse(method, httpServletResponse);
 
-			IcpSpringContextHolder.setContext(swRequest, swResponse);
+			IcpSpringContextHolder.setContext(swRequest, swResponse, startRequestTime);
 			if (function == null) {
 				return;
 			}
@@ -64,12 +65,13 @@ public class IcpSpringContextHolder {
 
 	public static void setContext(
 			SwRequest request,
-			SwResponse response
+			SwResponse response,
+			long startRequestTime
 	) {
 		IcpSecurityContextThreadLocal.setBox(
 				request,
 				response,
-				new IcpStorage(request)
+				new IcpStorage(request, startRequestTime)
 		);
 	}
 

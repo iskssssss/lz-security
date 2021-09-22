@@ -10,13 +10,17 @@ import com.sowell.security.enums.HttpStatus;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.handler.FilterDataHandler;
 import com.sowell.security.log.BaseFilterLogHandler;
+import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
+import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.wrapper.HttpServletResponseWrapper;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,6 +45,8 @@ public abstract class BaseFilter implements Filter {
 	 */
 	protected AbstractLogoutHandler abstractLogoutHandler;
 
+	private List<String> excludeUrls = null;
+
 	protected FilterConfigurer.FilterUrl filterUrl;
 
 	protected FilterDataHandler getFilterDataHandler() {
@@ -50,10 +56,16 @@ public abstract class BaseFilter implements Filter {
 		return this.filterDataHandler;
 	}
 
-	public abstract void doFilter(
+	private List<String> excludeUrls() {
+		if (this.excludeUrls == null) {
+			this.excludeUrls = IcpManager.getFilterConfigurer().filterUrl().excludeUrls;
+		}
+		return this.excludeUrls;
+	}
+
+	public abstract boolean doFilter(
 			SwRequest swRequest,
-			SwResponse swResponse,
-			FilterChain chain
+			SwResponse swResponse
 	) throws Exception;
 
 	@Override
@@ -61,38 +73,58 @@ public abstract class BaseFilter implements Filter {
 			ServletRequest request,
 			ServletResponse response,
 			FilterChain chain
-	) throws IOException, ServletException {
-		request.setCharacterEncoding("utf-8");
+	) {
+		SwRequest swRequest;
+		SwResponse swResponse = null;
 		try {
-			IcpSpringContextHolder.setContext(request, response, (swRequest, swResponse) -> {
-						this.filterBeforeHandler.run();
-						Exception ex = null;
-						byte[] responseBytes = null;
-						try {
-							final HttpServletResponse responseResponse = swResponse.getResponse();
-							//过滤
-							this.doFilter(swRequest, swResponse, chain);
-							if (responseResponse instanceof HttpServletResponseWrapper) {
-								responseBytes = ((HttpServletResponseWrapper) response).toByteArray();
-							}
-						} catch (Exception exception) {
-							ex = exception;
-						} finally {
-							this.getFilterDataHandler().handler(swRequest, swResponse, responseBytes, ex);
-							final Optional<Object> logEntityOptional = Optional.ofNullable(swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY));
-							if (logEntityOptional.isPresent()) {
-								BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
-								filterLogHandler.afterHandler(swRequest, swResponse, logEntityOptional.get());
-							}
-							this.filterAfterHandler.run();
-						}
+			IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis());
+			swRequest = IcpSpringContextHolder.getRequest();
+			swResponse = IcpSpringContextHolder.getResponse();
+			Exception ex = null;
+			try {
+				boolean filterResult = false;
+				final List<String> excludeUrls = excludeUrls();
+				for (String excludeUrl : excludeUrls) {
+					final String securityInterface = excludeUrl.replace(" ", "");
+					if (swRequest.isPath(securityInterface)) {
+						filterResult = true;
+						break;
 					}
-			);
-		} catch (Exception e) {
-			if (e instanceof SecurityException) {
-				throw e;
+				}
+				if (!filterResult) {
+					this.filterBeforeHandler.run();
+					filterResult = this.doFilter(swRequest, swResponse);
+					this.filterAfterHandler.run();
+				}
+				if (filterResult) {
+					chain.doFilter(request, response);
+				}
+			} catch (Exception exception) {
+				ex = exception;
+			} finally {
+				if (!this.getFilterDataHandler().handler(swRequest, swResponse, ex)) {
+					if (swResponse.getResponse() instanceof HttpServletResponseWrapper) {
+						final byte[] responseDataBytes = swResponse.getResponseDataBytes();
+						swResponse.print(responseDataBytes);
+					}
+				}
+				final Optional<Object> logEntityOptional = Optional.ofNullable(swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY));
+				if (logEntityOptional.isPresent()) {
+					BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
+					filterLogHandler.afterHandler(swRequest, swResponse, logEntityOptional.get());
+				}
 			}
-			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
+		} catch (Exception e) {
+			SecurityException securityException;
+			if (e instanceof SecurityException) {
+				securityException = (SecurityException) e;
+			} else {
+				securityException = new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
+			}
+			ServletUtil.printResponse(swResponse, securityException);
+			IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+		} finally {
+			IcpSpringContextHolder.removeContext();
 		}
 	}
 }

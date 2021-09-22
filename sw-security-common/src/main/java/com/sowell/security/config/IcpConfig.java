@@ -31,7 +31,7 @@ public class IcpConfig {
 	/**
 	 * AccessToken 相关信息
 	 */
-	private Token accessToken;
+	private AccessTokenConfig accessAccessTokenConfig;
 	/**
 	 * 接口方法扫描位置
 	 */
@@ -43,8 +43,8 @@ public class IcpConfig {
 	public void setHeaderName(String headerName) {
 		this.headerName = headerName;
 	}
-	public void setAccessToken(Token accessToken) {
-		this.accessToken = accessToken;
+	public void setAccessTokenConfig(AccessTokenConfig accessAccessTokenConfig) {
+		this.accessAccessTokenConfig = accessAccessTokenConfig;
 	}
 	public void setControllerMethodScanPathList(String controllerMethodScanPathList) {
 		this.controllerMethodScanPathList = controllerMethodScanPathList;
@@ -56,10 +56,10 @@ public class IcpConfig {
 	public String getHeaderName() {
 		return headerName;
 	}
-	public Token getAccessToken() {
-		return accessToken;
+	public AccessTokenConfig getAccessTokenConfig() {
+		return accessAccessTokenConfig;
 	}
-	public Set<String> getControllerMethodScanPathSet() {
+	public Set<String> getControllerMethodScanPathList() {
 		final String controllerMethodScanPath = this.controllerMethodScanPathList;
 		if (StringUtil.isEmpty(controllerMethodScanPath)) {
 			return Collections.emptySet();
@@ -71,49 +71,17 @@ public class IcpConfig {
 		}
 		return Arrays.stream(cmsplSplit).filter(StringUtil::isNotEmpty).collect(Collectors.toSet());
 	}
-	public String getAccessTokenType() {
-		if (this.accessToken == null || StringUtil.isEmpty(this.accessToken.accessTokenType)) {
-			return IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID;
-		}
-		return this.accessToken.accessTokenType.toUpperCase(Locale.ROOT);
-	}
-
-	/**
-	 * 获取过期时间（秒）
-	 *
-	 * @return 过期时间（秒）
-	 */
-	public long getTimeout() {
-		if (this.accessToken == null) {
-			return DEFAULT_TIMEOUT;
-		}
-		final Long timeout = this.accessToken.timeout;
-		if (timeout == null) {
-			return DEFAULT_TIMEOUT;
-		}
-		return timeout.intValue();
-	}
-
-	/**
-	 * 获取过期时间（毫秒）
-	 *
-	 * @return 过期时间（毫秒）
-	 */
-	public long getTimeoutForMillis() {
-		final long timeout = getTimeout();
-		return TimeUnit.SECONDS.toMillis(timeout);
-	}
 
 	@Override
 	public String toString() {
 		return " 配置信息：" +
 				"\n     头名称：" + headerName +
-				"\n     token配置信息：" + accessToken +
+				"\n     token配置信息：" + accessAccessTokenConfig +
 				"\n     扫描位置：'" + controllerMethodScanPathList + '\'' +
 				'}';
 	}
 
-	static class Token {
+	public static class AccessTokenConfig {
 		/**
 		 * AccessToken类型（uuid, jwt）
 		 */
@@ -126,9 +94,38 @@ public class IcpConfig {
 		public void setAccessTokenType(String accessTokenType) {
 			this.accessTokenType = accessTokenType;
 		}
-
 		public void setTimeout(Long timeout) {
 			this.timeout = timeout;
+		}
+
+		public String getAccessTokenType() {
+			if (StringUtil.isEmpty(this.accessTokenType)) {
+				return IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID;
+			}
+			return this.accessTokenType.toUpperCase(Locale.ROOT);
+		}
+
+		/**
+		 * 获取过期时间（秒）
+		 *
+		 * @return 过期时间（秒）
+		 */
+		public long getTimeout() {
+			final Long timeout = this.timeout;
+			if (timeout == null) {
+				return DEFAULT_TIMEOUT;
+			}
+			return timeout.intValue();
+		}
+
+		/**
+		 * 获取过期时间（毫秒）
+		 *
+		 * @return 过期时间（毫秒）
+		 */
+		public long getTimeoutForMillis() {
+			final long timeout = getTimeout();
+			return TimeUnit.SECONDS.toMillis(timeout);
 		}
 	}
 }

@@ -15,10 +15,12 @@ import com.sowell.security.config.IcpConfig;
  */
 public class DefaultCacheManager implements BaseCacheManager {
 	private final CacheManager<String, Object> cacheManager;
-	private final IcpConfig icpConfig;
+	private final long timeoutMillis;
 
 	public DefaultCacheManager() {
-		this.icpConfig = IcpManager.getIcpConfig();
+		IcpConfig icpConfig = IcpManager.getIcpConfig();
+		IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
+		timeoutMillis = accessAccessTokenConfig.getTimeoutForMillis();
 		this.cacheManager = CacheUtil.newCacheManager();
 		this.cacheManager.schedulePrune(5);
 	}
@@ -26,7 +28,7 @@ public class DefaultCacheManager implements BaseCacheManager {
 	@Override
 	public boolean put(String key, Object value) {
 		try {
-			this.put(key, value, icpConfig.getTimeoutForMillis());
+			this.put(key, value, timeoutMillis);
 			return true;
 		} catch (Exception e) {
 			return false;

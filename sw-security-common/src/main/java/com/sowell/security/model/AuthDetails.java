@@ -1,5 +1,7 @@
 package com.sowell.security.model;
 
+import com.sowell.security.enums.HttpStatus;
+import com.sowell.security.exception.SecurityException;
 import com.sowell.security.utils.JsonUtil;
 
 import java.io.Serializable;
@@ -35,7 +37,7 @@ public abstract class AuthDetails<T> implements Serializable {
 	public AuthDetails() {
 		final Class<T> setSourceClass = this.setSourceClass();
 		if (setSourceClass == null) {
-			throw new RuntimeException("请在“setSourceClass()”方法中返回源类。");
+			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "请在“setSourceClass()”方法中返回源类。");
 		}
 		this.sourceClassName = setSourceClass.getName();
 	}

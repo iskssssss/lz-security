@@ -5,7 +5,7 @@ import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.enums.RCode;
-import com.sowell.security.exception.AccountNotExistException;
+import com.sowell.security.exception.SecurityException;
 import com.sowell.security.model.AuthDetails;
 import com.sowell.security.utils.StringUtil;
 
@@ -18,21 +18,51 @@ import com.sowell.security.utils.StringUtil;
  */
 public interface IAccessTokenHandler {
 
+	/**
+	 * 生成AccessToken
+	 *
+	 * @param authDetails 认证信息
+	 * @param <T>         类型
+	 * @return AccessToken
+	 */
+	<T extends AuthDetails<T>> String generateAccessToken(T authDetails);
+
+	/**
+	 * 获取获取客户端的AccessToken
+	 *
+	 * @return AccessToken
+	 */
 	default String getAccessToken() {
 		final BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
 		final IcpConfig icpConfig = IcpManager.getIcpConfig();
 		final String headerName = icpConfig.getHeaderName();
 		final String accessToken = servletRequest.getHeader(headerName);
-		if (StringUtil.isEmpty(accessToken)) {
-			throw new AccountNotExistException(RCode.NOT_Authorization);
-		}
 		return accessToken;
 	}
 
+	/**
+	 * 获取认证信息
+	 *
+	 * @param accessToken AccessToken
+	 * @param <T>         类型
+	 * @return 认证信息
+	 */
 	<T extends AuthDetails<T>> T getAuthDetails(String accessToken);
 
+	/**
+	 * 获取认证信息
+	 *
+	 * @param <T> 类型
+	 * @return 认证信息
+	 */
 	<T extends AuthDetails<T>> T getAuthDetails();
 
+	/**
+	 * 设置认证信息
+	 *
+	 * @param authDetails 认证信息
+	 * @param <T>         类型
+	 */
 	<T extends AuthDetails<T>> void setAuthDetails(T authDetails);
 
 }

@@ -18,6 +18,10 @@ public final class SecurityUtil {
 		ACCESS_TOKEN_HANDLER = IcpManager.getAccessTokenHandler();
 	}
 
+	public static <T extends AuthDetails<T>> String generateAccessToken(T t) {
+		return ACCESS_TOKEN_HANDLER.generateAccessToken(t);
+	}
+
 	public static String getAccessToken() {
 		return ACCESS_TOKEN_HANDLER.getAccessToken();
 	}

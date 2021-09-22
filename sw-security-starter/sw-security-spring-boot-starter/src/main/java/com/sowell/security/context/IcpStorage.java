@@ -15,15 +15,15 @@ import java.io.IOException;
 public class IcpStorage extends com.sowell.security.context.model.IcpStorage<HttpServletRequest> {
 
 	public IcpStorage(
-			SwRequest request
+			SwRequest request,
+			long startRequestTime
 	) {
-		super(request);
+		super(request, startRequestTime);
 	}
 
 	@Override
 	public void close() throws IOException {
 		super.request = null;
-		super.startRequestTime = null;
 		super.userAgentInfo = null;
 	}
 }

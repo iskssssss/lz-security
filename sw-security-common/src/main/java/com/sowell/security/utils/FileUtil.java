@@ -1,5 +1,8 @@
 package com.sowell.security.utils;
 
+import com.sowell.security.enums.HttpStatus;
+import com.sowell.security.exception.SecurityException;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +73,7 @@ public final class FileUtil extends cn.hutool.core.io.FileUtil {
         ) {
             return FileUtil.writeFileForResponse(outputStream, inputStream);
         } catch (IOException ioException) {
-            throw new RuntimeException("，文件写入失败", ioException);
+            throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "，文件写入失败", ioException);
         }
     }
 
@@ -99,7 +102,7 @@ public final class FileUtil extends cn.hutool.core.io.FileUtil {
             }
             return outputStream;
         } catch (IOException ioException) {
-            throw new RuntimeException("，文件写入失败", ioException);
+            throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "，文件写入失败", ioException);
         }
     }
 }

@@ -17,13 +17,16 @@ import java.io.Closeable;
  */
 public abstract class IcpStorage<T> implements Closeable {
 
-	protected Long startRequestTime;
+	protected final long startRequestTime;
 	protected BaseRequest<T> request;
 	protected UserAgentInfo userAgentInfo = null;
 
-	protected IcpStorage(BaseRequest<T> request) {
-		this.startRequestTime = System.currentTimeMillis();
+	protected IcpStorage(
+			BaseRequest<T> request,
+			long startRequestTime
+	) {
 		this.request = request;
+		this.startRequestTime = startRequestTime;
 	}
 
 	public UserAgentInfo getUserAgentInfo() {

@@ -31,27 +31,23 @@ public class FilterDataHandler {
 		return this.filterErrorHandler;
 	}
 
-	public byte[] handler(
+	public boolean handler(
 			BaseRequest<?> request,
 			BaseResponse<?> response,
-			byte[] responseBytes,
 			Exception ex
 	) {
+		byte[] errorBytes = null;
 		try {
-			byte[] errorBytes = null;
 			if (ex != null) {
 				errorBytes = errorHandler(request, response, ex);
 			}
-			if (ex != null && errorBytes != null) {
-				responseBytes = errorBytes;
-			}
-			return errorBytes;
+			return errorBytes != null;
 		} catch (Exception exception) {
 			ServletUtil.printResponse(response, RCode.UNKNOWN_MISTAKE);
-			return null;
+			return true;
 		} finally {
-			if (responseBytes != null) {
-				ServletUtil.printResponse(response, responseBytes);
+			if (errorBytes != null) {
+				ServletUtil.printResponse(response, errorBytes);
 			}
 		}
 	}

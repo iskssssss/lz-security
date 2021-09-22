@@ -27,16 +27,10 @@ public class IcpLogger {
 	}
 
 	public void error(String format, Object... params) {
-		if (consoleLogPrint()) {
-			return;
-		}
 		logger.error(format, params);
 	}
 
 	public void error(String message, Throwable t) {
-		if (consoleLogPrint()) {
-			return;
-		}
 		logger.error(message, t);
 	}
 
@@ -48,9 +42,6 @@ public class IcpLogger {
 	}
 
 	public void warn(String format, Object... params) {
-		if (consoleLogPrint()) {
-			return;
-		}
 		logger.warn(format, params);
 	}
 

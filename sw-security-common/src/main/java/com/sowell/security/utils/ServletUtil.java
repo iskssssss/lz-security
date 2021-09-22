@@ -3,6 +3,7 @@ package com.sowell.security.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.enums.RCode;
+import com.sowell.security.exception.SecurityException;
 
 import java.nio.charset.StandardCharsets;
 
@@ -26,6 +27,23 @@ public final class ServletUtil {
         resultJson.put("code", rCode.getCode());
         resultJson.put("data", null);
         resultJson.put("message", rCode.getMessage());
+        final String json = resultJson.toJSONString();
+        final byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
+        printResponse(response, jsonBytes);
+    }
+
+    /**
+     * 发送信息至客户端
+     */
+    public static <ResponseType> void printResponse(
+            BaseResponse<ResponseType> response,
+            SecurityException securityException
+    ) {
+        JSONObject resultJson = new JSONObject();
+        final Object responseData = securityException.getResponseData();
+        resultJson.put("code", securityException.getCode());
+        resultJson.put("data", responseData == null ? null : JsonUtil.toJsonObject(responseData));
+        resultJson.put("message", securityException.getMessage());
         final String json = resultJson.toJSONString();
         final byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
         printResponse(response, jsonBytes);

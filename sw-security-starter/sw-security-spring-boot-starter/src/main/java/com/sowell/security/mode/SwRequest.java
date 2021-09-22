@@ -12,6 +12,7 @@ import com.sowell.security.utils.IoUtil;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -28,6 +29,11 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 
 	public SwRequest(HttpServletRequest request) {
 		super(request);
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new SecurityException(RCode.UNSUPPORTED_ENCODING_EXCEPTION);
+		}
 	}
 
 	@Override

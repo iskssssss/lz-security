@@ -3,6 +3,7 @@ package com.sowell.security.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sowell.security.fun.SFunction;
+import com.sowell.security.model.AuthDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -23,9 +24,9 @@ import java.util.*;
  */
 @SuppressWarnings("unchecked")
 public final class JwtUtil {
-	private static final String SOURCE_CLASS_KEY = "SOURCE_CLASS_TYPE";
 	private static final String KEY = "756e3f5b251448f4a0f0dd6e9cb08794";
 	private static final byte[] KEY_BYTE_LIST = KEY.getBytes(StandardCharsets.UTF_8);
+	private static final String SOURCE_CLASS_KEY = "sourceClassName";
 
 	/**
 	 * 生成Token
@@ -35,14 +36,9 @@ public final class JwtUtil {
 	 * @param <T>        存储对象 类型
 	 * @return Token
 	 */
-	public static <T> String generateToken(
-			T t,
-			Class<T> tClass,
-			int expiration
-	) {
+	public static <T extends AuthDetails<T>> String generateToken(T t, int expiration) {
 		final String jsonStr = JSONObject.toJSONString(t);
 		final Map<String, Object> map = JSONObject.parseObject(jsonStr, Map.class);
-		map.put(SOURCE_CLASS_KEY, tClass);
 		Date createdTime = new Date();
 		SecretKey key = Keys.hmacShaKeyFor(KEY_BYTE_LIST);
 		final JwtBuilder jwtBuilder = Jwts.builder().setClaims(map).setIssuedAt(createdTime).signWith(key);
@@ -63,11 +59,8 @@ public final class JwtUtil {
 	 * @param <T> 存储对象 类型
 	 * @return Token
 	 */
-	public static <T> String generateToken(
-			T t,
-			Class<T> tClass
-	) {
-		return generateToken(t, tClass, -1);
+	public static <T extends AuthDetails<T>> String generateToken(T t) {
+		return generateToken(t, -1);
 	}
 
 	/**
@@ -78,7 +71,7 @@ public final class JwtUtil {
 	 * @param <T>    目标类
 	 * @return T
 	 */
-	public static <T> T toBean(
+	public static <T extends AuthDetails<T>> T toBean(
 			String token,
 			Class<T> tClass
 	) {
@@ -97,7 +90,7 @@ public final class JwtUtil {
 	 * @param <T>   目标类
 	 * @return T
 	 */
-	public static <T> T toBean(
+	public static <T extends AuthDetails<T>> T toBean(
 			String token
 	) {
 		Optional<Claims> claimsOptional = Optional.ofNullable(toClaims(token));
@@ -158,7 +151,7 @@ public final class JwtUtil {
 	 * @param <K>       值类型
 	 * @return 值
 	 */
-	public static <T, K> K getValue(
+	public static <T extends AuthDetails<T>, K> K getValue(
 			String token,
 			SFunction<T, K> sFunction
 	) {
@@ -201,7 +194,7 @@ public final class JwtUtil {
 	 * @param <T>      类型
 	 * @return SerializedLambda
 	 */
-	private static <T> SerializedLambda toSerializedLambda(
+	private static <T extends AuthDetails<T>> SerializedLambda toSerializedLambda(
 			SFunction<T, ?> function
 	) {
 		try {

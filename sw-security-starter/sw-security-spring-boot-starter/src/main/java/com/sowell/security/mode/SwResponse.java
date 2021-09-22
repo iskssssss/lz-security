@@ -57,6 +57,8 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 		if (off < 0 || off > length || len < 0 || len > length) {
 			return;
 		}
+		getResponse().resetBuffer();
+		getResponse().setContentLength(len);
 		try (ServletOutputStream outputStream = getResponse().getOutputStream()) {
 			outputStream.write(bytes, off, len);
 		} catch (IOException ioException) {

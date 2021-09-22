@@ -8,7 +8,6 @@ import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
 import com.sowell.security.router.IcpRouter;
 
-import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ import java.util.List;
  * @Author: 孔胜
  * @Date: 2021/09/10 15:25
  */
-public class IcpServletFilter extends BaseFilter {
+public final class IcpServletFilter extends BaseFilter {
 
 	@Override
 	public void init(
@@ -40,19 +39,14 @@ public class IcpServletFilter extends BaseFilter {
 	}
 
 	@Override
-	public void doFilter(
+	public boolean doFilter(
 			SwRequest swRequest,
-			SwResponse swResponse,
-			FilterChain chain
+			SwResponse swResponse
 	) throws Exception {
 		final HttpServletRequest request = swRequest.getRequest();
 		final HttpServletResponse response = swResponse.getResponse();
 
-		final boolean filterResult = IcpRouter.filter();
-		if (!filterResult) {
-			return;
-		}
-		chain.doFilter(request, response);
+		return IcpRouter.filter();
 	}
 
 	@Override

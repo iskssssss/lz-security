@@ -35,7 +35,7 @@ public class BeanRegister {
 	@DependsOn({"registerIcpConfig", "registerSpringUtil"})
 	public Map<String, Method> registerInterfacesMethodMap() {
 		final IcpConfig icpConfig = SpringUtil.getBean(IcpConfig.class);
-		final Set<String> methodScanPath = icpConfig.getControllerMethodScanPathSet();
+		final Set<String> methodScanPath = icpConfig.getControllerMethodScanPathList();
 		return SpringUtil.initControllerMethodMap(methodScanPath);
 	}
 }

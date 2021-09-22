@@ -1,5 +1,7 @@
 package com.sowell.security.exception;
 
+import com.sowell.security.enums.RCode;
+
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
  * @ClassName:
@@ -11,6 +13,14 @@ public class SecurityException extends RuntimeException {
 
     private final Integer code;
     private Object responseData;
+
+    public SecurityException(RCode rCode) {
+        this(rCode, null);
+    }
+
+    public SecurityException(RCode rCode, Throwable cause) {
+        this(rCode.getCode(), rCode.getMessage(), cause);
+    }
 
     public SecurityException(Integer code, String message) {
         this(code, message, null);

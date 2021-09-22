@@ -19,27 +19,27 @@ public class IcpLoggerUtil {
 	}
 
 	public static void info(Class<?> clazz, String format, Object... params) {
-		final IcpLogger icpLogger = ICP_LOGGER_MAP.get(clazz);
+		final IcpLogger icpLogger = getIcpLogger(clazz);
 		icpLogger.info(format, params);
 	}
 
 	public static void error(Class<?> clazz, String format, Object... params) {
-		final IcpLogger icpLogger = ICP_LOGGER_MAP.get(clazz);
+		final IcpLogger icpLogger = getIcpLogger(clazz);
 		icpLogger.error(format, params);
 	}
 
 	public static void error(Class<?> clazz, String message, Throwable t) {
-		final IcpLogger icpLogger = ICP_LOGGER_MAP.get(clazz);
+		final IcpLogger icpLogger = getIcpLogger(clazz);
 		icpLogger.error(message, t);
 	}
 
 	public static void debug(Class<?> clazz, String format, Object... params) {
-		final IcpLogger icpLogger = ICP_LOGGER_MAP.get(clazz);
+		final IcpLogger icpLogger = getIcpLogger(clazz);
 		icpLogger.debug(format, params);
 	}
 
 	public static void warn(Class<?> clazz, String format, Object... params) {
-		final IcpLogger icpLogger = ICP_LOGGER_MAP.get(clazz);
+		final IcpLogger icpLogger = getIcpLogger(clazz);
 		icpLogger.warn(format, params);
 	}
 }

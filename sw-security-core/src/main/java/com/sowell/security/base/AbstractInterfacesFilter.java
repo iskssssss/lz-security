@@ -104,7 +104,6 @@ public abstract class AbstractInterfacesFilter {
      */
     public final boolean headOff(BaseRequest<?> request) {
         icpLogger.info("拦截接口：" + request.getRequestPath());
-        icpLogger.info("============================== 访问接口过滤结束 ==============================");
         return false;
     }
 
@@ -136,8 +135,6 @@ public abstract class AbstractInterfacesFilter {
      */
     public final boolean discharged(BaseRequest<?> request) {
         icpLogger.info("放行接口：" + request.getRequestPath());
-        icpLogger.info("访问接口过滤结束。");
-        icpLogger.info("============================== 访问接口过滤结束 ==============================");
         return true;
     }
 }
