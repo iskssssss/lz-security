@@ -6,7 +6,6 @@ import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.security.model.AuthDetails;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.security.utils.JwtUtil;
-import com.sowell.security.utils.StringUtil;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -30,26 +29,28 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler {
 
 	@Override
 	public <T extends AuthDetails<T>> String generateAccessToken(T authDetails) {
-		if (StringUtil.isEmpty(authDetails)) {
-			return null;
+		String accessToken = getAccessToken();
+		if (cacheManager.existKey(accessToken)) {
+			return getAccessToken();
 		}
-		return JwtUtil.generateToken(authDetails);
+		cacheManager.remove(accessToken);
+		accessToken = JwtUtil.generateToken(authDetails);
+		cacheManager.put(accessToken, authDetails);
+		return accessToken;
 	}
 
 	@Override
 	public <T extends AuthDetails<T>> T getAuthDetails(String accessToken) {
-		if (accessToken == null) {
-			throw new AccountNotExistException();
+		final Object authDetails = this.cacheManager.get(accessToken);
+		if (authDetails instanceof AuthDetails) {
+			return (T) authDetails;
 		}
-		final T authDetails = JwtUtil.toBean(accessToken);
-		if (authDetails == null) {
-			throw new AccountNotExistException();
-		}
-		return authDetails;
+		throw new AccountNotExistException();
 	}
 
 	@Override
 	public <T extends AuthDetails<T>> void setAuthDetails(T authDetails) {
-		// TODO
+		final String accessToken = getAccessToken();
+		this.cacheManager.put(accessToken, authDetails);
 	}
 }

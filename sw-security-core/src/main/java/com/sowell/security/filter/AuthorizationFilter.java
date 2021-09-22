@@ -1,5 +1,6 @@
 package com.sowell.security.filter;
 
+import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.auth.ICheckAccessAuthStatusHandler;
 import com.sowell.security.base.AbstractInterfacesFilter;
 import com.sowell.security.context.model.BaseRequest;
@@ -8,8 +9,6 @@ import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.log.IcpLogger;
 import com.sowell.security.log.IcpLoggerUtil;
-
-import java.util.List;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -21,10 +20,10 @@ import java.util.List;
 public class AuthorizationFilter extends AbstractInterfacesFilter {
 	protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbstractInterfacesFilter.class);
 
-	private List<String> authorizationUrls = null;
+	private UrlHashSet authorizationUrls = null;
 	private ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
 
-	private List<String> authorizationUrls() {
+	private UrlHashSet authorizationUrls() {
 		if (this.authorizationUrls == null) {
 			this.authorizationUrls = super.filterConfigurer.getAuthorizationUrls();
 		}
@@ -43,15 +42,11 @@ public class AuthorizationFilter extends AbstractInterfacesFilter {
 			BaseResponse<?> response,
 			Object... params
 	) throws SecurityException {
-		final List<String> authorizationUrls = authorizationUrls();
-		for (String authorizationUrl : authorizationUrls) {
-			final String securityInterface = authorizationUrl.replace(" ", "");
-			if (request.isPath(securityInterface)) {
-				if (checkAccessAuthStatusHandler.check(request, response)) {
-					return discharged(request);
-				}
-				return headOff(request, response, RCode.AUTHORIZATION);
+		if (authorizationUrls().containsUrl(request.getRequestPath())) {
+			if (checkAccessAuthStatusHandler.check(request, response)) {
+				return discharged(request);
 			}
+			return headOff(request, response, RCode.AUTHORIZATION);
 		}
 		return next(request, response, params);
 	}

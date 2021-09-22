@@ -67,10 +67,10 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
             final UserDetailsService userDetailsService = filterConfigurer.getUserDetailsService();
             final AuthDetails<?> authDetails = userDetailsService.readUserByUsername((String) usernameValue);
             // 验证用户密码
-            final String password = authDetails.getPassword();
+            final String password = authDetails.getCredential();
             final PasswordEncoder passwordEncoder = filterConfigurer.getPasswordEncoder();
             if (!passwordEncoder.matches((String) passwordValue, password)) {
-                throw new BadCredentialsException(authDetails.getUsername());
+                throw new BadCredentialsException(authDetails.getIdentifier());
             }
             // 验证账号信息
             final AccessStatusHandler accessStatusHandler = filterConfigurer.getAccessStatusHandler();

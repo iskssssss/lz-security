@@ -35,7 +35,7 @@ public class IcpRouter {
 
 	public static void init() {
 		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
-		while (interfacesFilter.hasNext()) {
+		while (interfacesFilter != null) {
 			interfacesFilter.init();
 			interfacesFilter = interfacesFilter.next();
 		}
@@ -43,7 +43,7 @@ public class IcpRouter {
 
 	public static void destroy() {
 		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
-		while (interfacesFilter.hasNext()) {
+		while (interfacesFilter != null) {
 			interfacesFilter.destroy();
 			interfacesFilter = interfacesFilter.next();
 		}

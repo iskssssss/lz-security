@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
  * @Author: 孔胜
  * @Date: 2021/6/21 9:08
  */
-@Import({BeanRegister.class, BeanInject.class})
+@Import({BeanRegister.class})
 public abstract class SecurityConfigurerAdapter {
 
     private FilterRegistrationBean<IcpServletFilter> registration;

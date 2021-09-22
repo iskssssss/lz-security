@@ -37,7 +37,8 @@ public class DefaultFilterLogHandler implements BaseFilterLogHandler {
 	public void afterHandler(
 			BaseRequest<?> request,
 			BaseResponse<?> response,
-			Object logEntity
+			Object logEntity,
+			Exception ex
 	) {
 		IcpLoggerUtil.info(getClass(), "本次请求总时间：" + storage.getRequestTime().toString());
 	}

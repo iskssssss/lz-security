@@ -4,10 +4,7 @@ import com.sowell.security.IcpManager;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.enums.RCode;
-import com.sowell.security.exception.SecurityException;
 import com.sowell.security.model.AuthDetails;
-import com.sowell.security.utils.StringUtil;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -36,8 +33,7 @@ public interface IAccessTokenHandler {
 		final BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
 		final IcpConfig icpConfig = IcpManager.getIcpConfig();
 		final String headerName = icpConfig.getHeaderName();
-		final String accessToken = servletRequest.getHeader(headerName);
-		return accessToken;
+		return servletRequest.getHeader(headerName);
 	}
 
 	/**

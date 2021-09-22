@@ -1,6 +1,7 @@
 package com.sowell.security.enums;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sowell.common.core.web.result.ICode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -15,7 +16,7 @@ import java.lang.reflect.Modifier;
  * @author: sowell
  * @date: 2021年3月30日19:19:02
  */
-public enum RCode {
+public enum RCode implements ICode {
     /**
      * 操作成功
      */
@@ -95,6 +96,7 @@ public enum RCode {
         this.message = message;
     }
 
+    @Override
     public Integer getCode() {
         return code;
     }
@@ -103,6 +105,7 @@ public enum RCode {
         this.code = code;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }

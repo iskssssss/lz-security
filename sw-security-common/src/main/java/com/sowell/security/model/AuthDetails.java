@@ -17,17 +17,13 @@ public abstract class AuthDetails<T> implements Serializable {
 	static final long serialVersionUID = 42L;
 
 	/**
-	 * id
+	 * 标识
 	 */
-	private String id;
+	private String identifier;
 	/**
-	 * 用户名
+	 * 凭据
 	 */
-	private String username;
-	/**
-	 * 密码
-	 */
-	private String password;
+	private String credential;
 
 	/**
 	 * 源类名称
@@ -44,28 +40,20 @@ public abstract class AuthDetails<T> implements Serializable {
 
 	public abstract Class<T> setSourceClass();
 
-	public String getId() {
-		return id;
+	public String getIdentifier() {
+		return identifier;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getCredential() {
+		return credential;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+	public void setCredential(String credential) {
+		this.credential = credential;
 	}
 
 	public String getSourceClassName() {

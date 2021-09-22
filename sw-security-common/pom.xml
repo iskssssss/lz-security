@@ -64,6 +64,29 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15to18</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.sowell.common</groupId>
+            <artifactId>sw-common-core</artifactId>
+            <optional>false</optional>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sowell.common</groupId>
+                    <artifactId>sw-common-orm</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 </project>

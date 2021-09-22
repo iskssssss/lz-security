@@ -12,6 +12,7 @@ import com.sowell.security.service.PasswordEncoder;
 import com.sowell.security.service.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.util.PathMatcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:16
  */
+@Lazy
 public class BeanInject {
 
 	@Autowired

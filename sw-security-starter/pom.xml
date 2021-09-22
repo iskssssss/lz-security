@@ -22,8 +22,6 @@
         <spring-boot.version>2.3.9.RELEASE</spring-boot.version>
         <spring-web.version>5.2.13.RELEASE</spring-web.version>
         <spring-boot-configuration-processor.version>2.3.9.RELEASE</spring-boot-configuration-processor.version>
-
-        <sw-common-core.version>0.0.10</sw-common-core.version>
     </properties>
 
     <dependencyManagement>
@@ -50,12 +48,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
                 <version>${spring-boot-configuration-processor.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.sowell.common</groupId>
-                <artifactId>sw-common-core</artifactId>
-                <version>${sw-common-core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

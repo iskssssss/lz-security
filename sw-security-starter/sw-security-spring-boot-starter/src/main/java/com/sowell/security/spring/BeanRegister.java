@@ -5,6 +5,8 @@ import com.sowell.security.utils.SpringUtil;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -17,20 +19,24 @@ import java.util.Set;
  * @Author: 孔胜
  * @Date: 2021/09/12 13:47
  */
+@Import({BeanInject.class})
 public class BeanRegister {
 
 	@Bean
+	@Primary
 	@ConfigurationProperties("sw.security")
 	public IcpConfig registerIcpConfig() {
 		return new IcpConfig();
 	}
 
 	@Bean
+	@Primary
 	public SpringUtil registerSpringUtil() {
 		return new SpringUtil();
 	}
 
 	@Bean
+	@Primary
 	@DependsOn({"registerIcpConfig", "registerSpringUtil"})
 	public Map<String, Method> registerInterfacesMethodMap() {
 		final IcpConfig icpConfig = SpringUtil.getBean(IcpConfig.class);

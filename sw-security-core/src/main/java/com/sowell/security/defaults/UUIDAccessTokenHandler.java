@@ -53,19 +53,4 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler {
 		final String accessToken = getAccessToken();
 		this.cacheManager.put(accessToken, authDetails);
 	}
-
-
-	/**
-	 *
-	 if (accessToken == null) {
-	 throw new AccountNotExistException();
-	 }
-	 final JSONObject jsonObject = JSONObject.parseObject(accessToken);
-	 final String sourceClassName = ((String) jsonObject.get("sourceClassName"));
-	 if (sourceClassName == null) {
-	 throw new AccountNotExistException();
-	 }
-	 final Class<?> aClass = JwtUtil.forName(sourceClassName);
-	 return (AuthDetails<?>) BeanUtil.toBean(jsonObject, aClass);
-	 */
 }

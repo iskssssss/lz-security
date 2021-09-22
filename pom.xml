@@ -29,16 +29,26 @@
         <hutool.version>5.7.11</hutool.version>
         <bcprov-jdk15to18.version>1.66</bcprov-jdk15to18.version>
 
-        <sw-security-common.version>1.0.31</sw-security-common.version>
-        <sw-security-core.version>1.0.35</sw-security-core.version>
+        <sw-common-core.version>0.0.10</sw-common-core.version>
+
+        <!-- 通用 -->
+        <sw-security-common.version>1.0.39</sw-security-common.version>
+        <!-- 核心 -->
+        <sw-security-core.version>1.0.46</sw-security-core.version>
         <!-- 插件 -->
-        <sw-security-plugins-redis.version>1.0.13</sw-security-plugins-redis.version>
+        <sw-security-plugins-redis.version>1.0.14</sw-security-plugins-redis.version>
         <!-- 启动相关 -->
-        <sw-security-spring-boot-starter.version>1.1.19</sw-security-spring-boot-starter.version>
+        <sw-security-spring-boot-starter.version>1.1.30</sw-security-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.sowell.common</groupId>
+                <artifactId>sw-common-core</artifactId>
+                <version>${sw-common-core.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>

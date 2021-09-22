@@ -1,5 +1,6 @@
 package com.sowell.security.config;
 
+import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.auth.*;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.IcpManager;
@@ -14,9 +15,7 @@ import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.service.PasswordEncoder;
 import com.sowell.security.service.UserDetailsService;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -110,14 +109,17 @@ public final class FilterConfigurer {
     public String getLogoutUrl() {
         return this.filterUrl.logoutUrl;
     }
-    public List<String> getExcludeUrls() {
-        return this.filterUrl.excludeUrls;
+    public UrlHashSet getIncludeUrls() {
+        return this.filterUrl.includeUrlSet;
     }
-    public List<String> getAuthorizationUrls() {
-        return this.filterUrl.authorizationUrls;
+    public UrlHashSet getExcludeUrls() {
+        return this.filterUrl.excludeUrlSet;
     }
-    public List<String> getAnonymousUrls() {
-        return this.filterUrl.anonymousUrls;
+    public UrlHashSet getAuthorizationUrls() {
+        return this.filterUrl.authorizationUrlSet;
+    }
+    public UrlHashSet getAnonymousUrls() {
+        return this.filterUrl.anonymousUrlSet;
     }
 
     public PasswordEncoder getPasswordEncoder() {
@@ -175,29 +177,46 @@ public final class FilterConfigurer {
         private String logoutUrl = "/api/logout/logout.do";
 
         /**
+         * 拦截URL
+         */
+        private final UrlHashSet includeUrlSet = new UrlHashSet();
+        /**
          * 排除URL
          */
-        private final List<String> excludeUrls = new LinkedList<>();
+        private final UrlHashSet excludeUrlSet = new UrlHashSet();
         /**
          * 需认证URL
          */
-        private final List<String> authorizationUrls = new LinkedList<>();
+        private final UrlHashSet authorizationUrlSet = new UrlHashSet();
         /**
          * 只可在匿名状态下访问
          */
-        private final List<String> anonymousUrls = new LinkedList<>();
+        private final UrlHashSet anonymousUrlSet = new UrlHashSet();
 
+        /**
+         * 设置拦截接口
+         *
+         * @param includeUrls 拦截接口列表
+         */
+        public FilterUrl addIncludeUrls(String... includeUrls) {
+            this.includeUrlSet.clear();
+            if (includeUrls == null) {
+                return this;
+            }
+            this.includeUrlSet.addAll(Arrays.asList(includeUrls));
+            return this;
+        }
         /**
          * 设置开放接口
          *
          * @param excludeUrls 开放接口列表
          */
         public FilterUrl addExcludeUrls(String... excludeUrls) {
-            this.excludeUrls.clear();
+            this.excludeUrlSet.clear();
             if (excludeUrls == null) {
                 return this;
             }
-            this.excludeUrls.addAll(Arrays.asList(excludeUrls));
+            this.excludeUrlSet.addAll(Arrays.asList(excludeUrls));
             return this;
         }
         /**
@@ -206,11 +225,11 @@ public final class FilterConfigurer {
          * @param authorizationUrls 认证接口列表
          */
         public FilterUrl addAuthorizationUrls(String... authorizationUrls) {
-            this.authorizationUrls.clear();
+            this.authorizationUrlSet.clear();
             if (authorizationUrls == null) {
                 return this;
             }
-            this.authorizationUrls.addAll(Arrays.asList(authorizationUrls));
+            this.authorizationUrlSet.addAll(Arrays.asList(authorizationUrls));
             return this;
         }
         /**
@@ -219,11 +238,11 @@ public final class FilterConfigurer {
          * @param anonymousUrls 匿名接口列表
          */
         public FilterUrl addAnonymousUrls(String... anonymousUrls) {
-            this.anonymousUrls.clear();
+            this.anonymousUrlSet.clear();
             if (anonymousUrls == null) {
                 return this;
             }
-            this.anonymousUrls.addAll(Arrays.asList(anonymousUrls));
+            this.anonymousUrlSet.addAll(Arrays.asList(anonymousUrls));
             return this;
         }
         /**

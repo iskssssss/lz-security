@@ -46,7 +46,7 @@ public abstract class AbstractInterfacesFilter {
             Object... params
     ) throws SecurityException {
         if (null == nextFilter) {
-            return true;
+            return discharged(request);
         }
         // 日志处理
         final Class<? extends AbstractInterfacesFilter> nextFilterClass = nextFilter.getClass();
@@ -58,12 +58,7 @@ public abstract class AbstractInterfacesFilter {
             // 暂缓
             icpContext.setAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY, logEntity);
         }
-
         return nextFilter.doFilter(request, response, params);
-    }
-
-    public final boolean hasNext() {
-        return nextFilter != null;
     }
 
     public final AbstractInterfacesFilter next() {
@@ -83,13 +78,6 @@ public abstract class AbstractInterfacesFilter {
             BaseResponse<?> response,
             Object... params
     ) throws SecurityException;
-
-    /**
-     * 是否认证
-     */
-    public boolean isAuth(BaseRequest<?> request) {
-        return true;
-    }
 
     /**
      * 销毁

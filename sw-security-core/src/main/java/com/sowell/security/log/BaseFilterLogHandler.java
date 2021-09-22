@@ -16,7 +16,7 @@ public interface BaseFilterLogHandler {
      * 过滤前日志记录
      * @param request 请求信息
      * @param response 响应信息
-     * @return 返回对象 用于{@link BaseFilterLogHandler#afterHandler(BaseRequest, BaseResponse, Object)}方法使用
+     * @return 返回对象 用于{@link BaseFilterLogHandler#afterHandler(BaseRequest, BaseResponse, Object, Exception)}方法使用
      */
     Object beforeHandler(
             BaseRequest<?> request,
@@ -32,6 +32,7 @@ public interface BaseFilterLogHandler {
     void afterHandler(
             BaseRequest<?> request,
             BaseResponse<?> response,
-            Object logEntity
+            Object logEntity,
+            Exception ex
     );
 }

@@ -101,10 +101,10 @@ public class IcpManager {
 	 * <p>如:linkFilter(过滤器1, 过滤器2, 过滤器3)</p>
 	 * <p>设置后过滤顺序为 ：开始 -> 过滤器1 -> 过滤器2 -> 过滤器3 -> 结束</p>
 	 *
-	 * @param abstractInterfacesFilterList 过滤执行链
+	 * @param interfacesFilterList 过滤执行链
 	 */
-	public static void linkInterfacesFilter(AbstractInterfacesFilter... abstractInterfacesFilterList) {
-		if (abstractInterfacesFilterList == null || abstractInterfacesFilterList.length < 1) {
+	public static void linkInterfacesFilter(AbstractInterfacesFilter... interfacesFilterList) {
+		if (interfacesFilterList == null || interfacesFilterList.length < 1) {
 			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "接口过滤执行链不可为空!");
 		}
 		AbstractInterfacesFilter ai = IcpManager.interfacesFilter = new StartFilter();
@@ -113,11 +113,10 @@ public class IcpManager {
 		//	ai.linkFilter(abstractInterfacesFilter);
 		//	ai = abstractInterfacesFilter;
 		//}
-		for (AbstractInterfacesFilter interfacesFilter : abstractInterfacesFilterList) {
+		for (final AbstractInterfacesFilter interfacesFilter : interfacesFilterList) {
 			ai.linkFilter(interfacesFilter);
 			ai = interfacesFilter;
 		}
-		ai.linkFilter(new EndFilter());
 	}
 
 	/**
@@ -148,7 +147,6 @@ public class IcpManager {
 			ai.linkFilter(abstractInterfacesFilter);
 			ai = abstractInterfacesFilter;
 		}
-		ai.linkFilter(new EndFilter());
 		return authFilter;
 	}
 
