@@ -17,4 +17,47 @@
         <module>sw-security-spring-boot-starter</module>
     </modules>
 
+    <properties>
+        <tomcat-embed-core.version>9.0.43</tomcat-embed-core.version>
+        <spring-boot.version>2.3.9.RELEASE</spring-boot.version>
+        <spring-web.version>5.2.13.RELEASE</spring-web.version>
+        <spring-boot-configuration-processor.version>2.3.9.RELEASE</spring-boot-configuration-processor.version>
+
+        <sw-common-core.version>0.0.10</sw-common-core.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat-embed-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring-web.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring-boot-configuration-processor.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sowell.common</groupId>
+                <artifactId>sw-common-core</artifactId>
+                <version>${sw-common-core.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

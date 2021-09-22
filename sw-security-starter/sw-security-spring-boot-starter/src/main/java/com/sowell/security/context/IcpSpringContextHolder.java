@@ -71,7 +71,7 @@ public class IcpSpringContextHolder {
 		IcpSecurityContextThreadLocal.setBox(
 				request,
 				response,
-				new IcpStorage(request, startRequestTime)
+				new IcpSpringStorage(request, startRequestTime)
 		);
 	}
 
@@ -106,19 +106,22 @@ public class IcpSpringContextHolder {
 	}
 
 	public static void removeContext() {
-		BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		servletRequest.removeAllAttribute();
-		servletRequest = null;
-		IcpSecurityContextThreadLocal.remove();
+		try {
+			BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
+			servletRequest.removeAllAttribute();
+			servletRequest = null;
+		} finally {
+			IcpSecurityContextThreadLocal.remove();
+		}
 	}
 
 	public static IcpContextTheadLocal getIcpContext() {
 		return ((IcpContextTheadLocal) IcpManager.getIcpContext());
 	}
 
-	public static IcpStorage getStorage() {
+	public static IcpSpringStorage getStorage() {
 		IcpContextTheadLocal icpContext = getIcpContext();
-		return ((IcpStorage) icpContext.getStorage());
+		return ((IcpSpringStorage) icpContext.getStorage());
 	}
 
 	public static SwRequest getRequest() {
@@ -132,7 +135,7 @@ public class IcpSpringContextHolder {
 	}
 
 	public static UserAgentInfo getUserAgentInfo() {
-		final IcpStorage storage = getStorage();
+		final IcpSpringStorage storage = getStorage();
 		return storage.getUserAgentInfo();
 	}
 
@@ -142,7 +145,7 @@ public class IcpSpringContextHolder {
 	}
 
 	public static Long getRequestTime() {
-		final IcpStorage storage = getStorage();
+		final IcpSpringStorage storage = getStorage();
 		return storage.getRequestTime();
 	}
 }

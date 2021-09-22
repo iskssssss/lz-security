@@ -26,7 +26,7 @@ public class AnonymousFilter extends AbstractInterfacesFilter {
 
 	private List<String> anonymousUrls() {
 		if (this.anonymousUrls == null) {
-			this.anonymousUrls = super.filterConfigurer.filterUrl().anonymousUrls;
+			this.anonymousUrls = super.filterConfigurer.getAnonymousUrls();
 		}
 		return this.anonymousUrls;
 	}
@@ -34,7 +34,7 @@ public class AnonymousFilter extends AbstractInterfacesFilter {
 	@Override
 	public void init() {
 		icpLogger.info("anonymous filter init.");
-		this.checkAccessAuthStatusHandler = super.filterConfigurer.login().getCheckAccessAuthStatusHandler();
+		this.checkAccessAuthStatusHandler = super.filterConfigurer.getCheckAccessAuthStatusHandler();
 	}
 
 	@Override

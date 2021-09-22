@@ -10,7 +10,7 @@ import com.sowell.security.model.AuthDetails;
  * @Author: 孔胜
  * @Date: 2021/6/23 17:44
  */
-public abstract class UserDetailsService {
+public interface UserDetailsService {
 
     public abstract AuthDetails<?> readUserByUsername(String username) throws SecurityException;
 }

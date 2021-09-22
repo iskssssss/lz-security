@@ -22,8 +22,7 @@ public class LogoutHandler extends AbstractLogoutHandler {
             BaseResponse<?> response
     ) {
         FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-        final FilterConfigurer.LogoutHandlerInfo logoutHandlerInfo = filterConfigurer.logout();
-        final LogoutService logoutService = logoutHandlerInfo.getLogoutService();
+        final LogoutService logoutService = filterConfigurer.getLogoutService();
         return logoutService.logout(request, response);
     }
 }

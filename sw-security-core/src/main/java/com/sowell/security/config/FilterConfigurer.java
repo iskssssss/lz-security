@@ -6,14 +6,16 @@ import com.sowell.security.IcpManager;
 import com.sowell.security.base.AbstractInterfacesFilter;
 import com.sowell.security.base.BaseFilterErrorHandler;
 import com.sowell.security.defaults.DefaultCheckAccessAuthStatusHandler;
+import com.sowell.security.defaults.DefaultLoginSuccessHandler;
 import com.sowell.security.defaults.DefaultPasswordEncoder;
+import com.sowell.security.defaults.auth.DefaultLoginErrorHandler;
 import com.sowell.security.filter.IcpFilterAuthStrategy;
 import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.service.PasswordEncoder;
 import com.sowell.security.service.UserDetailsService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -102,30 +104,95 @@ public final class FilterConfigurer {
         return filterAfterHandler;
     }
 
-    public class FilterUrl {
+    public String getLoginUrl() {
+        return this.filterUrl.loginUrl;
+    }
+    public String getLogoutUrl() {
+        return this.filterUrl.logoutUrl;
+    }
+    public List<String> getExcludeUrls() {
+        return this.filterUrl.excludeUrls;
+    }
+    public List<String> getAuthorizationUrls() {
+        return this.filterUrl.authorizationUrls;
+    }
+    public List<String> getAnonymousUrls() {
+        return this.filterUrl.anonymousUrls;
+    }
 
-        public String loginUrl = "/api/login/login.do";
-        public String logoutUrl = "/api/logout/logout.do";
+    public PasswordEncoder getPasswordEncoder() {
+        if (this.loginHandlerInfo.passwordEncoder == null) {
+            this.loginHandlerInfo.passwordEncoder = new DefaultPasswordEncoder();
+        }
+        return this.loginHandlerInfo.passwordEncoder;
+    }
+    public UserDetailsService getUserDetailsService() {
+        return this.loginHandlerInfo.userDetailsService;
+    }
+    public CaptchaHandler getCaptchaHandler() {
+        return this.loginHandlerInfo.captchaHandler;
+    }
+    public AccessStatusHandler getAccessStatusHandler() {
+        return this.loginHandlerInfo.accessStatusHandler;
+    }
+    public LoginSuccessHandler getLoginSuccessHandler() {
+        if (this.loginHandlerInfo.loginSuccessHandler == null) {
+            this.loginHandlerInfo.loginSuccessHandler = new DefaultLoginSuccessHandler();
+        }
+        return this.loginHandlerInfo.loginSuccessHandler;
+    }
+    public LoginErrorHandler getLoginErrorHandler() {
+        if (this.loginHandlerInfo.loginErrorHandler == null) {
+            this.loginHandlerInfo.loginErrorHandler = new DefaultLoginErrorHandler();
+        }
+        return this.loginHandlerInfo.loginErrorHandler;
+    }
+    public ICheckAccessAuthStatusHandler getCheckAccessAuthStatusHandler() {
+        if (this.loginHandlerInfo.checkAccessAuthStatusHandler == null) {
+            this.loginHandlerInfo.checkAccessAuthStatusHandler = new DefaultCheckAccessAuthStatusHandler();
+        }
+        return this.loginHandlerInfo.checkAccessAuthStatusHandler;
+    }
+    public String getIdentifierKey() {
+        return this.loginHandlerInfo.identifierKey;
+    }
+    public String getCredentialKey() {
+        return this.loginHandlerInfo.credentialKey;
+    }
+    public String getCodeKey() {
+        return this.loginHandlerInfo.codeKey;
+    }
+    public String getRememberMeKey() {
+        return this.loginHandlerInfo.rememberMeKey;
+    }
+
+    public LogoutService getLogoutService() {
+        return this.logoutHandlerInfo.logoutService;
+    }
+
+    public class FilterUrl {
+        private String loginUrl = "/api/login/login.do";
+        private String logoutUrl = "/api/logout/logout.do";
 
         /**
          * 排除URL
          */
-        public final List<String> excludeUrls = new ArrayList<>();
+        private final List<String> excludeUrls = new LinkedList<>();
         /**
          * 需认证URL
          */
-        public final List<String> authorizationUrls = new ArrayList<>();
+        private final List<String> authorizationUrls = new LinkedList<>();
         /**
          * 只可在匿名状态下访问
          */
-        public final List<String> anonymousUrls = new ArrayList<>();
+        private final List<String> anonymousUrls = new LinkedList<>();
 
         /**
          * 设置开放接口
          *
          * @param excludeUrls 开放接口列表
          */
-        public FilterUrl excludeUrls(String... excludeUrls) {
+        public FilterUrl addExcludeUrls(String... excludeUrls) {
             this.excludeUrls.clear();
             if (excludeUrls == null) {
                 return this;
@@ -138,7 +205,7 @@ public final class FilterConfigurer {
          *
          * @param authorizationUrls 认证接口列表
          */
-        public FilterUrl authorizationUrls(String... authorizationUrls) {
+        public FilterUrl addAuthorizationUrls(String... authorizationUrls) {
             this.authorizationUrls.clear();
             if (authorizationUrls == null) {
                 return this;
@@ -151,7 +218,7 @@ public final class FilterConfigurer {
          *
          * @param anonymousUrls 匿名接口列表
          */
-        public FilterUrl anonymousUrls(String... anonymousUrls) {
+        public FilterUrl addAnonymousUrls(String... anonymousUrls) {
             this.anonymousUrls.clear();
             if (anonymousUrls == null) {
                 return this;
@@ -195,7 +262,7 @@ public final class FilterConfigurer {
         /**
          * 验证码处理器
          */
-        private AbstractCaptchaHandler captchaHandler;
+        private CaptchaHandler captchaHandler;
         /**
          * 账号状态验证
          */
@@ -213,17 +280,16 @@ public final class FilterConfigurer {
          */
         private ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
 
-        private String identifierName = "identifier";
-        private String credentialName = "credential";
-        private String code = "code";
-        private String uuid = "uuid";
-        private String rememberMe = "rememberMe";
+        private String identifierKey = "identifier";
+        private String credentialKey = "credential";
+        private String codeKey = "code";
+        private String rememberMeKey = "rememberMe";
 
         public LoginHandlerInfo userDetailsService(UserDetailsService userDetailsService) {
             this.userDetailsService = userDetailsService;
             return LoginHandlerInfo.this;
         }
-        public LoginHandlerInfo captchaHandler(AbstractCaptchaHandler captchaHandler) {
+        public LoginHandlerInfo captchaHandler(CaptchaHandler captchaHandler) {
             this.captchaHandler = captchaHandler;
             return LoginHandlerInfo.this;
         }
@@ -243,24 +309,20 @@ public final class FilterConfigurer {
             this.loginSuccessHandler = loginSuccessHandler;
             return LoginHandlerInfo.this;
         }
-        public LoginHandlerInfo username(String username) {
-            this.identifierName = username;
+        public LoginHandlerInfo identifierKey(String identifierKey) {
+            this.identifierKey = identifierKey;
             return LoginHandlerInfo.this;
         }
-        public LoginHandlerInfo password(String password) {
-            this.credentialName = password;
+        public LoginHandlerInfo credentialKey(String credentialKey) {
+            this.credentialKey = credentialKey;
             return LoginHandlerInfo.this;
         }
-        public LoginHandlerInfo code(String code) {
-            this.code = code;
+        public LoginHandlerInfo codeKey(String codeKey) {
+            this.codeKey = codeKey;
             return LoginHandlerInfo.this;
         }
-        public LoginHandlerInfo uuid(String uuid) {
-            this.uuid = uuid;
-            return LoginHandlerInfo.this;
-        }
-        public LoginHandlerInfo rememberMe(String rememberMe) {
-            this.rememberMe = rememberMe;
+        public LoginHandlerInfo rememberMeKey(String rememberMeKey) {
+            this.rememberMeKey = rememberMeKey;
             return LoginHandlerInfo.this;
         }
         public LoginHandlerInfo checkAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
@@ -268,64 +330,16 @@ public final class FilterConfigurer {
             return LoginHandlerInfo.this;
         }
 
-        public PasswordEncoder getPasswordEncoder() {
-            if (passwordEncoder == null){
-                passwordEncoder = new DefaultPasswordEncoder();
-            }
-            return passwordEncoder;
-        }
-        public UserDetailsService getUserDetailsService() {
-            return userDetailsService;
-        }
-        public AbstractCaptchaHandler getCaptchaHandler() {
-            return captchaHandler;
-        }
-        public AccessStatusHandler getAccessStatusHandler() {
-            return accessStatusHandler;
-        }
-        public LoginSuccessHandler getLoginSuccessHandler() {
-            return loginSuccessHandler;
-        }
-        public LoginErrorHandler getLoginErrorHandler() {
-            return loginErrorHandler;
-        }
-        public ICheckAccessAuthStatusHandler getCheckAccessAuthStatusHandler() {
-            if (checkAccessAuthStatusHandler == null){
-                checkAccessAuthStatusHandler = new DefaultCheckAccessAuthStatusHandler();
-            }
-            return checkAccessAuthStatusHandler;
-        }
-        public String getIdentifierName() {
-            return identifierName;
-        }
-        public String getCredentialName() {
-            return credentialName;
-        }
-        public String getCode() {
-            return code;
-        }
-        public String getUuid() {
-            return uuid;
-        }
-        public String getRememberMe() {
-            return rememberMe;
-        }
-
         public FilterConfigurer and() {
             return FilterConfigurer.this;
         }
     }
-
     public class LogoutHandlerInfo {
         private LogoutService logoutService;
 
         public LogoutHandlerInfo logoutService(LogoutService logoutService) {
             this.logoutService = logoutService;
             return this;
-        }
-
-        public LogoutService getLogoutService() {
-            return logoutService;
         }
 
         public FilterConfigurer and() {

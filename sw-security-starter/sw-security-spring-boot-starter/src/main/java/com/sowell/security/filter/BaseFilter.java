@@ -47,8 +47,6 @@ public abstract class BaseFilter implements Filter {
 
 	private List<String> excludeUrls = null;
 
-	protected FilterConfigurer.FilterUrl filterUrl;
-
 	protected FilterDataHandler getFilterDataHandler() {
 		if (this.filterDataHandler == null) {
 			this.filterDataHandler = IcpManager.getFilterDataHandler();
@@ -58,7 +56,7 @@ public abstract class BaseFilter implements Filter {
 
 	private List<String> excludeUrls() {
 		if (this.excludeUrls == null) {
-			this.excludeUrls = IcpManager.getFilterConfigurer().filterUrl().excludeUrls;
+			this.excludeUrls = IcpManager.getFilterConfigurer().getExcludeUrls();
 		}
 		return this.excludeUrls;
 	}

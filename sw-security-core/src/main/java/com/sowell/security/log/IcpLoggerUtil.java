@@ -1,5 +1,7 @@
 package com.sowell.security.log;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,5 +43,20 @@ public class IcpLoggerUtil {
 	public static void warn(Class<?> clazz, String format, Object... params) {
 		final IcpLogger icpLogger = getIcpLogger(clazz);
 		icpLogger.warn(format, params);
+	}
+
+	public static boolean removeIcpLoggerMap() {
+		final Iterator<Map.Entry<Class<?>, IcpLogger>> entryIterator = ICP_LOGGER_MAP.entrySet().iterator();
+		while (entryIterator.hasNext()) {
+			final Map.Entry<Class<?>, IcpLogger> loggerEntry = entryIterator.next();
+			final IcpLogger icpLogger = loggerEntry.getValue();
+			try {
+				icpLogger.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+			entryIterator.remove();
+		}
+		return ICP_LOGGER_MAP.isEmpty();
 	}
 }

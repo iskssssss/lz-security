@@ -120,7 +120,7 @@ public class BeanInject {
 	 */
 	@Autowired(required = false)
 	public void injectCaptchaHandler(
-			AbstractCaptchaHandler captchaHandler
+			CaptchaHandler captchaHandler
 	) {
 		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
 		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();

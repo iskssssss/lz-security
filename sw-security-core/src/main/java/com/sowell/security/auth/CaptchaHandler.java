@@ -7,17 +7,15 @@ package com.sowell.security.auth;
  * @Author: 孔胜
  * @Date: 2021/6/23 17:20
  */
-public abstract class AbstractCaptchaHandler {
+public interface CaptchaHandler {
 
     /**
      * 验证码处理
      *
-     * @param key   键
      * @param value 值
      * @throws SecurityException 异常
      */
     public abstract void handler(
-            String key,
             Object value
     ) throws SecurityException;
 }

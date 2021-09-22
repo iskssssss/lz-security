@@ -22,18 +22,83 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <sw-common-core.version>0.0.10</sw-common-core.version>
         <fastjson.version>1.2.75</fastjson.version>
         <lombok.version>1.18.20</lombok.version>
+        <slf4j-api.version>1.7.30</slf4j-api.version>
+        <jjwt.version>0.10.7</jjwt.version>
+        <hutool.version>5.7.11</hutool.version>
+        <bcprov-jdk15to18.version>1.66</bcprov-jdk15to18.version>
 
-        <sw-security-common.version>1.0.29</sw-security-common.version>
-        <sw-security-core.version>1.0.33</sw-security-core.version>
-        <sw-security-plugins-redis.version>1.0.12</sw-security-plugins-redis.version>
-        <sw-security-spring-boot-starter.version>1.1.17</sw-security-spring-boot-starter.version>
+        <sw-security-common.version>1.0.31</sw-security-common.version>
+        <sw-security-core.version>1.0.35</sw-security-core.version>
+        <!-- 插件 -->
+        <sw-security-plugins-redis.version>1.0.13</sw-security-plugins-redis.version>
+        <!-- 启动相关 -->
+        <sw-security-spring-boot-starter.version>1.1.19</sw-security-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-http</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-crypto</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15to18</artifactId>
+                <version>${bcprov-jdk15to18.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-common</artifactId>
@@ -56,30 +121,6 @@
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-spring-boot-starter</artifactId>
                 <version>${sw-security-spring-boot-starter.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.sowell.common</groupId>
-                <artifactId>sw-common-core</artifactId>
-                <version>${sw-common-core.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>jsr250-api</artifactId>
-                <version>1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

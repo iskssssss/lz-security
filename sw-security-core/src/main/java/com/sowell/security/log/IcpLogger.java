@@ -5,6 +5,9 @@ import com.sowell.security.config.IcpConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @ClassName:
@@ -12,8 +15,8 @@ import org.slf4j.LoggerFactory;
  * @Author: 孔胜
  * @Date: 2021/09/18 14:20
  */
-public class IcpLogger {
-	private final Logger logger;
+public class IcpLogger implements Closeable {
+	private Logger logger;
 
 	public IcpLogger(Class<?> clazz) {
 		logger = LoggerFactory.getLogger(clazz);
@@ -58,5 +61,10 @@ public class IcpLogger {
 			Object... params
 	) {
 		return format;
+	}
+
+	@Override
+	public void close() throws IOException {
+		this.logger = null;
 	}
 }

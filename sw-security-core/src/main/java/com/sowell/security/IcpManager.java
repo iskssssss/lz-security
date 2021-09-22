@@ -63,11 +63,7 @@ public class IcpManager {
 
 	public static AuthorizationHandler getAuthorizationHandler() {
 		if (authorizationHandler == null) {
-			synchronized (IcpManager.class) {
-				if (authorizationHandler == null) {
-					authorizationHandler = new AuthorizationHandler();
-				}
-			}
+			authorizationHandler = new AuthorizationHandler();
 		}
 		return authorizationHandler;
 	}
@@ -77,11 +73,7 @@ public class IcpManager {
 
 	public static AbstractLogoutHandler getLogoutHandler() {
 		if (logoutHandler == null) {
-			synchronized (IcpManager.class) {
-				if (logoutHandler == null) {
-					logoutHandler = new LogoutHandler();
-				}
-			}
+			logoutHandler = new LogoutHandler();
 		}
 		return logoutHandler;
 	}
@@ -116,11 +108,11 @@ public class IcpManager {
 			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "接口过滤执行链不可为空!");
 		}
 		AbstractInterfacesFilter ai = IcpManager.interfacesFilter = new StartFilter();
-//		AbstractInterfacesFilter[] filterList = new AbstractInterfacesFilter[] {new ExcludeFilter()};
-//		for (AbstractInterfacesFilter abstractInterfacesFilter : filterList) {
-//			ai.linkFilter(abstractInterfacesFilter);
-//			ai = abstractInterfacesFilter;
-//		}
+		//AbstractInterfacesFilter[] filterList = new AbstractInterfacesFilter[] {new ExcludeFilter()};
+		//for (AbstractInterfacesFilter abstractInterfacesFilter : filterList) {
+		//	ai.linkFilter(abstractInterfacesFilter);
+		//	ai = abstractInterfacesFilter;
+		//}
 		for (AbstractInterfacesFilter interfacesFilter : abstractInterfacesFilterList) {
 			ai.linkFilter(interfacesFilter);
 			ai = interfacesFilter;
@@ -150,9 +142,7 @@ public class IcpManager {
 		AbstractInterfacesFilter authFilter;
 		AbstractInterfacesFilter ai = authFilter = new StartFilter();
 		AbstractInterfacesFilter[] filterList = new AbstractInterfacesFilter[] {
-//				new ExcludeFilter(),
-				new AuthorizationFilter(),
-				new AnonymousFilter()
+				new AuthorizationFilter(), new AnonymousFilter()
 		};
 		for (AbstractInterfacesFilter abstractInterfacesFilter : filterList) {
 			ai.linkFilter(abstractInterfacesFilter);

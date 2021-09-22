@@ -26,7 +26,7 @@ public class AuthorizationFilter extends AbstractInterfacesFilter {
 
 	private List<String> authorizationUrls() {
 		if (this.authorizationUrls == null) {
-			this.authorizationUrls = super.filterConfigurer.filterUrl().authorizationUrls;
+			this.authorizationUrls = super.filterConfigurer.getAuthorizationUrls();
 		}
 		return this.authorizationUrls;
 	}
@@ -34,7 +34,7 @@ public class AuthorizationFilter extends AbstractInterfacesFilter {
 	@Override
 	public void init() {
 		icpLogger.info("authorization filter init.");
-		checkAccessAuthStatusHandler = super.filterConfigurer.login().getCheckAccessAuthStatusHandler();
+		checkAccessAuthStatusHandler = super.filterConfigurer.getCheckAccessAuthStatusHandler();
 	}
 
 	@Override

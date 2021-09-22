@@ -3,6 +3,8 @@ package com.sowell.security.cache.utils;
 import com.sowell.security.lang.IcpRunnable;
 import com.sowell.security.utils.BeanUtil;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -64,8 +66,22 @@ public enum GlobalScheduled {
 	 */
 	public List<Runnable> shutdownNow() {
 		if (null != scheduledExecutorService) {
-			return scheduledExecutorService.shutdownNow();
+			final List<Runnable> runnableList = scheduledExecutorService.shutdownNow();
+			if (runnableList.isEmpty()) {
+				return Collections.emptyList();
+			}
+			for (Runnable runnable : runnableList) {
+				if (!(runnable instanceof IcpRunnable)) {
+					continue;
+				}
+				final IcpRunnable icpRunnable = (IcpRunnable) runnable;
+				try {
+					icpRunnable.close();
+				} catch (IOException ignored) {
+				}
+			}
+			return runnableList;
 		}
-		return null;
+		return Collections.emptyList();
 	}
 }

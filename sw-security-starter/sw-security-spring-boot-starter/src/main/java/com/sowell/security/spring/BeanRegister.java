@@ -1,6 +1,5 @@
 package com.sowell.security.spring;
 
-import com.sowell.security.IcpManager;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.utils.SpringUtil;
 import org.springframework.boot.context.properties.ConfigurationProperties;

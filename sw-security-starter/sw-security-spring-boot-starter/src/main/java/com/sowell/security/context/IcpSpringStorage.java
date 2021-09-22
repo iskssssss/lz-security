@@ -1,5 +1,6 @@
 package com.sowell.security.context;
 
+import com.sowell.security.context.model.IcpStorage;
 import com.sowell.security.mode.SwRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,9 +13,9 @@ import java.io.IOException;
  * @Author: 孔胜
  * @Date: 2021/09/10 17:37
  */
-public class IcpStorage extends com.sowell.security.context.model.IcpStorage<HttpServletRequest> {
+public class IcpSpringStorage extends IcpStorage<HttpServletRequest> {
 
-	public IcpStorage(
+	public IcpSpringStorage(
 			SwRequest request,
 			long startRequestTime
 	) {

@@ -1,5 +1,7 @@
 package com.sowell.security.defaults;
 
+import com.sowell.security.IcpManager;
+import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.security.model.AuthDetails;
 import com.sowell.security.token.IAccessTokenHandler;
@@ -14,6 +16,12 @@ import com.sowell.security.utils.StringUtil;
  * @Date: 2021/09/18 10:11
  */
 public class JwtAccessTokenHandler implements IAccessTokenHandler {
+
+	private final BaseCacheManager cacheManager;
+
+	public JwtAccessTokenHandler() {
+		this.cacheManager = IcpManager.getCacheManager();
+	}
 
 	@Override
 	public <T extends AuthDetails<T>> T getAuthDetails() {

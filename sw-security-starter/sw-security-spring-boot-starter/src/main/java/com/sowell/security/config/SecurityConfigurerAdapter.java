@@ -48,7 +48,7 @@ public abstract class SecurityConfigurerAdapter {
             registration = new FilterRegistrationBean<>();
             this.init();
             if (registration.getUrlPatterns().isEmpty()) {
-                registration.addUrlPatterns("/api/*");
+                registration.addUrlPatterns("/*");
             }
             registration.setFilter(this.filterContainer);
             registration.setOrder(Integer.MIN_VALUE);
