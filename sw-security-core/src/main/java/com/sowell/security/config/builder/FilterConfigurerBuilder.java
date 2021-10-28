@@ -41,21 +41,21 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * <p>如:linkFilter(过滤器1, 过滤器2, 过滤器3)</p>
 	 * <p>设置后过滤顺序为 ：开始 -> 过滤器1 -> 过滤器2 -> 过滤器3 -> 结束</p>
 	 *
-	 * @param abstractInterfacesFilterList 过滤执行链
+	 * @param interfacesFilterList 过滤执行链
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> linkInterfacesFilter(AbstractInterfacesFilter... abstractInterfacesFilterList) {
-		IcpManager.linkInterfacesFilter(abstractInterfacesFilterList);
+	public FilterConfigurerBuilder<T> linkInterfacesFilter(AbstractInterfacesFilter... interfacesFilterList) {
+		IcpManager.linkInterfacesFilter(interfacesFilterList);
 		return this;
 	}
 	/**
 	 * 设置过滤日志处理器
 	 *
-	 * @param baseFilterLogHandler 过滤日志处理器
+	 * @param filterLogHandler 过滤日志处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> filterLogHandler(BaseFilterLogHandler baseFilterLogHandler) {
-		IcpManager.setFilterLogHandler(baseFilterLogHandler);
+	public FilterConfigurerBuilder<T> filterLogHandler(BaseFilterLogHandler filterLogHandler) {
+		IcpManager.setFilterLogHandler(filterLogHandler);
 		return this;
 	}
 	/**

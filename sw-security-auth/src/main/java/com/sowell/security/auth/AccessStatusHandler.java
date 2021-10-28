@@ -1,6 +1,6 @@
 package com.sowell.security.auth;
 
-import com.sowell.tool.jwt.AuthDetails;
+import com.sowell.tool.jwt.model.AuthDetails;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司

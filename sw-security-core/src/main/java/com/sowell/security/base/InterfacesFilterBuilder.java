@@ -50,6 +50,19 @@ public class InterfacesFilterBuilder {
 	/**
 	 * 进入下一步过滤
 	 *
+	 * @param params 过滤参数
+	 * @return 过滤结果
+	 * @throws SecurityException 过滤错误
+	 */
+	protected final boolean next(Object... params) throws SecurityException {
+		final BaseRequest<?> request = IcpManager.getIcpContext().getRequest();
+		final BaseResponse<?> response = IcpManager.getIcpContext().getResponse();
+		return nextFilter.doFilter(request, response, params);
+	}
+
+	/**
+	 * 进入下一步过滤
+	 *
 	 * @param request  请求流
 	 * @param response 响应流
 	 * @param params   过滤参数
@@ -58,7 +71,7 @@ public class InterfacesFilterBuilder {
 	 */
 	protected final boolean next(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
 		if (null == nextFilter) {
-			return discharged(request);
+			return yes(request);
 		}
 		// 日志处理
 		final Class<? extends AbstractInterfacesFilter> nextFilterClass = nextFilter.getClass();
@@ -77,11 +90,34 @@ public class InterfacesFilterBuilder {
 	/**
 	 * 拦截接口
 	 *
+	 * @return 拦截
+	 */
+	protected final boolean no() {
+		return no(IcpManager.getIcpContext().getRequest());
+	}
+
+	/**
+	 * 拦截接口
+	 *
 	 * @param request 请求流
 	 * @return 拦截
 	 */
-	protected final boolean headOff(BaseRequest<?> request) {
+	protected final boolean no(BaseRequest<?> request) {
 		icpLogger.info("拦截接口：" + request.getRequestPath());
+		return false;
+	}
+
+	/**
+	 * 拦截接口并返回信息
+	 *
+	 * @param rCode 响应信息
+	 * @return
+	 * @throws IOException
+	 */
+	protected final boolean no(RCode rCode) throws SecurityException {
+		ServletUtil.printResponse(IcpManager.getIcpContext().getResponse(), ContentTypeEnum.JSON.name, rCode);
+		icpLogger.info("拦截信息：" + rCode.getMessage());
+		no(IcpManager.getIcpContext().getRequest());
 		return false;
 	}
 
@@ -94,11 +130,20 @@ public class InterfacesFilterBuilder {
 	 * @return
 	 * @throws IOException
 	 */
-	protected final boolean headOff(BaseRequest<?> request, BaseResponse<?> response, RCode rCode) throws SecurityException {
+	protected final boolean no(BaseRequest<?> request, BaseResponse<?> response, RCode rCode) throws SecurityException {
 		ServletUtil.printResponse(response, ContentTypeEnum.JSON.name, rCode);
 		icpLogger.info("拦截信息：" + rCode.getMessage());
-		headOff(request);
+		no(request);
 		return false;
+	}
+
+	/**
+	 * 放行接口
+	 *
+	 * @return 放行
+	 */
+	protected final boolean yes() {
+		return yes(IcpManager.getIcpContext().getRequest());
 	}
 
 	/**
@@ -107,7 +152,7 @@ public class InterfacesFilterBuilder {
 	 * @param request 请求流
 	 * @return 放行
 	 */
-	protected final boolean discharged(BaseRequest<?> request) {
+	protected final boolean yes(BaseRequest<?> request) {
 		icpLogger.info("放行接口：" + request.getRequestPath());
 		return true;
 	}

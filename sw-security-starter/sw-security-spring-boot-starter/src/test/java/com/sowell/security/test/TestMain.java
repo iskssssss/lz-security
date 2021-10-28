@@ -1,7 +1,6 @@
 package com.sowell.security.test;
 
-import com.sowell.security.utils.SecurityUtil;
-import com.sowell.tool.jwt.AuthDetails;
+import com.sowell.tool.jwt.model.AuthDetails;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -13,7 +12,7 @@ import com.sowell.tool.jwt.AuthDetails;
 public class TestMain extends AuthDetails<TestMain> {
 
 	public static void main(String[] args) {
-		SecurityUtil.setAuthDetails(new TestMain());
+		//SecurityUtil.setAuthDetails(new TestMain());
 	}
 
 	@Override

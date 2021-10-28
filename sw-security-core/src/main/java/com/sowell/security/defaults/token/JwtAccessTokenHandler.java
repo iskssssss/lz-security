@@ -6,7 +6,7 @@ import com.sowell.security.config.IcpConfig;
 import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.tool.core.string.StringUtil;
-import com.sowell.tool.jwt.AuthDetails;
+import com.sowell.tool.jwt.model.AuthDetails;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.jwt.JwtUtil;
 
@@ -37,17 +37,18 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler {
 	@Override
 	public <T extends AuthDetails<T>> String generateAccessToken(AuthDetails<T> authDetails) {
 		String accessToken;
-		String id = authDetails.getId();
+		String id = "JWT::" + authDetails.getId();
 		final Object idValue = this.cacheManager.get(id);
 		try {
 			if (StringUtil.isNotEmpty(idValue)) {
 				return ((String) idValue);
 			}
 			accessToken = getAccessToken();
-			if (this.checkExpiration(accessToken)) {
+			if (!this.checkExpiration(accessToken)) {
 				return ((String) idValue);
 			}
-		} catch (HeaderNotAccessTokenException ignored) { }
+		} catch (HeaderNotAccessTokenException ignored) {
+		}
 		this.cacheManager.remove(id);
 		accessToken = JwtUtil.generateToken(authDetails, ((int) this.timeoutMillis));
 		this.cacheManager.put(id, accessToken, this.timeoutMillis);
@@ -64,8 +65,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler {
 
 	@Override
 	public <T extends AuthDetails<T>> AuthDetails<T> getAuthDetails(String accessToken) {
-		final Object id = this.cacheManager.get(accessToken);
-		if (id == null) {
+		if (this.checkExpiration(accessToken)) {
 			throw new AccountNotExistException();
 		}
 		final AuthDetails<T> authDetails = JwtUtil.toBean(accessToken);

@@ -33,8 +33,8 @@ public class UrlHashSet extends HashSet<String> {
 	 * @return 是否匹配
 	 */
 	public boolean containsUrl(String url) {
-		final boolean contains = super.contains(url);
-		if (contains) {
+		final boolean isContains = super.contains(url);
+		if (isContains) {
 			return true;
 		}
 		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();

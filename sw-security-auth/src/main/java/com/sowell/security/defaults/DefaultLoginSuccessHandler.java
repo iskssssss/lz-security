@@ -5,7 +5,7 @@ import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.http.enums.ContentTypeEnum;
-import com.sowell.tool.jwt.AuthDetails;
+import com.sowell.tool.jwt.model.AuthDetails;
 import com.sowell.security.utils.ServletUtil;
 
 /**

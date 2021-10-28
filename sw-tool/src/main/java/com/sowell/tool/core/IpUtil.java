@@ -17,16 +17,14 @@ public class IpUtil {
 	 * @param clientIp 请求客户端ip
 	 * @return 是否匹配
 	 */
-	public static boolean checkIp(
-			String pattern,
-			String clientIp
-	) {
-		if (!pattern.contains("/")) {
-			return pattern.equals(clientIp);
+	public static boolean checkIp(String pattern, String clientIp) {
+		String whiteIp = pattern;
+		int maskNumber = 32;
+		if (pattern.contains("/")) {
+			final String[] ipList = pattern.split("/");
+			 whiteIp = ipList[0];
+			 maskNumber = Integer.parseInt(ipList[1]);
 		}
-		final String[] ipList = pattern.split("/");
-		final String whiteIp = ipList[0];
-		final int maskNumber = Integer.parseInt(ipList[1]);
 		if (maskNumber >= 32) {
 			return clientIp.equals(whiteIp);
 		}

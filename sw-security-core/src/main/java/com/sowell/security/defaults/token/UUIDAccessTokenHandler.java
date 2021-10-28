@@ -8,7 +8,7 @@ import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.core.string.StringUtil;
-import com.sowell.tool.jwt.AuthDetails;
+import com.sowell.tool.jwt.model.AuthDetails;
 
 import java.util.HashMap;
 
@@ -39,14 +39,14 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler {
 	@Override
 	public <T extends AuthDetails<T>> String generateAccessToken(AuthDetails<T> authDetails) {
 		String accessToken = null;
-		String id = authDetails.getId();
+		String id = "UUID::" + authDetails.getId();
 		final Object idValue = this.cacheManager.get(id);
 		try {
 			if (StringUtil.isNotEmpty(idValue)) {
 				return ((String) idValue);
 			}
 			accessToken = getAccessToken();
-			if (this.checkExpiration(accessToken)) {
+			if (!this.checkExpiration(accessToken)) {
 				return ((String) idValue);
 			}
 		} catch (HeaderNotAccessTokenException ignored) {

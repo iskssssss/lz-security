@@ -159,10 +159,10 @@ public class IcpManager {
 	/**
 	 * 设置过滤日志处理器
 	 *
-	 * @param baseFilterLogHandler 过滤日志处理器
+	 * @param filterLogHandler 过滤日志处理器
 	 */
-	public static void setFilterLogHandler(BaseFilterLogHandler baseFilterLogHandler) {
-		IcpManager.filterLogHandler = baseFilterLogHandler;
+	public static void setFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
+		IcpManager.filterLogHandler = filterLogHandler;
 	}
 
 	/**

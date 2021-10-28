@@ -1,4 +1,4 @@
-package com.sowell.tool.jwt;
+package com.sowell.tool.jwt.model;
 
 import com.sowell.tool.json.JsonUtil;
 
@@ -39,6 +39,11 @@ public abstract class AuthDetails<T> implements Serializable {
 		this.sourceClassName = setSourceClass.getName();
 	}
 
+	/**
+	 * 返回继承本类类的类型
+	 *
+	 * @return 源类
+	 */
 	public abstract Class<T> setSourceClass();
 
 	public String getId() {

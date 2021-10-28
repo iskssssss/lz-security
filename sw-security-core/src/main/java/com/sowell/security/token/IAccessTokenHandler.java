@@ -6,7 +6,7 @@ import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.tool.core.string.StringUtil;
-import com.sowell.tool.jwt.AuthDetails;
+import com.sowell.tool.jwt.model.AuthDetails;
 
 /**
  * AccessToken处理器

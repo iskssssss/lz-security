@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sowell.tool.core.DateUtil;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.fun.SFunction;
+import com.sowell.tool.jwt.model.AuthDetails;
 import com.sowell.tool.reflect.BeanUtil;
 import com.sowell.tool.reflect.ReflectUtil;
 import io.jsonwebtoken.Claims;
@@ -39,9 +40,7 @@ public final class JwtUtil {
 	 * @param <T>        存储对象 类型
 	 * @return Token
 	 */
-	public static <T extends AuthDetails<T>> String generateToken(
-			AuthDetails<T> t, int expiration
-	) {
+	public static <T extends AuthDetails<T>> String generateToken(AuthDetails<T> t, int expiration) {
 		final String jsonStr = JSONObject.toJSONString(t);
 		final Map<String, Object> map = JSONObject.parseObject(jsonStr, Map.class);
 		Date createdTime = new Date();
@@ -64,9 +63,7 @@ public final class JwtUtil {
 	 * @param <T> 存储对象 类型
 	 * @return Token
 	 */
-	public static <T extends AuthDetails<T>> String generateToken(
-			AuthDetails<T> t)
-	{
+	public static <T extends AuthDetails<T>> String generateToken(AuthDetails<T> t) {
 		return generateToken(t, -1);
 	}
 
@@ -78,9 +75,7 @@ public final class JwtUtil {
 	 * @param <T>    目标类
 	 * @return T
 	 */
-	public static <T extends AuthDetails<T>> AuthDetails<T> toBean(
-			String token, Class<T> tClass
-	) {
+	public static <T extends AuthDetails<T>> AuthDetails<T> toBean(String token, Class<T> tClass) {
 		Optional<Claims> claimsOptional = Optional.ofNullable(toClaims(token));
 		if (!claimsOptional.isPresent()) {
 			return null;
@@ -96,9 +91,7 @@ public final class JwtUtil {
 	 * @param <T>   目标类
 	 * @return T
 	 */
-	public static <T extends AuthDetails<T>> AuthDetails<T> toBean(
-			String token
-	) {
+	public static <T extends AuthDetails<T>> AuthDetails<T> toBean(String token) {
 		Optional<Claims> claimsOptional = Optional.ofNullable(toClaims(token));
 		if (!claimsOptional.isPresent()) {
 			return null;
@@ -117,9 +110,7 @@ public final class JwtUtil {
 	 * @param token token
 	 * @return Claims
 	 */
-	public static Claims toClaims(
-			String token
-	) {
+	public static Claims toClaims(String token) {
 		try {
 			return Jwts.parser().setSigningKey(KEY_BYTE_LIST).parseClaimsJws(token).getBody();
 		} catch (Exception exception) {
@@ -133,9 +124,7 @@ public final class JwtUtil {
 	 * @param token Token
 	 * @return 是否过期 true 过期 false 未过期
 	 */
-	public static Boolean checkExpiration(
-			String token
-	) {
+	public static Boolean checkExpiration(String token) {
 		Optional<Claims> claimsOptional = Optional.ofNullable(toClaims(token));
 		if (!claimsOptional.isPresent()) {
 			return true;
@@ -157,9 +146,7 @@ public final class JwtUtil {
 	 * @param <K>       值类型
 	 * @return 值
 	 */
-	public static <T extends AuthDetails<T>, K> K getValue(
-			String token, SFunction<T, K> sFunction
-	) {
+	public static <T extends AuthDetails<T>, K> K getValue(String token, SFunction<T, K> sFunction) {
 		final Optional<SerializedLambda> serializedLambdaOptional = Optional.ofNullable(toSerializedLambda(sFunction));
 		if (!serializedLambdaOptional.isPresent()) {
 			return null;
@@ -199,9 +186,7 @@ public final class JwtUtil {
 	 * @param <T>      类型
 	 * @return SerializedLambda
 	 */
-	private static <T extends AuthDetails<T>> SerializedLambda toSerializedLambda(
-			SFunction<T, ?> function
-	) {
+	private static <T extends AuthDetails<T>> SerializedLambda toSerializedLambda(SFunction<T, ?> function) {
 		try {
 			final Method writeReplace = function.getClass().getDeclaredMethod("writeReplace");
 			writeReplace.setAccessible(true);
@@ -220,9 +205,7 @@ public final class JwtUtil {
 	 * @param <T>    返回类型
 	 * @return 处理后的数据
 	 */
-	private static <T> T handlerValue(
-			Object data, Class<T> tClass
-	) {
+	private static <T> T handlerValue(Object data, Class<T> tClass) {
 		if (StringUtil.isEmpty(data)) {
 			return null;
 		}

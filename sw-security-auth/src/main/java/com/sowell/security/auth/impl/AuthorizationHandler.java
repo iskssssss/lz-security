@@ -9,7 +9,7 @@
 //import com.sowell.security.exception.BadCredentialsException;
 //import com.sowell.security.exception.ParamsException;
 //import com.sowell.security.exception.SecurityException;
-//import com.sowell.tool.jwt.AuthDetails;
+//import com.sowell.tool.jwt.model.AuthDetails;
 //import com.sowell.security.service.PasswordEncoder;
 //import com.sowell.security.service.UserDetailsService;
 //import com.sowell.security.utils.JsonUtil;
