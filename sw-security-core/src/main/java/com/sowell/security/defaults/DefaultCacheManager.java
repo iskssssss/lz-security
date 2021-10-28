@@ -2,9 +2,9 @@ package com.sowell.security.defaults;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.cache.CacheManager;
-import com.sowell.security.cache.utils.CacheUtil;
 import com.sowell.security.config.IcpConfig;
+import com.sowell.tool.cache.CacheManager;
+import com.sowell.tool.cache.utils.CacheUtil;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -14,21 +14,17 @@ import com.sowell.security.config.IcpConfig;
  * @Date: 2021/09/16 14:57
  */
 public class DefaultCacheManager implements BaseCacheManager {
-	private final CacheManager<String, Object> cacheManager;
-	private final long timeoutMillis;
+	private final CacheManager<Object, Object> cacheManager;
 
 	public DefaultCacheManager() {
-		IcpConfig icpConfig = IcpManager.getIcpConfig();
-		IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
-		timeoutMillis = accessAccessTokenConfig.getTimeoutForMillis();
 		this.cacheManager = CacheUtil.newCacheManager();
 		this.cacheManager.schedulePrune(5);
 	}
 
 	@Override
-	public boolean put(String key, Object value) {
+	public boolean put(Object key, Object value) {
 		try {
-			this.put(key, value, timeoutMillis);
+			cacheManager.put(key, value, -1);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -36,7 +32,7 @@ public class DefaultCacheManager implements BaseCacheManager {
 	}
 
 	@Override
-	public boolean put(String key, Object value, long timeout) {
+	public boolean put(Object key, Object value, long timeout) {
 		try {
 			cacheManager.put(key, value, timeout);
 			return true;
@@ -46,7 +42,7 @@ public class DefaultCacheManager implements BaseCacheManager {
 	}
 
 	@Override
-	public boolean remove(String key) {
+	public boolean remove(Object key) {
 		try {
 			cacheManager.remove(key);
 			return true;
@@ -56,7 +52,7 @@ public class DefaultCacheManager implements BaseCacheManager {
 	}
 
 	@Override
-	public Object get(String key) {
+	public Object get(Object key) {
 		try {
 			return cacheManager.get(key);
 		} catch (Exception e) {
@@ -65,7 +61,7 @@ public class DefaultCacheManager implements BaseCacheManager {
 	}
 
 	@Override
-	public Boolean existKey(String key) {
+	public Boolean existKey(Object key) {
 		return this.get(key) != null;
 	}
 }

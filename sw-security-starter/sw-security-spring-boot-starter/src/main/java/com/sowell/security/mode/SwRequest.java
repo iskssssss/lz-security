@@ -4,16 +4,15 @@ import cn.hutool.core.io.FastByteArrayOutputStream;
 import com.sowell.security.IcpManager;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
-import com.sowell.security.utils.BeanUtil;
-import com.sowell.security.utils.IoUtil;
+import com.sowell.tool.core.enums.RCode;
+import com.sowell.tool.encrypt.model.SwPrivateKey;
+import com.sowell.tool.io.IoUtil;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,8 +41,8 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 	}
 
 	@Override
-	public boolean isPath(String path) {
-		final IcpContext icpContext = IcpManager.getIcpContext();
+	public boolean matchUrl(String path) {
+		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
 		return icpContext.matchUrl(path, this.getRequestPath());
 	}
 
@@ -60,22 +59,6 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 	@Override
 	public Object getAttribute(String key) {
 		return getRequest().getAttribute(key);
-	}
-
-	@Override
-	public <V> V getAttribute(String key, Class<V> tClass) {
-		final Object attribute = getAttribute(key);
-		if (attribute == null) {
-			return null;
-		}
-		try {
-			return (V) attribute;
-		} catch (Exception e) {
-			if (attribute instanceof CharSequence) {
-				return BeanUtil.toBean(attribute.toString(), tClass);
-			}
-		}
-		return null;
 	}
 
 	@Override
@@ -113,7 +96,9 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 		return getRequest().getRemoteAddr();
 	}
 
-	public Method getControllerMethod() {
-		return IcpManager.getMethodByInterfaceUrl(getRequestPath());
-	}
+//	@Override
+//	public Object decrypt(byte[] bytes) {
+//		final SwPrivateKey priKey = IcpManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+//		return priKey.decrypt(bytes);
+//	}
 }

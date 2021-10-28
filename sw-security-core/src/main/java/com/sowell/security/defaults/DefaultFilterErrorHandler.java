@@ -4,11 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.sowell.security.base.BaseFilterErrorHandler;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
-import com.sowell.security.enums.HttpStatus;
+import com.sowell.tool.core.enums.HttpStatus;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.model.ResponseData;
-import com.sowell.security.utils.JsonUtil;
+import com.sowell.tool.core.enums.RCode;
+import com.sowell.tool.json.JsonUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,34 +21,26 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/16 14:51
  */
-public class DefaultFilterErrorHandler
-		implements BaseFilterErrorHandler<String> {
+public class DefaultFilterErrorHandler implements BaseFilterErrorHandler<String> {
 
 	@Override
-	public String errorHandler(
-			BaseRequest<?> request,
-			BaseResponse<?> response,
-			Exception error) {
+	public String errorHandler(BaseRequest<?> request, BaseResponse<?> response, Exception error) {
 		Map<String, Object> resultEntity = new LinkedHashMap<>();
 		if (error instanceof SecurityException) {
 			final SecurityException securityException = (SecurityException) error;
 			final Object data = securityException.getResponseData();
 			resultEntity.put("code", securityException.getCode());
-			resultEntity.put("data", data == null ? null : JsonUtil.toJsonObject(data));
+			resultEntity.put("data", data == null ? null : JsonUtil.toJsonString(data));
 			resultEntity.put("message", securityException.getMessage());
 		} else {
-			final String message = error.getMessage();
-			resultEntity.put("code", 500);
-			resultEntity.put("data", null);
-			resultEntity.put("message", message);
+			resultEntity.put("code", RCode.UNKNOWN_MISTAKE.getCode());
+			resultEntity.put("message", RCode.UNKNOWN_MISTAKE.getMessage());
 		}
-		final ResponseData<Map<String, Object>> responseData = new ResponseData<Map<String, Object>>() {{
-			setMsg("SecurityException错误");
-			setBodyData(resultEntity);
-			setHttpStatus(HttpStatus.UNAUTHORIZED);
-		}};
+		final ResponseData<Map<String, Object>> responseData = new ResponseData<>();
+		responseData.setMsg("SecurityException错误");
+		responseData.setBodyData(resultEntity);
+		responseData.setHttpStatus(HttpStatus.UNAUTHORIZED);
 		response.setStatus(responseData.getHttpStatus().value());
-		IcpLoggerUtil.error(getClass(), responseData.getMsg(), error);
 		return JSONObject.toJSONString(responseData.getBodyData());
 	}
 }

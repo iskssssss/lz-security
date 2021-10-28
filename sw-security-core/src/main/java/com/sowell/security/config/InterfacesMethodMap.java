@@ -3,8 +3,8 @@ package com.sowell.security.config;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.context.IcpContext;
+import com.sowell.tool.reflect.model.ControllerMethod;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,14 +16,14 @@ import java.util.Set;
  * @Author: 孔胜
  * @Date: 2021/08/02 10:47
  */
-public final class InterfacesMethodMap extends HashMap<String, Method> {
+public final class InterfacesMethodMap extends HashMap<String, ControllerMethod> {
 
 	/**
 	 * 设置接口方法映射集合
 	 *
 	 * @param interfacesMethodMap 接口方法映射集合
 	 */
-	public void putInterfacesMethodMap(Map<String, Method> interfacesMethodMap) {
+	public void putInterfacesMethodMap(Map<String, ControllerMethod> interfacesMethodMap) {
 		if (interfacesMethodMap == null || interfacesMethodMap.isEmpty()) {
 			return;
 		}
@@ -37,14 +37,14 @@ public final class InterfacesMethodMap extends HashMap<String, Method> {
 	 * @param url 请求接口
 	 * @return 方法
 	 */
-	public Method getMethodByInterfaceUrl(String url) {
-		final Method method = this.get(url);
+	public ControllerMethod getMethodByInterfaceUrl(String url) {
+		final ControllerMethod method = this.get(url);
 		if (method != null) {
 			return method;
 		}
-		final IcpContext icpContext = IcpManager.getIcpContext();
-		final Set<Entry<String, Method>> entrySet = this.entrySet();
-		for (Entry<String, Method> stringMethodEntry : entrySet) {
+		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
+		final Set<Entry<String, ControllerMethod>> entrySet = this.entrySet();
+		for (Entry<String, ControllerMethod> stringMethodEntry : entrySet) {
 			final String key = stringMethodEntry.getKey();
 			if (icpContext.matchUrl(key, url)) {
 				return stringMethodEntry.getValue();

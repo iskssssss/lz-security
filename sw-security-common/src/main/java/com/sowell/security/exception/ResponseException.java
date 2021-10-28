@@ -1,6 +1,6 @@
 package com.sowell.security.exception;
 
-import com.sowell.security.enums.RCode;
+import com.sowell.tool.core.enums.RCode;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司

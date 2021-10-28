@@ -5,11 +5,11 @@ import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.context.model.IcpStorage;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/10 16:29
+ * 上下文
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/09/10 16:29
  */
 public interface IcpContext<RequestType, ResponseType> {
 

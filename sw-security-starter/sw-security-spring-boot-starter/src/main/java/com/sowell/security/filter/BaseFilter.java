@@ -2,25 +2,24 @@ package com.sowell.security.filter;
 
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
-import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.auth.AbstractLogoutHandler;
-import com.sowell.security.auth.impl.AuthorizationHandler;
 import com.sowell.security.context.IcpSpringContextHolder;
-import com.sowell.security.enums.HttpStatus;
 import com.sowell.security.exception.SecurityException;
-import com.sowell.security.handler.FilterDataHandler;
-import com.sowell.security.log.BaseFilterLogHandler;
+import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
 import com.sowell.security.utils.ServletUtil;
-import com.sowell.security.wrapper.HttpServletResponseWrapper;
+import com.sowell.tool.core.bytes.ByteUtil;
+import com.sowell.tool.core.enums.HttpStatus;
+import com.sowell.tool.core.enums.RCode;
+import com.sowell.tool.core.model.RequestResult;
+import com.sowell.tool.http.enums.ContentTypeEnum;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.util.Optional;
+import java.util.Map;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -31,42 +30,14 @@ import java.util.Optional;
  */
 public abstract class BaseFilter implements Filter {
 
-	protected FilterDataHandler filterDataHandler;
+	/**
+	 * 过滤前处理
+	 */
 	protected IcpFilterAuthStrategy filterBeforeHandler;
+	/**
+	 * 过滤后处理
+	 */
 	protected IcpFilterAuthStrategy filterAfterHandler;
-	/**
-	 * 认证过滤器
-	 */
-	protected AuthorizationHandler authorizationHandler;
-
-	/**
-	 * 登出处理器
-	 */
-	protected AbstractLogoutHandler abstractLogoutHandler;
-
-	private UrlHashSet includeUrls = null;
-	private UrlHashSet excludeUrls = null;
-
-	protected FilterDataHandler getFilterDataHandler() {
-		if (this.filterDataHandler == null) {
-			this.filterDataHandler = IcpManager.getFilterDataHandler();
-		}
-		return this.filterDataHandler;
-	}
-
-	private UrlHashSet excludeUrls() {
-		if (this.excludeUrls == null) {
-			this.excludeUrls = IcpManager.getFilterConfigurer().getExcludeUrls();
-		}
-		return this.excludeUrls;
-	}
-
-	private UrlHashSet includeUrls() {
-		if (this.includeUrls == null) {
-			this.includeUrls = IcpManager.getFilterConfigurer().getIncludeUrls();
-		}
-		return this.includeUrls;
-	}
 
 	public abstract boolean doFilter(
 			SwRequest swRequest,
@@ -74,40 +45,103 @@ public abstract class BaseFilter implements Filter {
 	) throws Exception;
 
 	@Override
-	public void doFilter(
-			ServletRequest request,
-			ServletResponse response,
-			FilterChain chain
-	) {
-		try {
+	public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+		IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
+			SecurityException securityException = null;
+			try {
+				// TODO 解密处理
+				// 过滤处理
+				if (filterHandler(swRequest, swResponse)) {
+					chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
+				}
+				// 加密处理
+				if (swResponse.isEncrypt()) {
+					try {
+						byte[] encryptBytes;
+						final RequestDataEncryptHandler requestDataEncryptHandler = IcpManager.getRequestDataEncryptHandler();
+						final byte[] responseDataBytes = swResponse.getResponseDataBytes();
+						final RequestResult resultObject = ByteUtil.toObject(responseDataBytes, RequestResult.class);
+						if (resultObject != null) {
+							resultObject.setData(requestDataEncryptHandler.encrypt(ByteUtil.toBytes(resultObject.getData())));
+							encryptBytes = ByteUtil.toBytes(resultObject.toJson());
+						} else {
+							RequestResult requestResult = new RequestResult();
+							requestResult.setData(requestDataEncryptHandler.encrypt(responseDataBytes));
+							encryptBytes = ByteUtil.toBytes(requestResult.toJson());
+						}
+						ServletUtil.printResponse(swResponse, ContentTypeEnum.JSON.name, encryptBytes);
+					} catch (Exception e) {
+						throw new SecurityException(RCode.DATA_ENCRYPT_FAILED);
+					}
+				}
+			} catch (Exception e) {
+				// 错误处理
+				if (e instanceof SecurityException) {
+					securityException = (SecurityException) e;
+				} else if (e.getCause() instanceof SecurityException) {
+					securityException = (SecurityException) e.getCause();
+				} else {
+					securityException = new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
+				}
+				//ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, securityException);
+				//IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+			} finally {
+				final Object handlerData = IcpManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
+				if (securityException != null && handlerData != null) {
+					if (handlerData instanceof RCode) {
+						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
+					} else {
+						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
+					}
+					IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+				}
+				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
+				if (logSwitch != null) {
+					IcpManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
+				}
+			}
+		});
+		/*try {
 			IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis());
 			SwRequest swRequest = IcpSpringContextHolder.getRequest();
 			SwResponse swResponse = IcpSpringContextHolder.getResponse();
 			if (filterHandler(swRequest, swResponse)) {
-				chain.doFilter(request, response);
+				chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
+			}
+			if (swResponse.isEncrypt()) {
+				IcpManager.getRequestDataEncryptHandler().encrypt(swResponse, swResponse.getResponseDataBytes());
 			}
 		} catch (Exception e) {
 			SecurityException securityException;
 			if (e instanceof SecurityException) {
 				securityException = (SecurityException) e;
+			} else if (e.getCause() instanceof SecurityException) {
+				securityException = (SecurityException) e.getCause();
 			} else {
 				securityException = new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
 			}
-			ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), securityException);
+			ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, securityException);
 			IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
 		} finally {
 			IcpSpringContextHolder.removeContext();
-		}
+		}*/
 	}
 
-	private boolean filterHandler(SwRequest swRequest, SwResponse swResponse) {
-		Exception ex = null;
+	/**
+	 * 过滤处理
+	 *
+	 * @param swRequest  swRequest
+	 * @param swResponse swResponse
+	 * @return 是否放行
+	 */
+	private boolean filterHandler(SwRequest swRequest, SwResponse swResponse) throws SecurityException {
+		//Exception ex = null;
 		try {
 			final String requestPath = swRequest.getRequestPath();
-			/**
-			 * 判断当前访问地址 是否是开放地址 or 是否在拦截地址中
-			 */
-			if (!includeUrls().containsUrl(requestPath) || excludeUrls().containsUrl(requestPath)) {
+			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
+			final boolean isIncludeUrl = !IcpManager.getFilterConfigurer().getIncludeUrls().containsUrl(requestPath);
+			final boolean isExcludeUrl = IcpManager.getFilterConfigurer().getExcludeUrls().containsUrl(requestPath);
+			if (isIncludeUrl || isExcludeUrl) {
 				return true;
 			}
 			// 过滤前处理
@@ -117,21 +151,30 @@ public abstract class BaseFilter implements Filter {
 			// 过滤后处理
 			this.filterAfterHandler.run();
 			return filterResult;
-		} catch (Exception exception) {
-			ex = exception;
-			return false;
-		} finally {
-			if (!this.getFilterDataHandler().handler(swRequest, swResponse, ex)) {
-				if (swResponse.getResponse() instanceof HttpServletResponseWrapper) {
-					final byte[] responseDataBytes = swResponse.getResponseDataBytes();
-					swResponse.print(responseDataBytes);
+		} catch (Exception e) {
+			//ex = e;
+			if (e instanceof SecurityException) {
+				throw ((SecurityException) e);
+			} else if (e.getCause() instanceof SecurityException) {
+				throw (SecurityException) e.getCause();
+			} else {
+				throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
+			}
+			//return false;
+		}
+		/*finally {
+			final Object handlerData = IcpManager.getFilterDataHandler().handler(swRequest, swResponse, ex);
+			if (handlerData != null) {
+				if (handlerData instanceof RCode) {
+					ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
+				} else {
+					ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
 				}
 			}
-			final Optional<Object> logEntityOptional = Optional.ofNullable(swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY));
-			if (logEntityOptional.isPresent()) {
-				BaseFilterLogHandler filterLogHandler = IcpManager.getFilterLogHandler();
-				filterLogHandler.afterHandler(swRequest, swResponse, logEntityOptional.get(), ex);
+			final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
+			if (logSwitch != null) {
+				IcpManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), ex);
 			}
-		}
+		}*/
 	}
 }

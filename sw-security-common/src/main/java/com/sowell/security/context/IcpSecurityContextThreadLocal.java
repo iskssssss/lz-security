@@ -20,9 +20,9 @@ public class IcpSecurityContextThreadLocal {
 	private static final ThreadLocal<Box> BOX_THREAD_LOCAL = new InheritableThreadLocal<>();
 
 	public static void setBox(
-			BaseRequest request,
-			BaseResponse response,
-			IcpStorage icpStorage
+			BaseRequest<?> request,
+			BaseResponse<?> response,
+			IcpStorage<?> icpStorage
 	) {
 		BOX_THREAD_LOCAL.set(new Box(request, response, icpStorage));
 	}

@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * @Author: 孔胜
  * @Date: 2021/08/02 10:32
  */
-@Target({ ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface LogBeforeFilter {

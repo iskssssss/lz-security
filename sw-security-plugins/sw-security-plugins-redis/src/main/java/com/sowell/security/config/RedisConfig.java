@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 public class RedisConfig {
 
     @Bean(value = "redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(
+    public RedisTemplate<Object, Object> redisTemplate(
             RedisConnectionFactory connectionFactory
     ) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         // Json 的序列化配置
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);

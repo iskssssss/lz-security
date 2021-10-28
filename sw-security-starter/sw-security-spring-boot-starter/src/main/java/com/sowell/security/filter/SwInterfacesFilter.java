@@ -8,11 +8,11 @@ import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/17 16:55
+ * SpringBoot基础执行链
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/09/17 16:55
  */
 public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
 
@@ -25,9 +25,18 @@ public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
 		return doFilter(((SwRequest) request), ((SwResponse) response), params);
 	}
 
+	/**
+	 * 进行过滤
+	 *
+	 * @param swRequest  请求流
+	 * @param swResponse 响应流
+	 * @param params     过滤参数
+	 * @return 过滤结果
+	 * @throws SecurityException 过滤错误
+	 */
 	public abstract boolean doFilter(
 			SwRequest swRequest,
 			SwResponse swResponse,
 			Object... params
-	);
+	) throws SecurityException;
 }

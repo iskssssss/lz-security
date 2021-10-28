@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -18,53 +17,80 @@ import java.nio.charset.StandardCharsets;
  */
 public class HttpServletResponseWrapper extends javax.servlet.http.HttpServletResponseWrapper {
 
-    private final ByteArrayOutputStream bytes;
-    private PrintWriter printWriter;
+    private final ByteArrayOutputStream buffer;
+    private final ServletOutputStream out;
+    private final PrintWriter writer;
 
-    public HttpServletResponseWrapper(HttpServletResponse response) {
+    public HttpServletResponseWrapper(HttpServletResponse response) throws IOException {
         super(response);
-
-        bytes = new ByteArrayOutputStream();
+        buffer = new ByteArrayOutputStream();
+        out = new HttpServletResponseWrapperOutputStream(buffer);
+        writer = new PrintWriter(new OutputStreamWriter(buffer, this.getCharacterEncoding()));
     }
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        return new ServletOutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-                bytes.write(b);
-            }
-
-            @Override
-            public boolean isReady() {
-                return false;
-            }
-
-            @Override
-            public void setWriteListener(WriteListener writeListener) {
-            }
-        };
+        return out;
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
-        printWriter = new PrintWriter(new OutputStreamWriter(bytes, StandardCharsets.UTF_8));
-        return printWriter;
+    public PrintWriter getWriter() {
+        return writer;
     }
 
-    /**
-     * 获取响应数据
-     */
-    public byte[] toByteArray() {
-        if (null != printWriter) {
-            printWriter.close();
-            return bytes.toByteArray();
+    public ServletOutputStream getResponseOutputStream() throws IOException {
+        return getResponse().getOutputStream();
+    }
+
+    public PrintWriter getResponseWriter() throws IOException {
+        return getResponse().getWriter();
+    }
+
+    @Override
+    public void flushBuffer() throws IOException {
+        if (out != null) {
+            out.flush();
         }
-        try {
-            bytes.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (writer != null) {
+            writer.flush();
         }
-        return bytes.toByteArray();
+    }
+
+    @Override
+    public void reset() {
+        buffer.reset();
+    }
+
+    public byte[] toByteArray() throws IOException {
+        flushBuffer();
+        return buffer.toByteArray();
+    }
+
+    private static class HttpServletResponseWrapperOutputStream extends ServletOutputStream {
+        private final ByteArrayOutputStream bos;
+
+        public HttpServletResponseWrapperOutputStream(ByteArrayOutputStream stream) {
+            bos = stream;
+        }
+
+        @Override
+        public boolean isReady() {
+            return false;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener listener) {
+
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            bos.write(b);
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            bos.write(b, 0, b.length);
+        }
     }
 }

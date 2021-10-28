@@ -2,7 +2,6 @@ package com.sowell.security.config;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.filter.IcpServletFilter;
-import com.sowell.security.spring.BeanInject;
 import com.sowell.security.spring.BeanRegister;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +20,9 @@ public abstract class SecurityConfigurerAdapter {
     private FilterRegistrationBean<IcpServletFilter> registration;
     private IcpServletFilter filterContainer;
 
+    /**
+     * 初始化
+     */
     private void init() {
         this.filterContainer = new IcpServletFilter();
         this.config(IcpManager.getFilterConfigurer());

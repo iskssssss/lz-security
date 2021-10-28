@@ -5,61 +5,39 @@ import com.sowell.security.IcpManager;
 import com.sowell.security.base.BaseFilterErrorHandler;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
-import com.sowell.security.enums.RCode;
-import com.sowell.security.utils.ByteUtil;
-import com.sowell.security.utils.ServletUtil;
-import com.sowell.security.utils.StringUtil;
+import com.sowell.security.exception.SecurityException;
+import com.sowell.tool.core.bytes.ByteUtil;
+import com.sowell.tool.core.string.StringUtil;
+import com.sowell.tool.core.enums.RCode;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 /**
- * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/08/02 09:31
+ * 数据处理器
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/08/02 09:31
  */
-public class FilterDataHandler {
-	private BaseFilterErrorHandler<?> filterErrorHandler;
+public final class FilterDataHandler {
 
-	public BaseFilterErrorHandler<?> getFilterErrorHandler() {
-		if (this.filterErrorHandler == null) {
-			this.filterErrorHandler = IcpManager.getFilterErrorHandler();
-		}
-		return this.filterErrorHandler;
-	}
-
-	public boolean handler(
-			BaseRequest<?> request,
-			BaseResponse<?> response,
-			Exception ex
-	) {
+	public Object handler(BaseRequest<?> request, BaseResponse<?> response, SecurityException securityException) {
 		byte[] errorBytes = null;
 		try {
-			if (ex != null) {
-				errorBytes = errorHandler(request, response, ex);
+			if (securityException != null) {
+				errorBytes = errorHandler(request, response, securityException);
 			}
-			return errorBytes != null;
+			return errorBytes;
 		} catch (Exception exception) {
-			ServletUtil.printResponse(response, RCode.UNKNOWN_MISTAKE);
-			return true;
-		} finally {
-			if (errorBytes != null) {
-				ServletUtil.printResponse(response, errorBytes);
-			}
+			return RCode.UNKNOWN_MISTAKE;
 		}
 	}
 
-	private byte[] errorHandler(
-			BaseRequest<?> request,
-			BaseResponse<?> response,
-			Exception e
-	) throws IOException {
-		Object errorHandler;
+	private byte[] errorHandler(BaseRequest<?> request, BaseResponse<?> response, SecurityException securityException) {
 		// 异常数据处理
-		errorHandler = this.getFilterErrorHandler().errorHandler(request, response, e);
+		Object errorHandler = IcpManager.getFilterErrorHandler().errorHandler(request, response, securityException);
 		if (StringUtil.isEmpty(errorHandler)) {
 			return null;
 		}

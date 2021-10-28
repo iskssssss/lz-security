@@ -1,6 +1,9 @@
 package com.sowell.security.utils;
 
 import cn.hutool.core.io.FileTypeUtil;
+import com.sowell.security.annotation.LogBeforeFilter;
+import com.sowell.tool.core.string.StringUtil;
+import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
  * @Author: 孔胜
  * @Date: 2021/6/20 0:57
  */
+@SuppressWarnings("unchecked")
 public class SpringUtil implements BeanFactoryPostProcessor {
     /**
      * spring应用上下文
@@ -34,22 +38,39 @@ public class SpringUtil implements BeanFactoryPostProcessor {
     }
 
     /**
-     * 获取类型对象
+     * 根据名称获取类型对象
+     *
+     * @param name 名称
+     * @param <T>  返回类型
+     * @return 类型对象
+     * @throws BeansException BeansException异常
      */
-    @SuppressWarnings("unchecked")
     public static <T> T getBean(String name) throws BeansException {
         return (T) SpringUtil.beanFactory.getBean(name);
     }
 
     /**
-     * 获取类型为requiredType的对象
+     * 根据类型获取类型对象
+     *
+     * @param requiredType 类型
+     * @param <T>          返回类型
+     * @return 类型对象
+     * @throws BeansException BeansException异常
      */
     public static <T> T getBean(Class<T> requiredType) throws BeansException {
         return SpringUtil.beanFactory.getBean(requiredType);
     }
 
-    public static <T> List<T> getBeanListBySuperClass(Class<? extends Annotation> aClass, Class<T> superClass) {
-        final Map<String, Object> beansWithAnnotation = SpringUtil.beanFactory.getBeansWithAnnotation(aClass);
+    /**
+     * 根据注解和父类的类型获取对象
+     *
+     * @param annoClass  注解
+     * @param superClass 父类的类型
+     * @param <T>        返回类型
+     * @return 类型对象
+     */
+    public static <T> List<T> getBeanListBySuperClass(Class<? extends Annotation> annoClass, Class<T> superClass) {
+        final Map<String, Object> beansWithAnnotation = SpringUtil.beanFactory.getBeansWithAnnotation(annoClass);
         final List<T> list = beansWithAnnotation.values()
                 .stream()
                 .filter(item -> item.getClass().getSuperclass().equals(superClass))
@@ -58,17 +79,46 @@ public class SpringUtil implements BeanFactoryPostProcessor {
         return list;
     }
 
-    public static Map<String, Object> getBeansWithAnnotation(
-            Class<? extends Annotation> superClass
-    ) {
-        return beanFactory.getBeansWithAnnotation(superClass);
+    /**
+     * 根据注解获取对象
+     *
+     * @param annoClass 注解
+     * @return 类型对象集合
+     */
+    public static Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annoClass) {
+        return beanFactory.getBeansWithAnnotation(annoClass);
     }
 
-    public static Map<String, Object> getBeansWithAnnotationByPackage(
-            Class<? extends Annotation> superClass,
-            Set<String> packagePaths
-    ) {
-        final Map<String, Object> beansWithAnnotation = getBeansWithAnnotation(superClass);
+    /**
+     * 获取拥有{annoClass}注解的数量
+     *
+     * @param annoClass 注解
+     * @return 数量
+     */
+    public static int getBeansWithAnnotationCount(Class<? extends Annotation> annoClass) {
+        return beanFactory.getBeansWithAnnotation(annoClass).size();
+    }
+
+    /**
+     * 判断当前是否有拥有{annoClass}注解的对象
+     *
+     * @param annoClass 注解
+     * @return true：you 反之无
+     */
+    public static boolean isBeansWithAnnotation(Class<? extends Annotation> annoClass) {
+        final Map<String, Object> beansWithAnnotation = SpringUtil.getBeansWithAnnotation(annoClass);
+        return beansWithAnnotation.size() > 0;
+    }
+
+    /**
+     * 根据{annoClass}注解和指定包下获取对象
+     *
+     * @param annoClass    注解类型
+     * @param packagePaths 包集合
+     * @return 类型对象
+     */
+    public static Map<String, Object> getBeansWithAnnotationByPackage(Class<? extends Annotation> annoClass, List<String> packagePaths) {
+        final Map<String, Object> beansWithAnnotation = getBeansWithAnnotation(annoClass);
         final Iterator<String> iterator = beansWithAnnotation.keySet().iterator();
         while (iterator.hasNext()) {
             final String key = iterator.next();
@@ -87,10 +137,7 @@ public class SpringUtil implements BeanFactoryPostProcessor {
      * @param packagePaths 包名列表
      * @return 结果
      */
-    public static boolean isPackage(
-            Object controller,
-            Set<String> packagePaths
-    ) {
+    public static boolean isPackage(Object controller, List<String> packagePaths) {
         if (packagePaths == null || packagePaths.isEmpty()) {
             return true;
         }
@@ -105,9 +152,15 @@ public class SpringUtil implements BeanFactoryPostProcessor {
         return false;
     }
 
-    public static Map<String, Method> initControllerMethodMap(Set<String> packagePaths) {
+    /**
+     * 获取接口地址和对应的方法字典集合
+     *
+     * @param packagePaths 处理包的位置
+     * @return 接口地址和对应的方法字典集合
+     */
+    public static Map<String, ControllerMethod> getControllerMethodMap(List<String> packagePaths) {
         // 接口对应方法
-        final Map<String, Method> interfacesMethodMap = new HashMap<>(16);
+        final Map<String, ControllerMethod> interfacesMethodMap = new HashMap<>(16);
         // 获取所有控制器
         final Map<String, Object> restControllerBeanMap = SpringUtil.getBeansWithAnnotationByPackage(RestController.class, packagePaths);
         // 获取控制器中的方法
@@ -116,19 +169,20 @@ public class SpringUtil implements BeanFactoryPostProcessor {
             final List<String> controllerPathList = getMappingPaths(restControllerBeanClass);
             ReflectionUtils.doWithMethods(restControllerBeanClass, method -> {
                 final List<String> methodPathList = getMappingPaths(method);
+                ControllerMethod controllerMethod = new ControllerMethod(restControllerBeanClass, method);
                 if (methodPathList == null) {
                     return;
                 }
                 // 拼接接口
                 if (controllerPathList == null) {
                     for (String methodPath : methodPathList) {
-                        interfacesMethodMap.put(methodPath, method);
+                        interfacesMethodMap.put(methodPath, controllerMethod);
                     }
                     return;
                 }
                 for (String controllerPath : controllerPathList) {
                     for (String methodPath : methodPathList) {
-                        interfacesMethodMap.put(controllerPath + methodPath, method);
+                        interfacesMethodMap.put(controllerPath + methodPath, controllerMethod);
                     }
                 }
             }, ReflectionUtils.USER_DECLARED_METHODS);
@@ -137,7 +191,10 @@ public class SpringUtil implements BeanFactoryPostProcessor {
     }
 
     /**
-     * 获取注解信息
+     * 获取Mapping注解中的接口地址
+     *
+     * @param annotatedElement Mapping注解
+     * @return 接口地址列表
      */
     public static List<String> getMappingPaths(AnnotatedElement annotatedElement) {
         final RequestMapping requestMapping = annotatedElement.getAnnotation(RequestMapping.class);
@@ -166,8 +223,6 @@ public class SpringUtil implements BeanFactoryPostProcessor {
         }
         return Arrays.asList(pathList);
     }
-
-
 
     /**
      * 获取文件后缀

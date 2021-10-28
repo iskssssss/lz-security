@@ -13,6 +13,9 @@
         <module>sw-security-core</module>
         <module>sw-security-starter</module>
         <module>sw-security-plugins</module>
+        <module>security-demo</module>
+        <module>sw-security-auth</module>
+        <module>sw-tool</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -30,19 +33,29 @@
         <bcprov-jdk15to18.version>1.66</bcprov-jdk15to18.version>
 
         <sw-common-core.version>0.0.10</sw-common-core.version>
+        <!-- 通用工具模块 -->
+        <sw-tool.version>1.0.3</sw-tool.version>
 
         <!-- 通用 -->
-        <sw-security-common.version>1.0.39</sw-security-common.version>
+        <sw-security-common.version>1.0.40</sw-security-common.version>
         <!-- 核心 -->
-        <sw-security-core.version>1.0.46</sw-security-core.version>
+        <sw-security-core.version>1.0.48</sw-security-core.version>
+        <!-- 认证 -->
+        <sw-security-auth.version>1.0.0</sw-security-auth.version>
         <!-- 插件 -->
-        <sw-security-plugins-redis.version>1.0.14</sw-security-plugins-redis.version>
+        <sw-security-plugins-redis.version>1.0.15</sw-security-plugins-redis.version>
         <!-- 启动相关 -->
-        <sw-security-spring-boot-starter.version>1.1.30</sw-security-spring-boot-starter.version>
+        <sw-security-spring-boot-starter.version>1.1.33</sw-security-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.sowell.tool</groupId>
+                <artifactId>sw-tool</artifactId>
+                <version>${sw-tool.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.sowell.common</groupId>
                 <artifactId>sw-common-core</artifactId>
@@ -120,6 +133,12 @@
                 <artifactId>sw-security-core</artifactId>
                 <version>${sw-security-core.version}</version>
             </dependency>
+
+            <!--<dependency>
+                <groupId>com.sowell.security</groupId>
+                <artifactId>sw-security-auth</artifactId>
+                <version>${sw-security-auth.version}</version>
+            </dependency>-->
 
             <dependency>
                 <groupId>com.sowell.security</groupId>

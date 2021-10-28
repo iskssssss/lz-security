@@ -1,11 +1,13 @@
 package com.sowell.security.mode;
 
+import com.sowell.security.IcpManager;
 import com.sowell.security.context.model.BaseResponse;
-import com.sowell.security.enums.RCode;
 import com.sowell.security.exception.SecurityException;
-import com.sowell.security.utils.ByteUtil;
-import com.sowell.security.utils.StringUtil;
 import com.sowell.security.wrapper.HttpServletResponseWrapper;
+import com.sowell.tool.core.bytes.ByteUtil;
+import com.sowell.tool.core.enums.RCode;
+import com.sowell.tool.core.string.StringUtil;
+import com.sowell.tool.encrypt.model.SwPrivateKey;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +36,26 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 		return this;
 	}
 
+//	@Override
+//	public String encrypt(byte[] bytes) {
+//		final SwPrivateKey priKey = IcpManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+//		final String encryptResult = priKey.encrypt(bytes);
+//		return encryptResult;
+//	}
+
+	/*@Override
+	public void print(RCode rCode, Object... data) {
+		JSONObject resultJson = new JSONObject();
+		resultJson.put("code", rCode.getCode());
+		if (data != null && data.length > 0) {
+			resultJson.put("data", JsonUtil.toJsonString(data[0]));
+		} else {
+			resultJson.put("data", null);
+		}
+		resultJson.put("message", rCode.getMessage());
+		this.print(resultJson.toJSONString());
+	}*/
+
 	@Override
 	public void print(String message) {
 		final byte[] bytes = ByteUtil.toBytes(message);
@@ -57,10 +79,12 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 		if (off < 0 || off > length || len < 0 || len > length) {
 			return;
 		}
-		getResponse().resetBuffer();
-		getResponse().setContentLength(len);
-		try (ServletOutputStream outputStream = getResponse().getOutputStream()) {
+		final HttpServletResponse response = getResponse();
+		try(ServletOutputStream outputStream = response instanceof HttpServletResponseWrapper ?
+				((HttpServletResponseWrapper) response).getResponseOutputStream() : response.getOutputStream()) {
+			response.setContentLength(len);
 			outputStream.write(bytes, off, len);
+			outputStream.flush();
 		} catch (IOException ioException) {
 			throw new SecurityException(RCode.UNKNOWN_MISTAKE.getCode(), RCode.UNKNOWN_MISTAKE.getMessage(), ioException);
 		}
@@ -70,7 +94,11 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 	public byte[] getResponseDataBytes() {
 		if (getResponse() instanceof HttpServletResponseWrapper) {
 			final HttpServletResponseWrapper responseWrapper = (HttpServletResponseWrapper) getResponse();
-			return responseWrapper.toByteArray();
+			try {
+				return responseWrapper.toByteArray();
+			} catch (IOException ioException) {
+				throw new RuntimeException("数据获取异常", ioException);
+			}
 		}
 		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		try (PrintWriter ignored = new PrintWriter(new OutputStreamWriter(bytes, StandardCharsets.UTF_8))) {

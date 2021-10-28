@@ -16,6 +16,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.sowell.tool</groupId>
+            <artifactId>sw-tool</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -26,36 +31,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-http</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
         </dependency>
@@ -63,29 +38,6 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15to18</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sowell.common</groupId>
-            <artifactId>sw-common-core</artifactId>
-            <optional>false</optional>
-
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sowell.common</groupId>
-                    <artifactId>sw-common-orm</artifactId>
-                </exclusion>
-
-                <exclusion>
-                    <groupId>com.alibaba</groupId>
-                    <artifactId>fastjson</artifactId>
-                </exclusion>
-
-                <exclusion>
-                    <groupId>javax.annotation</groupId>
-                    <artifactId>jsr250-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 

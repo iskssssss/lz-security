@@ -1,24 +1,28 @@
 package com.sowell.security;
 
-import com.sowell.security.auth.AbstractLogoutHandler;
-import com.sowell.security.auth.impl.AuthorizationHandler;
-import com.sowell.security.auth.impl.LogoutHandler;
-import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.base.AbstractInterfacesFilter;
 import com.sowell.security.base.BaseFilterErrorHandler;
+import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.FilterConfigurer;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.config.InterfacesMethodMap;
 import com.sowell.security.context.IcpContext;
-import com.sowell.security.defaults.*;
-import com.sowell.security.enums.HttpStatus;
+import com.sowell.security.context.model.IcpStorage;
+import com.sowell.security.defaults.DefaultCacheManager;
+import com.sowell.security.defaults.DefaultFilterErrorHandler;
+import com.sowell.security.defaults.DefaultFilterLogHandler;
+import com.sowell.security.defaults.DefaultRequestDataEncryptHandler;
+import com.sowell.security.defaults.token.JwtAccessTokenHandler;
+import com.sowell.security.defaults.token.UUIDAccessTokenHandler;
 import com.sowell.security.exception.SecurityException;
-import com.sowell.security.filter.*;
+import com.sowell.security.filter.StartFilter;
 import com.sowell.security.handler.FilterDataHandler;
+import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.token.IAccessTokenHandler;
+import com.sowell.tool.core.enums.HttpStatus;
+import com.sowell.tool.reflect.model.ControllerMethod;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -30,61 +34,80 @@ import java.util.Map;
  */
 public class IcpManager {
 	//====================================================================================================================================
-	private static IcpConfig icpConfig;
 
+	private static IcpConfig icpConfig = null;
+
+	/**
+	 * 设置配置文件
+	 *
+	 * @param icpConfig 配置文件
+	 */
 	public static void setIcpConfig(IcpConfig icpConfig) {
 		IcpManager.icpConfig = icpConfig;
 	}
 
+	/**
+	 * 获取配置文件
+	 *
+	 * @return 配置文件
+	 */
 	public static IcpConfig getIcpConfig() {
 		return icpConfig;
 	}
 
 	//====================================================================================================================================
+
 	private static final FilterConfigurer FILTER_CONFIGURER = new FilterConfigurer();
 
+	/**
+	 * 获取过滤配置文件
+	 *
+	 * @return 过滤配置文件
+	 */
 	public static FilterConfigurer getFilterConfigurer() {
 		return FILTER_CONFIGURER;
 	}
 
 	//====================================================================================================================================
-	private static IcpContext icpContext;
 
-	public static void setIcpContext(IcpContext icpContext) {
+	private static IcpContext<?, ?> icpContext = null;
+
+	/**
+	 * 设置上下文
+	 *
+	 * @param icpContext 上下文
+	 */
+	public static void setIcpContext(IcpContext<?, ?> icpContext) {
 		IcpManager.icpContext = icpContext;
 	}
 
-	public static IcpContext getIcpContext() {
+	/**
+	 * 获取上下文
+	 *
+	 * @return 上下文
+	 */
+	public static IcpContext<?, ?> getIcpContext() {
 		return icpContext;
 	}
 
 	//====================================================================================================================================
-	private static volatile AuthorizationHandler authorizationHandler;
 
-	public static AuthorizationHandler getAuthorizationHandler() {
-		if (authorizationHandler == null) {
-			authorizationHandler = new AuthorizationHandler();
-		}
-		return authorizationHandler;
-	}
+	private static BaseCacheManager cacheManager = null;
 
-	//====================================================================================================================================	private static volatile AuthorizationHandler authorizationHandler;
-	private static volatile AbstractLogoutHandler logoutHandler;
-
-	public static AbstractLogoutHandler getLogoutHandler() {
-		if (logoutHandler == null) {
-			logoutHandler = new LogoutHandler();
-		}
-		return logoutHandler;
-	}
-
-	//====================================================================================================================================
-	private static BaseCacheManager cacheManager;
-
+	/**
+	 * 设置缓存管理器
+	 *
+	 * @param cacheManager 设置缓存管理器
+	 */
 	public static void setCacheManager(BaseCacheManager cacheManager) {
 		IcpManager.cacheManager = cacheManager;
 	}
 
+	/**
+	 * 获取缓存管理器
+	 *
+	 * @return 缓存管理器
+	 */
 	public static BaseCacheManager getCacheManager() {
 		if (IcpManager.cacheManager == null) {
 			IcpManager.cacheManager = new DefaultCacheManager();
@@ -93,7 +116,8 @@ public class IcpManager {
 	}
 
 	//====================================================================================================================================
-	private static AbstractInterfacesFilter interfacesFilter = null;
+
+	private static final AbstractInterfacesFilter INTERFACES_FILTER = new StartFilter();
 
 	/**
 	 * 设置接口过滤执行链
@@ -107,7 +131,7 @@ public class IcpManager {
 		if (interfacesFilterList == null || interfacesFilterList.length < 1) {
 			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "接口过滤执行链不可为空!");
 		}
-		AbstractInterfacesFilter ai = IcpManager.interfacesFilter = new StartFilter();
+		AbstractInterfacesFilter ai = IcpManager.INTERFACES_FILTER;
 		//AbstractInterfacesFilter[] filterList = new AbstractInterfacesFilter[] {new ExcludeFilter()};
 		//for (AbstractInterfacesFilter abstractInterfacesFilter : filterList) {
 		//	ai.linkFilter(abstractInterfacesFilter);
@@ -125,44 +149,12 @@ public class IcpManager {
 	 * @return 接口过滤执行链
 	 */
 	public static AbstractInterfacesFilter getInterfacesFilter() {
-		return IcpManager.interfacesFilter;
+		return IcpManager.INTERFACES_FILTER;
 	}
 
 	//====================================================================================================================================
-	private static final AbstractInterfacesFilter AUTH_FILTER = linkAuthFilter();
 
-	/**
-	 * 设置认证过滤执行链
-	 * <p>注意：一定要按顺序放入过滤器</p>
-	 * <p>如:linkFilter(过滤器1, 过滤器2, 过滤器3)</p>
-	 * <p>设置后过滤顺序为 ：开始 -> 过滤器1 -> 过滤器2 -> 过滤器3 -> 结束</p>
-	 */
-	private static AbstractInterfacesFilter linkAuthFilter() {
-		AbstractInterfacesFilter authFilter;
-		AbstractInterfacesFilter ai = authFilter = new StartFilter();
-		AbstractInterfacesFilter[] filterList = new AbstractInterfacesFilter[] {
-				new AuthorizationFilter(), new AnonymousFilter()
-		};
-		for (AbstractInterfacesFilter abstractInterfacesFilter : filterList) {
-			ai.linkFilter(abstractInterfacesFilter);
-			ai = abstractInterfacesFilter;
-		}
-		return authFilter;
-	}
-
-	/**
-	 * 获取接口过滤执行链
-	 *
-	 * @return 接口过滤执行链
-	 */
-	public static AbstractInterfacesFilter getAuthFilter() {
-		return IcpManager.AUTH_FILTER;
-	}
-	//====================================================================================================================================
-	/**
-	 * 日志处理器
-	 */
-	private static BaseFilterLogHandler filterLogHandler;
+	private static BaseFilterLogHandler filterLogHandler = null;
 
 	/**
 	 * 设置过滤日志处理器
@@ -184,11 +176,10 @@ public class IcpManager {
 		}
 		return IcpManager.filterLogHandler;
 	}
+
 	//====================================================================================================================================
-	/**
-	 * 过滤错误处理
-	 */
-	private static BaseFilterErrorHandler<?> filterErrorHandler;
+
+	private static BaseFilterErrorHandler<?> filterErrorHandler = null;
 
 	/**
 	 * 设置过滤错误处理器
@@ -210,10 +201,9 @@ public class IcpManager {
 		}
 		return IcpManager.filterErrorHandler;
 	}
+
 	//====================================================================================================================================
-	/**
-	 * 数据处理器
-	 */
+
 	private static final FilterDataHandler FILTER_DATA_HANDLER = new FilterDataHandler();
 
 	/**
@@ -226,6 +216,7 @@ public class IcpManager {
 	}
 
 	//====================================================================================================================================
+
 	private static final InterfacesMethodMap INTERFACES_METHOD_MAP = new InterfacesMethodMap();
 
 	/**
@@ -233,7 +224,7 @@ public class IcpManager {
 	 *
 	 * @param interfacesMethodMap 接口方法映射集合
 	 */
-	public static void setInterfacesMethodMap(Map<String, Method> interfacesMethodMap) {
+	public static void setInterfacesMethodMap(Map<String, ControllerMethod> interfacesMethodMap) {
 		INTERFACES_METHOD_MAP.putInterfacesMethodMap(interfacesMethodMap);
 	}
 
@@ -243,15 +234,16 @@ public class IcpManager {
 	 * @param url 请求接口
 	 * @return 方法
 	 */
-	public static Method getMethodByInterfaceUrl(String url) {
+	public static ControllerMethod getMethodByInterfaceUrl(String url) {
 		return INTERFACES_METHOD_MAP.getMethodByInterfaceUrl(url);
 	}
 
 	//====================================================================================================================================
-	private static IAccessTokenHandler accessTokenHandler;
+
+	private static IAccessTokenHandler accessTokenHandler = null;
 
 	/**
-	 * 设置accessToken处理器
+	 * 设置AccessToken处理器
 	 *
 	 * @param accessTokenHandler accessToken处理器
 	 */
@@ -260,7 +252,7 @@ public class IcpManager {
 	}
 
 	/**
-	 * 获取accessToken处理器
+	 * 获取AccessToken处理器
 	 *
 	 * @return 方法
 	 */
@@ -276,5 +268,40 @@ public class IcpManager {
 		}
 		return IcpManager.accessTokenHandler;
 	}
+
 	//====================================================================================================================================
+
+	private static RequestDataEncryptHandler requestDataEncryptHandler = null;
+
+	/**
+	 * 设置请求加解密处理器
+	 *
+	 * @param requestDataEncryptHandler 请求加解密处理器
+	 */
+	public static void setRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
+		IcpManager.requestDataEncryptHandler = requestDataEncryptHandler;
+	}
+
+	/**
+	 * 获取请求加解密处理器
+	 *
+	 * @return 请求加解密处理器
+	 */
+	public static RequestDataEncryptHandler getRequestDataEncryptHandler() {
+		if (IcpManager.requestDataEncryptHandler == null) {
+			IcpManager.requestDataEncryptHandler = new DefaultRequestDataEncryptHandler();
+		}
+		return IcpManager.requestDataEncryptHandler;
+	}
+
+	//====================================================================================================================================
+
+	/**
+	 * 从{@link IcpManager#getIcpContext()}中获取存储信息
+	 *
+	 * @return 存储信息
+	 */
+	public static IcpStorage<?> getStorage() {
+		return IcpManager.getIcpContext().getStorage();
+	}
 }

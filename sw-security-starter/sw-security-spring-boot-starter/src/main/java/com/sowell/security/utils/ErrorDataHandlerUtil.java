@@ -2,9 +2,10 @@ package com.sowell.security.utils;
 
 import com.sowell.common.core.web.result.ResultCode;
 import com.sowell.common.core.web.result.ResultEntity;
-import com.sowell.security.enums.HttpStatus;
+import com.sowell.tool.core.enums.HttpStatus;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.model.ResponseData;
+import com.sowell.tool.json.JsonUtil;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -23,11 +24,10 @@ public class ErrorDataHandlerUtil {
 		if (error instanceof SecurityException) {
 			final SecurityException securityException = (SecurityException) error;
 			final Object data = securityException.getResponseData();
-			ResultEntity resultEntity = new ResultEntity() {{
-				setCode(securityException.getCode());
-				setData(data == null ? null : JsonUtil.toJsonObject(data));
-				setMessage(securityException.getMessage());
-			}};
+			ResultEntity resultEntity = new ResultEntity();
+			resultEntity.setCode(securityException.getCode());
+			resultEntity.setData(data == null ? null : JsonUtil.toJsonString(data));
+			resultEntity.setMessage(securityException.getMessage());
 			responseData.setMsg("SecurityException错误");
 			responseData.setBodyData(resultEntity);
 			responseData.setHttpStatus(HttpStatus.UNAUTHORIZED);
@@ -52,10 +52,10 @@ public class ErrorDataHandlerUtil {
 	}
 
 	private static ResultEntity getResultEntity(ResultCode resultCode) {
-		return new ResultEntity() {{
-			setCode(resultCode.getCode());
-			setData(null);
-			setMessage(resultCode.getMessage());
-		}};
+		final ResultEntity resultEntity = new ResultEntity();
+		resultEntity.setCode(resultCode.getCode());
+		resultEntity.setData(null);
+		resultEntity.setMessage(resultCode.getMessage());
+		return resultEntity;
 	}
 }

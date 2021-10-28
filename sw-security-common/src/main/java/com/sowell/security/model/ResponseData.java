@@ -1,6 +1,6 @@
 package com.sowell.security.model;
 
-import com.sowell.security.enums.HttpStatus;
+import com.sowell.tool.core.enums.HttpStatus;
 import lombok.Data;
 import lombok.ToString;
 

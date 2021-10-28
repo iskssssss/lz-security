@@ -1,18 +1,16 @@
 package com.sowell.security.spring;
 
 import com.sowell.security.IcpManager;
-import com.sowell.security.auth.*;
 import com.sowell.security.base.BaseFilterErrorHandler;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.FilterConfigurer;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpContextTheadLocal;
+import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.BaseFilterLogHandler;
-import com.sowell.security.service.PasswordEncoder;
-import com.sowell.security.service.UserDetailsService;
+import com.sowell.security.token.IAccessTokenHandler;
+import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.util.PathMatcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +25,6 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:16
  */
-@Lazy
 public class BeanInject {
 
 	@Autowired
@@ -36,10 +33,13 @@ public class BeanInject {
 	}
 
 	@Autowired
-	public void injectInterfacesMethodMap(Map<String, Method> initControllerMethodMap) {
+	public void injectInterfacesMethodMap(Map<String, ControllerMethod> initControllerMethodMap) {
 		IcpManager.setInterfacesMethodMap(initControllerMethodMap);
 	}
 
+	/**
+	 * 自动注入<b>路径匹配器</b>
+	 */
 	@Autowired(required = false)
 	@Qualifier("mvcPathMatcher")
 	public void injectIcpContext(PathMatcher pathMatcher) {
@@ -52,116 +52,126 @@ public class BeanInject {
 	}
 
 	/**
-	 * 自动注入<b>缓存处理器</b>
+	 * 自动注入<b>过滤日志处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectCacheManager(
-			BaseCacheManager cacheManager
-	) {
-		IcpManager.setCacheManager(cacheManager);
+	public void injectFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
+		IcpManager.setFilterLogHandler(filterLogHandler);
 	}
 
 	/**
 	 * 自动注入<b>过滤错误处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectFilterErrorHandler(
-			BaseFilterErrorHandler<?> filterErrorHandler
-	) {
+	public void injectFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
 		IcpManager.setFilterErrorHandler(filterErrorHandler);
 	}
 
 	/**
-	 * 自动注入<b>过滤日志处理器</b>
+	 * 自动注入<b>AccessToken处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectFilterLogHandler(
-			BaseFilterLogHandler filterLogHandler
-	) {
-		IcpManager.setFilterLogHandler(filterLogHandler);
+	public void injectAccessTokenHandler(IAccessTokenHandler accessTokenHandler) {
+		IcpManager.setAccessTokenHandler(accessTokenHandler);
 	}
 
 	/**
-	 * 自动注入<b>密码验证</b>
+	 * 自动注入<b>数据加解密处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectPasswordEncoder(
-			PasswordEncoder passwordEncoder
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.passwordEncoder(passwordEncoder);
+	public void injectRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
+		IcpManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
 	}
 
 	/**
-	 * 自动注入<b>校验认证状态处理器</b>
+	 * 自动注入<b>缓存处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectCheckAccessAuthStatusHandler(
-			ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.checkAccessAuthStatusHandler(checkAccessAuthStatusHandler);
+	public void injectCacheManager(BaseCacheManager cacheManager) {
+		IcpManager.setCacheManager(cacheManager);
 	}
 
-	/**
-	 * 自动注入<b>用户获取服务类</b>
-	 */
-	@Autowired(required = false)
-	public void injectUserDetailsService(
-			UserDetailsService userDetailsService
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.userDetailsService(userDetailsService);
-	}
-
-	/**
-	 * 自动注入<b>验证码处理器</b>
-	 */
-	@Autowired(required = false)
-	public void injectCaptchaHandler(
-			CaptchaHandler captchaHandler
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.captchaHandler(captchaHandler);
-	}
-
-	/**
-	 * 自动注入<b>账号状态验证</b>
-	 */
-	@Autowired(required = false)
-	public void injectAccessStatusHandler(
-			AccessStatusHandler accessStatusHandler
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.accessStatusHandler(accessStatusHandler);
-	}
-
-	/**
-	 * 自动注入<b>登录成功处理器</b>
-	 */
-	@Autowired(required = false)
-	public void injectLoginSuccessHandler(
-			LoginSuccessHandler loginSuccessHandler
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.loginSuccessHandler(loginSuccessHandler);
-	}
-
-	/**
-	 * 自动注入<b>登录错误处理器</b>
-	 */
-	@Autowired(required = false)
-	public void injectLoginErrorHandler(
-			LoginErrorHandler loginErrorHandler
-	) {
-		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
-		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
-		login.loginErrorHandler(loginErrorHandler);
-	}
+//	/**
+//	 * 自动注入<b>密码验证</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectPasswordEncoder(
+//			PasswordEncoder passwordEncoder
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.passwordEncoder(passwordEncoder);
+//	}
+//
+//	/**
+//	 * 自动注入<b>校验认证状态处理器</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectCheckAccessAuthStatusHandler(
+//			ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.checkAccessAuthStatusHandler(checkAccessAuthStatusHandler);
+//	}
+//
+//	/**
+//	 * 自动注入<b>用户获取服务类</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectUserDetailsService(
+//			UserDetailsService userDetailsService
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.userDetailsService(userDetailsService);
+//	}
+//
+//	/**
+//	 * 自动注入<b>验证码处理器</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectCaptchaHandler(
+//			CaptchaHandler captchaHandler
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.captchaHandler(captchaHandler);
+//	}
+//
+//	/**
+//	 * 自动注入<b>账号状态验证</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectAccessStatusHandler(
+//			AccessStatusHandler accessStatusHandler
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.accessStatusHandler(accessStatusHandler);
+//	}
+//
+//	/**
+//	 * 自动注入<b>登录成功处理器</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectLoginSuccessHandler(
+//			LoginSuccessHandler loginSuccessHandler
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.loginSuccessHandler(loginSuccessHandler);
+//	}
+//
+//	/**
+//	 * 自动注入<b>登录错误处理器</b>
+//	 */
+//	@Autowired(required = false)
+//	public void injectLoginErrorHandler(
+//			LoginErrorHandler loginErrorHandler
+//	) {
+//		final FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+//		final FilterConfigurer.LoginHandlerInfo login = filterConfigurer.login();
+//		login.loginErrorHandler(loginErrorHandler);
+//	}
 }

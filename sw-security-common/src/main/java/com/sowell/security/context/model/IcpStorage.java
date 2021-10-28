@@ -1,10 +1,10 @@
 package com.sowell.security.context.model;
 
-import com.sowell.security.model.UserAgentInfo;
-import com.sowell.security.utils.BeanUtil;
+import com.sowell.tool.core.string.StringUtil;
+import com.sowell.tool.http.model.UserAgentInfo;
 import com.sowell.security.utils.IpUtil;
-import com.sowell.security.utils.StringUtil;
-import com.sowell.security.utils.UserAgentUtil;
+import com.sowell.tool.http.UserAgentUtil;
+import com.sowell.tool.reflect.BeanUtil;
 
 import java.io.Closeable;
 
