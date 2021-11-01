@@ -5,7 +5,6 @@ import com.sowell.security.config.IcpConfig;
 import com.sowell.security.filter.IcpServletFilter;
 import com.sowell.security.utils.SpringUtil;
 import com.sowell.tool.reflect.model.ControllerMethod;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -23,19 +22,6 @@ import java.util.Map;
  */
 @Import({BeanInject.class})
 public class BeanRegister {
-
-	@Bean
-	protected FilterRegistrationBean<IcpServletFilter> initFilterRegistrationBean() {
-		FilterRegistrationBean<IcpServletFilter> registration = new FilterRegistrationBean<>();
-		if (registration.getUrlPatterns().isEmpty()) {
-			registration.addUrlPatterns("/*");
-		}
-		IcpServletFilter filterContainer = new IcpServletFilter();
-		registration.setFilter(filterContainer);
-		registration.setOrder(Integer.MIN_VALUE);
-		registration.setName("filterContainer");
-		return registration;
-	}
 
 	/*@Bean
 	@ConfigurationProperties("sw.security")

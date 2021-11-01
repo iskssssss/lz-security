@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 /**
@@ -18,18 +19,13 @@ import org.springframework.core.env.Environment;
 public abstract class SecurityConfigurerAdapter implements EnvironmentAware {
 
     private FilterRegistrationBean<IcpServletFilter> registration;
-
-    @Autowired
-    public void setRegistration(
-            FilterRegistrationBean<IcpServletFilter> registration
-    ) {
-        this.registration = registration;
-    }
+    private IcpServletFilter filterContainer;
 
     /**
      * 初始化
      */
     private void init() {
+        this.filterContainer = new IcpServletFilter();
         this.config(IcpManager.getFilterConfigurer());
     }
 
@@ -56,17 +52,17 @@ public abstract class SecurityConfigurerAdapter implements EnvironmentAware {
         this.init();
     }
 
-    /*@Bean
+    @Bean
     protected FilterRegistrationBean<IcpServletFilter> initFilterRegistrationBean() {
-        if (registration == null) {
-            registration = new FilterRegistrationBean<>();
-            if (registration.getUrlPatterns().isEmpty()) {
-                registration.addUrlPatterns("/*");
+        if (this.registration == null){
+            this.registration = new FilterRegistrationBean<>();
+            if (this.registration.getUrlPatterns().isEmpty()) {
+                this.registration.addUrlPatterns("/*");
             }
-            registration.setFilter(this.filterContainer);
-            registration.setOrder(Integer.MIN_VALUE);
-            registration.setName("filterContainer");
+            this.registration.setFilter(this.filterContainer);
+            this.registration.setOrder(Integer.MIN_VALUE);
+            this.registration.setName("filterContainer");
         }
-        return registration;
-    }*/
+        return this.registration;
+    }
 }
