@@ -14,7 +14,7 @@ import com.sowell.security.mode.SwResponse;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/09/17 16:55
  */
-public abstract class SwAbsInterfacesFilter extends AbsInterfacesFilterBuilder {
+public abstract class SwInterfacesFilter extends AbsInterfacesFilterBuilder {
 
 	@Override
 	public final boolean doFilter(
