@@ -3,6 +3,7 @@ package com.sowell.tool.jwt.model;
 import com.sowell.tool.json.JsonUtil;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 public abstract class AuthDetails<T> implements Serializable {
 	static final long serialVersionUID = 42L;
+	private final String uuid = UUID.randomUUID().toString() + "" + System.currentTimeMillis();
 	/**
 	 * ID
 	 */
@@ -76,5 +78,16 @@ public abstract class AuthDetails<T> implements Serializable {
 
 	public String toJson() {
 		return JsonUtil.toJsonString(this);
+	}
+
+	@Override
+	public String toString() {
+		return "AuthDetails{" +
+				"uuid='" + uuid + '\'' +
+				", id='" + id + '\'' +
+				", identifier='" + identifier + '\'' +
+				", credential='" + credential + '\'' +
+				", sourceClassName='" + sourceClassName + '\'' +
+				'}';
 	}
 }

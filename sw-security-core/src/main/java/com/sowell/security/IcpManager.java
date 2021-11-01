@@ -1,7 +1,8 @@
 package com.sowell.security;
 
-import com.sowell.security.base.AbstractInterfacesFilter;
+import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.base.BaseFilterErrorHandler;
+import com.sowell.security.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.FilterConfigurer;
 import com.sowell.security.config.IcpConfig;
@@ -35,7 +36,7 @@ import java.util.Map;
 public class IcpManager {
 	//====================================================================================================================================
 
-	private static IcpConfig icpConfig = null;
+	protected static IcpConfig icpConfig = null;
 
 	/**
 	 * 设置配置文件
@@ -57,7 +58,7 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	private static final FilterConfigurer FILTER_CONFIGURER = new FilterConfigurer();
+	protected static final FilterConfigurer FILTER_CONFIGURER = new FilterConfigurer();
 
 	/**
 	 * 获取过滤配置文件
@@ -70,7 +71,7 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	private static IcpContext<?, ?> icpContext = null;
+	protected static IcpContext<?, ?> icpContext = null;
 
 	/**
 	 * 设置上下文
@@ -92,7 +93,7 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	private static BaseCacheManager cacheManager = null;
+	protected static BaseCacheManager cacheManager = null;
 
 	/**
 	 * 设置缓存管理器
@@ -100,6 +101,9 @@ public class IcpManager {
 	 * @param cacheManager 设置缓存管理器
 	 */
 	public static void setCacheManager(BaseCacheManager cacheManager) {
+		if (IcpManager.cacheManager instanceof DefaultCacheManager) {
+			((DefaultCacheManager) cacheManager).destroy();
+		}
 		IcpManager.cacheManager = cacheManager;
 	}
 
@@ -110,14 +114,26 @@ public class IcpManager {
 	 */
 	public static BaseCacheManager getCacheManager() {
 		if (IcpManager.cacheManager == null) {
-			IcpManager.cacheManager = new DefaultCacheManager();
+//			final Class<?> redisConfigClass = ReflectUtil.forName("com.sowell.security.plugins.config.RedisConfig");
+//			if (redisConfigClass != null) {
+//				final Class<?> redisCacheManagerClass = ReflectUtil.forName("com.sowell.security.plugins.cache.RedisCacheManager");
+//				if (redisCacheManagerClass != null) {
+//					final Object redisCacheManager = ReflectUtil.newInstance(redisCacheManagerClass);
+//					IcpManager.cacheManager = ((BaseCacheManager) redisCacheManager);
+//				}
+//			}
+			synchronized (IcpManager.class) {
+				if (IcpManager.cacheManager == null) {
+					IcpManager.cacheManager = new DefaultCacheManager();
+				}
+			}
 		}
 		return IcpManager.cacheManager;
 	}
 
 	//====================================================================================================================================
 
-	private static final AbstractInterfacesFilter INTERFACES_FILTER = new StartFilter();
+	protected static final AbsInterfacesFilterBuilder INTERFACES_FILTER = new StartFilter();
 
 	/**
 	 * 设置接口过滤执行链
@@ -127,17 +143,19 @@ public class IcpManager {
 	 *
 	 * @param interfacesFilterList 过滤执行链
 	 */
-	public static void linkInterfacesFilter(AbstractInterfacesFilter... interfacesFilterList) {
+	public static void linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
 		if (interfacesFilterList == null || interfacesFilterList.length < 1) {
 			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "接口过滤执行链不可为空!");
 		}
-		AbstractInterfacesFilter ai = IcpManager.INTERFACES_FILTER;
-		//AbstractInterfacesFilter[] filterList = new AbstractInterfacesFilter[] {new ExcludeFilter()};
-		//for (AbstractInterfacesFilter abstractInterfacesFilter : filterList) {
-		//	ai.linkFilter(abstractInterfacesFilter);
-		//	ai = abstractInterfacesFilter;
-		//}
-		for (final AbstractInterfacesFilter interfacesFilter : interfacesFilterList) {
+		AbsInterfacesFilterBuilder ai = IcpManager.INTERFACES_FILTER;
+		boolean existLogBeforeFilter = false;
+		for (final AbsInterfacesFilterBuilder interfacesFilter : interfacesFilterList) {
+			if (interfacesFilter.getClass().getAnnotation(LogBeforeFilter.class) != null) {
+				if (existLogBeforeFilter) {
+					throw new RuntimeException("注解(LogBeforeFilter)全局只可存在一个。");
+				}
+				existLogBeforeFilter = true;
+			}
 			ai.linkFilter(interfacesFilter);
 			ai = interfacesFilter;
 		}
@@ -148,13 +166,13 @@ public class IcpManager {
 	 *
 	 * @return 接口过滤执行链
 	 */
-	public static AbstractInterfacesFilter getInterfacesFilter() {
-		return IcpManager.INTERFACES_FILTER;
+	public static AbsInterfacesFilterBuilder getInterfacesFilter() {
+		return ((AbsInterfacesFilterBuilder) IcpManager.INTERFACES_FILTER);
 	}
 
 	//====================================================================================================================================
 
-	private static BaseFilterLogHandler filterLogHandler = null;
+	protected static BaseFilterLogHandler filterLogHandler = null;
 
 	/**
 	 * 设置过滤日志处理器
@@ -172,14 +190,18 @@ public class IcpManager {
 	 */
 	public static BaseFilterLogHandler getFilterLogHandler() {
 		if (IcpManager.filterLogHandler == null) {
-			IcpManager.filterLogHandler = new DefaultFilterLogHandler();
+			synchronized (IcpManager.class) {
+				if (IcpManager.filterLogHandler == null) {
+					IcpManager.filterLogHandler = new DefaultFilterLogHandler();
+				}
+			}
 		}
 		return IcpManager.filterLogHandler;
 	}
 
 	//====================================================================================================================================
 
-	private static BaseFilterErrorHandler<?> filterErrorHandler = null;
+	protected static BaseFilterErrorHandler<?> filterErrorHandler = null;
 
 	/**
 	 * 设置过滤错误处理器
@@ -197,14 +219,18 @@ public class IcpManager {
 	 */
 	public static BaseFilterErrorHandler<?> getFilterErrorHandler() {
 		if (IcpManager.filterErrorHandler == null) {
-			IcpManager.filterErrorHandler = new DefaultFilterErrorHandler();
+			synchronized (IcpManager.class) {
+				if (IcpManager.filterErrorHandler == null) {
+					IcpManager.filterErrorHandler = new DefaultFilterErrorHandler();
+				}
+			}
 		}
 		return IcpManager.filterErrorHandler;
 	}
 
 	//====================================================================================================================================
 
-	private static final FilterDataHandler FILTER_DATA_HANDLER = new FilterDataHandler();
+	protected static final FilterDataHandler FILTER_DATA_HANDLER = new FilterDataHandler();
 
 	/**
 	 * 获取数据处理器
@@ -217,7 +243,7 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	private static final InterfacesMethodMap INTERFACES_METHOD_MAP = new InterfacesMethodMap();
+	protected static final InterfacesMethodMap INTERFACES_METHOD_MAP = new InterfacesMethodMap();
 
 	/**
 	 * 设置接口方法映射集合
@@ -240,7 +266,7 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	private static IAccessTokenHandler accessTokenHandler = null;
+	protected static IAccessTokenHandler accessTokenHandler = null;
 
 	/**
 	 * 设置AccessToken处理器
@@ -258,12 +284,16 @@ public class IcpManager {
 	 */
 	public static IAccessTokenHandler getAccessTokenHandler() {
 		if (IcpManager.accessTokenHandler == null) {
-			final IcpConfig icpConfig = IcpManager.getIcpConfig();
-			final IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
-			if (IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID.equals(accessAccessTokenConfig.getAccessTokenType())) {
-				IcpManager.accessTokenHandler = new UUIDAccessTokenHandler();
-			} else {
-				IcpManager.accessTokenHandler = new JwtAccessTokenHandler();
+			synchronized (IcpManager.class) {
+				if (IcpManager.accessTokenHandler == null) {
+					final IcpConfig icpConfig = IcpManager.getIcpConfig();
+					final IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
+					if (IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID.equals(accessAccessTokenConfig.getAccessTokenType())) {
+						IcpManager.accessTokenHandler = new UUIDAccessTokenHandler();
+					} else {
+						IcpManager.accessTokenHandler = new JwtAccessTokenHandler();
+					}
+				}
 			}
 		}
 		return IcpManager.accessTokenHandler;
@@ -271,7 +301,7 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	private static RequestDataEncryptHandler requestDataEncryptHandler = null;
+	protected static RequestDataEncryptHandler requestDataEncryptHandler = null;
 
 	/**
 	 * 设置请求加解密处理器
@@ -289,7 +319,11 @@ public class IcpManager {
 	 */
 	public static RequestDataEncryptHandler getRequestDataEncryptHandler() {
 		if (IcpManager.requestDataEncryptHandler == null) {
-			IcpManager.requestDataEncryptHandler = new DefaultRequestDataEncryptHandler();
+			synchronized (IcpManager.class) {
+				if (IcpManager.requestDataEncryptHandler == null) {
+					IcpManager.requestDataEncryptHandler = new DefaultRequestDataEncryptHandler();
+				}
+			}
 		}
 		return IcpManager.requestDataEncryptHandler;
 	}

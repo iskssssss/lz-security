@@ -2,8 +2,8 @@ package com.sowell.security.config.builder;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.base.AbstractInterfacesFilter;
 import com.sowell.security.base.BaseFilterErrorHandler;
+import com.sowell.security.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.FilterConfigurer;
 import com.sowell.security.filter.IcpFilterAuthStrategy;
@@ -44,7 +44,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @param interfacesFilterList 过滤执行链
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> linkInterfacesFilter(AbstractInterfacesFilter... interfacesFilterList) {
+	public FilterConfigurerBuilder<T> linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
 		IcpManager.linkInterfacesFilter(interfacesFilterList);
 		return this;
 	}

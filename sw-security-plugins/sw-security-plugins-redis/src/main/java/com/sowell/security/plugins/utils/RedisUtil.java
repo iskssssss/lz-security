@@ -1,4 +1,4 @@
-package com.sowell.security.utils;
+package com.sowell.security.plugins.utils;
 
 import com.sowell.security.log.IcpLogger;
 import com.sowell.security.log.IcpLoggerUtil;

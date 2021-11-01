@@ -63,7 +63,6 @@ public class ReflectUtil {
 					.replaceAll(";", "");
 			return Class.forName(handlerClassName);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}

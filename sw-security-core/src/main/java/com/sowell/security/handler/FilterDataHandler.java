@@ -2,17 +2,16 @@ package com.sowell.security.handler;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sowell.security.IcpManager;
-import com.sowell.security.base.BaseFilterErrorHandler;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.tool.core.bytes.ByteUtil;
-import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.core.enums.RCode;
+import com.sowell.tool.core.string.StringUtil;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * 数据处理器
@@ -40,6 +39,14 @@ public final class FilterDataHandler {
 		Object errorHandler = IcpManager.getFilterErrorHandler().errorHandler(request, response, securityException);
 		if (StringUtil.isEmpty(errorHandler)) {
 			return null;
+		}
+		// 处理字节数组
+		if (errorHandler instanceof byte[]) {
+			return ((byte[]) errorHandler);
+		}
+		// 处理map类型
+		if (errorHandler instanceof Map) {
+			return JSONObject.toJSONString(errorHandler).getBytes(StandardCharsets.UTF_8);
 		}
 		// 处理可序列化数据
 		if (errorHandler instanceof Serializable) {

@@ -1,8 +1,6 @@
 package com.sowell.security.defaults;
 
-import com.sowell.security.IcpManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.IcpConfig;
 import com.sowell.tool.cache.CacheManager;
 import com.sowell.tool.cache.utils.CacheUtil;
 
@@ -18,7 +16,6 @@ public class DefaultCacheManager implements BaseCacheManager {
 
 	public DefaultCacheManager() {
 		this.cacheManager = CacheUtil.newCacheManager();
-		this.cacheManager.schedulePrune(5);
 	}
 
 	@Override
@@ -63,5 +60,15 @@ public class DefaultCacheManager implements BaseCacheManager {
 	@Override
 	public Boolean existKey(Object key) {
 		return this.get(key) != null;
+	}
+
+	@Override
+	public boolean refreshKey(Object key, long timeout) {
+		// 默认缓存管理器无法修改过期时间
+		return cacheManager.get(key, true) != null;
+	}
+
+	public void destroy(){
+		this.cacheManager.destroy();
 	}
 }

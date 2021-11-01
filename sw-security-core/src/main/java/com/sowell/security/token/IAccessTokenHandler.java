@@ -15,14 +15,14 @@ import com.sowell.tool.jwt.model.AuthDetails;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/10/26 17:13
  */
-public interface IAccessTokenHandler {
+public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 
 	/**
-	 * 获取获取客户端的AccessToken
+	 * 获取获取客户端的AccessToken信息
 	 *
-	 * @return AccessToken
+	 * @return AccessToken信息
 	 */
-	default String getAccessToken() {
+	default Object getAccessTokenInfo() {
 		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
 		final IcpConfig icpConfig = IcpManager.getIcpConfig();
 		final String headerName = icpConfig.getHeaderName();
@@ -34,44 +34,70 @@ public interface IAccessTokenHandler {
 	}
 
 	/**
-	 * 生成AccessToken
+	 * 生成AccessToken信息
 	 *
 	 * @param authDetails 认证信息
 	 * @param <T>         类型
-	 * @return AccessToken
+	 * @return AccessToken信息
 	 */
-	<T extends AuthDetails<T>> String generateAccessToken(AuthDetails<T> authDetails);
+	Object generateAccessToken(T authDetails);
 
 	/**
-	 * 校验AccessToken是否过期
+	 * 校验AccessToken信息是否过期
 	 *
-	 * @param accessToken AccessToken
 	 * @return true：过期 反之未过期
 	 */
-	boolean checkExpiration(String accessToken);
+	default boolean checkExpiration() {
+		return this.checkExpiration(this.getAccessTokenInfo());
+	}
+
+	/**
+	 * 校验AccessToken信息是否过期
+	 *
+	 * @param accessTokenInfo AccessToken信息
+	 * @return true：过期 反之未过期
+	 */
+	boolean checkExpiration(Object accessTokenInfo);
 
 	/**
 	 * 获取认证信息
 	 *
-	 * @param accessToken AccessToken
-	 * @param <T>         类型
 	 * @return 认证信息
 	 */
-	<T extends AuthDetails<T>> AuthDetails<T> getAuthDetails(String accessToken);
+	default T getAuthDetails() {
+		return this.getAuthDetails(this.getAccessTokenInfo());
+	}
 
 	/**
 	 * 获取认证信息
 	 *
-	 * @param <T> 类型
+	 * @param accessTokenInfo AccessToken信息
 	 * @return 认证信息
 	 */
-	<T extends AuthDetails<T>> AuthDetails<T> getAuthDetails();
+	T getAuthDetails(Object accessTokenInfo);
 
 	/**
 	 * 设置认证信息
 	 *
 	 * @param authDetails 认证信息
-	 * @param <T>         类型
 	 */
-	<T extends AuthDetails<T>> void setAuthDetails(AuthDetails<T> authDetails);
+	void setAuthDetails(T authDetails);
+
+	/**
+	 * 刷新AccessToken过期时间
+	 *
+	 * @return 刷新后的AccessToken信息
+	 */
+	default Object refreshAccessToken() {
+		return this.refreshAccessToken(this.getAccessTokenInfo());
+	}
+
+	/**
+	 * 刷新AccessToken过期时间
+	 *
+	 * @param accessTokenInfo AccessToken信息
+	 * @return 刷新后的AccessToken信息
+	 */
+	Object refreshAccessToken(Object accessTokenInfo);
+
 }

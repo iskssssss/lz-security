@@ -3,9 +3,8 @@ package com.sowell.security.defaults.token;
 import cn.hutool.crypto.SmUtil;
 import com.sowell.security.IcpManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.defaults.token.model.DefaultAuthDetails;
 import com.sowell.security.exception.AccountNotExistException;
-import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
@@ -19,68 +18,74 @@ import java.util.HashMap;
  * @Author: 孔胜
  * @Date: 2021/09/18 10:11
  */
-public class UUIDAccessTokenHandler implements IAccessTokenHandler {
-
-	private final BaseCacheManager cacheManager;
-	private final long timeoutMillis;
-
-	public UUIDAccessTokenHandler() {
-		this.cacheManager = IcpManager.getCacheManager();
-		IcpConfig icpConfig = IcpManager.getIcpConfig();
-		IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
-		timeoutMillis = accessAccessTokenConfig.getTimeoutForMillis();
-	}
+public class UUIDAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDetails> {
 
 	@Override
-	public <T extends AuthDetails<T>> AuthDetails<T> getAuthDetails() {
-		return getAuthDetails(getAccessToken());
-	}
-
-	@Override
-	public <T extends AuthDetails<T>> String generateAccessToken(AuthDetails<T> authDetails) {
-		String accessToken = null;
+	public Object generateAccessToken(DefaultAuthDetails authDetails) {
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		long timeoutMillis = IcpManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
 		String id = "UUID::" + authDetails.getId();
-		final Object idValue = this.cacheManager.get(id);
-		try {
-			if (StringUtil.isNotEmpty(idValue)) {
-				return ((String) idValue);
-			}
-			accessToken = getAccessToken();
-			if (!this.checkExpiration(accessToken)) {
-				return ((String) idValue);
-			}
-		} catch (HeaderNotAccessTokenException ignored) {
+		final Object idValue = cacheManager.get(id);
+		if (StringUtil.isNotEmpty(idValue)) {
+			return idValue;
 		}
-		this.cacheManager.remove(id, accessToken);
-		accessToken = SmUtil.sm3(authDetails.toJson() + System.currentTimeMillis());
-		String finalAccessToken = accessToken;
-		this.cacheManager.putAll(new HashMap<String, Object>(4) {{
-			put(id, finalAccessToken);
-			put(finalAccessToken, authDetails);
-		}}, this.timeoutMillis);
+		cacheManager.remove(idValue);
+		String accessToken = SmUtil.sm3(authDetails.toJson() + System.currentTimeMillis());
+		cacheManager.putAll(new HashMap<String, Object>(4) {{
+			put(id, accessToken);
+			put(accessToken, authDetails);
+		}}, timeoutMillis);
 		return accessToken;
 	}
 
 	@Override
-	public boolean checkExpiration(String accessToken) {
-		if (StringUtil.isEmpty(accessToken)) {
+	public boolean checkExpiration(Object accessTokenInfo) {
+		if (StringUtil.isEmpty(accessTokenInfo)) {
 			return false;
 		}
-		return cacheManager.existKey(accessToken);
-	}
-
-	@Override
-	public <T extends AuthDetails<T>> AuthDetails<T> getAuthDetails(String accessToken) {
-		final Object authDetails = this.cacheManager.get(accessToken);
-		if (authDetails instanceof AuthDetails) {
-			return ((AuthDetails<T>) authDetails);
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		final Object authDetailsObj = cacheManager.get(accessTokenInfo);
+		if (!(authDetailsObj instanceof AuthDetails)) {
+			return true;
 		}
-		throw new AccountNotExistException();
+		final AuthDetails<?> authDetails = (AuthDetails<?>) authDetailsObj;
+		String id = "UUID::" + authDetails.getId();
+		final Object idValue = cacheManager.get(id);
+		if (StringUtil.isEmpty(idValue)) {
+			return true;
+		}
+		return !accessTokenInfo.equals(idValue);
 	}
 
 	@Override
-	public <T extends AuthDetails<T>> void setAuthDetails(AuthDetails<T> authDetails) {
-		final String accessToken = getAccessToken();
-		this.cacheManager.put(accessToken, authDetails);
+	public DefaultAuthDetails getAuthDetails(Object accessTokenInfo) {
+		if (this.checkExpiration(accessTokenInfo)) {
+			throw new AccountNotExistException();
+		}
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		final Object authDetails = cacheManager.get(accessTokenInfo);
+		if (!(authDetails instanceof AuthDetails)) {
+			throw new AccountNotExistException();
+		}
+		return ((DefaultAuthDetails) authDetails);
+	}
+
+	@Override
+	public void setAuthDetails(DefaultAuthDetails authDetails) {
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		final Object accessToken = getAccessTokenInfo();
+		cacheManager.put(accessToken, authDetails);
+	}
+
+	@Override
+	public Object refreshAccessToken(Object accessTokenInfo) {
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		long timeoutMillis = IcpManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
+		final AuthDetails<?> authDetails = this.getAuthDetails(accessTokenInfo);
+		String id = "UUID::" + authDetails.getId();
+		if (cacheManager.refreshKeys(timeoutMillis, id, accessTokenInfo)) {
+			return accessTokenInfo;
+		}
+		return null;
 	}
 }

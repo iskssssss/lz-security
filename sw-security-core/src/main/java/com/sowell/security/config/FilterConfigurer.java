@@ -2,21 +2,15 @@ package com.sowell.security.config;
 
 import com.sowell.security.arrays.UrlHashSet;
 //import com.sowell.security.auth.*;
-import com.sowell.security.IcpManager;
-import com.sowell.security.base.AbstractInterfacesFilter;
-import com.sowell.security.base.BaseFilterErrorHandler;
 //import com.sowell.security.defaults.DefaultCheckAccessAuthStatusHandler;
 //import com.sowell.security.defaults.DefaultLoginSuccessHandler;
 //import com.sowell.security.defaults.DefaultPasswordEncoder;
 //import com.sowell.security.defaults.DefaultLoginErrorHandler;
-import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.builder.FilterConfigurerBuilder;
 import com.sowell.security.filter.IcpFilterAuthStrategy;
-import com.sowell.security.log.BaseFilterLogHandler;
 //import com.sowell.security.service.PasswordEncoder;
 //import com.sowell.security.service.UserDetailsService;
 
-import java.util.*;
 
 /**
  * 过滤配置文件

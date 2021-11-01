@@ -1,6 +1,5 @@
 package com.sowell.security.context;
 
-import com.sowell.common.core.web.exception.ControllerExceptionHandler;
 import com.sowell.security.IcpManager;
 import com.sowell.security.annotation.RecordRequestData;
 import com.sowell.security.annotation.RecordResponseData;
@@ -15,7 +14,6 @@ import com.sowell.security.mode.SwResponse;
 import com.sowell.security.wrapper.HttpServletRequestWrapper;
 import com.sowell.security.wrapper.HttpServletResponseWrapper;
 import com.sowell.tool.core.enums.RCode;
-import com.sowell.tool.http.model.UserAgentInfo;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
 import javax.servlet.ServletRequest;
@@ -23,6 +21,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -43,6 +43,8 @@ public class IcpSpringContextHolder {
 			ServletRequest request, ServletResponse response, long startRequestTime, IcpFilterFunction<SwRequest, SwResponse> function
 	) {
 		try {
+			request.setCharacterEncoding(StandardCharsets.UTF_8.name());
+			response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			// 获取当前接口访问方法
@@ -57,6 +59,7 @@ public class IcpSpringContextHolder {
 			}
 			// 执行方法
 			function.run(swRequest, swResponse);
+		} catch (UnsupportedEncodingException ignored) {
 		} finally {
 			if (function != null) {
 				IcpSpringContextHolder.removeContext();

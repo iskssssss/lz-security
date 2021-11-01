@@ -23,16 +23,16 @@ import java.io.IOException;
  * @Author: 孔胜
  * @Date: 2021/10/22 15:50
  */
-public class InterfacesFilterBuilder {
-	protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(InterfacesFilterBuilder.class);
-	private AbstractInterfacesFilter nextFilter;
+public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
+	protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbsInterfacesFilterBuilder.class);
+	private IInterfacesFilter nextFilter;
 
 	/**
 	 * 获取下一过滤器
 	 *
 	 * @return 下一过滤器
 	 */
-	public AbstractInterfacesFilter getNextFilter() {
+	public IInterfacesFilter getNextFilter() {
 		return nextFilter;
 	}
 
@@ -42,7 +42,7 @@ public class InterfacesFilterBuilder {
 	 * @param nextFilter 下一过滤器
 	 * @return 下一过滤器
 	 */
-	public final AbstractInterfacesFilter linkFilter(AbstractInterfacesFilter nextFilter) {
+	public final IInterfacesFilter linkFilter(IInterfacesFilter nextFilter) {
 		this.nextFilter = nextFilter;
 		return nextFilter;
 	}
@@ -74,7 +74,7 @@ public class InterfacesFilterBuilder {
 			return yes(request);
 		}
 		// 日志处理
-		final Class<? extends AbstractInterfacesFilter> nextFilterClass = nextFilter.getClass();
+		final Class<? extends IInterfacesFilter> nextFilterClass = nextFilter.getClass();
 		final LogBeforeFilter logBeforeFilter = nextFilterClass.getAnnotation(LogBeforeFilter.class);
 		if (logBeforeFilter != null) {
 			final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
@@ -93,18 +93,7 @@ public class InterfacesFilterBuilder {
 	 * @return 拦截
 	 */
 	protected final boolean no() {
-		return no(IcpManager.getIcpContext().getRequest());
-	}
-
-	/**
-	 * 拦截接口
-	 *
-	 * @param request 请求流
-	 * @return 拦截
-	 */
-	protected final boolean no(BaseRequest<?> request) {
-		icpLogger.info("拦截接口：" + request.getRequestPath());
-		return false;
+		return no(RCode.REQUEST_ERROR);
 	}
 
 	/**
@@ -115,10 +104,7 @@ public class InterfacesFilterBuilder {
 	 * @throws IOException
 	 */
 	protected final boolean no(RCode rCode) throws SecurityException {
-		ServletUtil.printResponse(IcpManager.getIcpContext().getResponse(), ContentTypeEnum.JSON.name, rCode);
-		icpLogger.info("拦截信息：" + rCode.getMessage());
-		no(IcpManager.getIcpContext().getRequest());
-		return false;
+		return no(IcpManager.getIcpContext().getRequest(), IcpManager.getIcpContext().getResponse(), rCode);
 	}
 
 	/**
@@ -132,8 +118,8 @@ public class InterfacesFilterBuilder {
 	 */
 	protected final boolean no(BaseRequest<?> request, BaseResponse<?> response, RCode rCode) throws SecurityException {
 		ServletUtil.printResponse(response, ContentTypeEnum.JSON.name, rCode);
-		icpLogger.info("拦截信息：" + rCode.getMessage());
-		no(request);
+		icpLogger.error("拦截接口：" + request.getRequestPath());
+		icpLogger.error("拦截信息：" + rCode.getMessage());
 		return false;
 	}
 

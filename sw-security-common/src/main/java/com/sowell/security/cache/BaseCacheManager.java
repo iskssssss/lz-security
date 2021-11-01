@@ -50,7 +50,7 @@ public interface BaseCacheManager {
 	 * 批量添加缓存
 	 *
 	 * @param cacheMap 缓存集合
-	 * @param timeout  过期时间
+	 * @param timeout  过期时间(毫秒)
 	 */
 	default void putAll(Map<String, Object> cacheMap, long timeout) {
 		final Set<Map.Entry<String, Object>> cacheMapEntries = cacheMap.entrySet();
@@ -73,7 +73,7 @@ public interface BaseCacheManager {
 	/**
 	 * 移除缓存
 	 *
-	 * @param keys 键列表
+	 * @param keys 键集合
 	 * @return 结果
 	 */
 	default boolean remove(Object... keys) {
@@ -108,4 +108,37 @@ public interface BaseCacheManager {
 	 * @return 是否存在
 	 */
 	Boolean existKey(Object key);
+
+	/**
+	 * 刷新过期时间
+	 *
+	 * @param key     键
+	 * @param timeout 过期时间(毫秒)
+	 * @return 结果
+	 */
+	boolean refreshKey(Object key, long timeout);
+
+	/**
+	 * 刷新过期时间
+	 *
+	 * @param timeout 过期时间(毫秒)
+	 * @param keys    键集合
+	 * @return 结果
+	 */
+	default boolean refreshKeys(long timeout, Object... keys) {
+		if (keys == null || keys.length < 1) {
+			return false;
+		}
+		final int length = keys.length;
+		for (int i = 0; i < length; i++) {
+			final Object key = keys[i];
+			try {
+				this.refreshKey(key, timeout);
+				keys[i] = null;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

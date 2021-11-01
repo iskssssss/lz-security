@@ -47,6 +47,10 @@ public class CacheManager<K, V>
 	}
 
 	public V get(K key) {
+		return get(key, false);
+	}
+
+	public V get(K key, boolean isUpdateLastAccess) {
 		long stamp = this.lock.tryOptimisticRead();
 		CacheModel<K, V> kvCacheModel = this.cacheMap.get(key);
 		if (!this.lock.validate(stamp)) {
@@ -63,7 +67,7 @@ public class CacheManager<K, V>
 		if (kvCacheModel.isExpired()) {
 			return null;
 		}
-		return kvCacheModel.get(false);
+		return kvCacheModel.get(isUpdateLastAccess);
 	}
 
 	public void schedulePrune(long delay) {
@@ -72,6 +76,11 @@ public class CacheManager<K, V>
 
 	public void cancel(boolean mayInterruptIfRunning) {
 		scheduledFuture.cancel(mayInterruptIfRunning);
+	}
+
+	public void destroy() {
+		cancel(true);
+		cacheMap.clear();
 	}
 
 	@Override

@@ -2,12 +2,10 @@ package com.sowell.security.filter;
 
 import com.sowell.security.IcpFilter;
 import com.sowell.security.IcpManager;
-import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.config.FilterConfigurer;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
-import com.sowell.security.utils.SpringUtil;
 import com.sowell.tool.cache.utils.GlobalScheduled;
 
 import javax.servlet.FilterConfig;
@@ -26,9 +24,9 @@ public final class IcpServletFilter extends BaseFilter {
 	public void init(
 			FilterConfig filterConfig
 	) throws ServletException {
-		if (SpringUtil.getBeansWithAnnotationCount(LogBeforeFilter.class) > 1) {
+		/*if (SpringUtil.getBeansWithAnnotationCount(LogBeforeFilter.class) > 1) {
 			throw new RuntimeException("注解(LogBeforeFilter)全局只可存在一个。");
-		}
+		}*/
 		FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
 		super.filterBeforeHandler = filterConfigurer.getFilterBeforeHandler();
 		super.filterAfterHandler = filterConfigurer.getFilterAfterHandler();

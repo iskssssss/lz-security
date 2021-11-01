@@ -375,7 +375,7 @@ public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
 }
 ```
 
-#### 示例
+##### 示例
 
 ```java
 /**
@@ -401,6 +401,186 @@ public class TestInterfacesFilter extends SwInterfacesFilter {
 	public void destroy() {
 		IcpLoggerUtil.info(this.getClass(), "自定义过滤器 - 销毁");
 	}
+}
+```
+
+#### 框架预设的过滤器
+
+预设的过滤器都可在`FilterUtil`类下进行选择。
+
+##### AccessToken过滤器(AccessTokenFilter)
+
+使用方法：
+
+```java
+/**
+ * AccessToken过滤器
+ * <p>进入此过滤器会先记录日志</p>
+ * <p>此过滤器可以过滤未携带有效AccessToken的请求</p>
+ *
+ * @return AccessToken过滤器
+ */
+public static AccessTokenFilter accessTokenFilterOnLogBefore() {
+	return accessTokenFilter(false, true);
+}
+
+/**
+ * AccessToken过滤器
+ * <p>此过滤器可以过滤未携带有效AccessToken的请求</p>
+ *
+ * @return AccessToken过滤器
+ */
+public static AccessTokenFilter accessTokenFilter() {
+	return accessTokenFilter(false, false);
+}
+
+/**
+ * AccessToken过滤器
+ * <p>此过滤器可以过滤未携带有效AccessToken的请求</p>
+ *
+ * @param end 成功是否直接返回，不进行下一步过滤
+ * @return AccessToken过滤器
+ */
+public static AccessTokenFilter accessTokenFilter(boolean end) {
+	return accessTokenFilter(end, false);
+}
+
+/**
+ * AccessToken过滤器
+ * <p>此过滤器可以过滤未携带有效AccessToken的请求</p>
+ *
+ * @param end       成功是否直接返回，不进行下一步过滤
+ * @param logBefore 过滤前是否记录日志
+ * @return AccessToken过滤器
+ */
+public static AccessTokenFilter accessTokenFilter(boolean end, boolean logBefore) {
+	if (accessTokenFilter == null) {
+		if (logBefore) {
+			accessTokenFilter = new AccessTokenFilterOnLogBeforeFilter(end);
+		} else {
+			accessTokenFilter = new AccessTokenFilter(end);
+		}
+	}
+	return accessTokenFilter;
+}
+```
+
+##### ip过滤器(IpFilter)
+
+使用方法：
+
+```java
+/**
+ * ip过滤器
+ * <p>进入此过滤器会先记录日志</p>
+ * <p>此过滤器可排除非限定Ip之外的接口</p>
+ *
+ * @param ipListGetFun ip列表获取方法
+ * @return ip过滤器
+ */
+public static IpFilter ipFilterOnLogBefore(LambdaFunctional<List<String>> ipListGetFun) {
+	return ipFilter(ipListGetFun, false, true);
+}
+/**
+ * ip过滤器
+ * <p>此过滤器可排除非限定Ip之外的接口</p>
+ *
+ * @param ipListGetFun ip列表获取方法
+ * @return ip过滤器
+ */
+public static IpFilter ipFilter(LambdaFunctional<List<String>> ipListGetFun) {
+	return ipFilter(ipListGetFun, false);
+}
+/**
+ * ip过滤器
+ * <p>此过滤器可排除非限定Ip之外的接口</p>
+ *
+ * @param ipListGetFun ip列表获取方法
+ * @param end          成功是否直接返回，不进行下一步过滤
+ * @return ip过滤器
+ */
+public static IpFilter ipFilter(LambdaFunctional<List<String>> ipListGetFun, boolean end) {
+	return ipFilter(ipListGetFun, end, false);
+}
+/**
+ * ip过滤器
+ * <p>此过滤器可排除非限定Ip之外的接口</p>
+ *
+ * @param ipListGetFun ip列表获取方法
+ * @param end          成功是否直接返回，不进行下一步过滤
+ * @param logBefore    过滤前是否记录日志
+ * @return ip过滤器
+ */
+public static IpFilter ipFilter(LambdaFunctional<List<String>> ipListGetFun, boolean end, boolean logBefore) {
+	if (ipFilter == null) {
+		if (logBefore) {
+			ipFilter = new IpFilterOnLogBeforeFilter(ipListGetFun, end);
+		} else {
+			ipFilter = new IpFilter(ipListGetFun, end);
+		}
+	}
+	return ipFilter;
+}
+```
+
+##### 请求接口过滤器(RequestInterfaceFilter)
+
+使用方法：
+
+```java
+/**
+ * 请求接口过滤器
+ * <p>进入此过滤器会先记录日志</p>
+ * <p>此过滤器可以限定客户端可访问的接口</p>
+ *
+ * @param interfaceListGetFun 接口列表获取方法
+ * @return 请求接口过滤器
+ */
+public static RequestInterfaceFilter requestInterfaceFilterOnLogBefore(LambdaFunctional<UrlHashSet> interfaceListGetFun) {
+	return requestInterfaceFilter(interfaceListGetFun, false, true);
+}
+
+/**
+ * 请求接口过滤器
+ * <p>此过滤器可以限定客户端可访问的接口</p>
+ *
+ * @param interfaceListGetFun 接口列表获取方法
+ * @return 请求接口过滤器
+ */
+public static RequestInterfaceFilter requestInterfaceFilter(LambdaFunctional<UrlHashSet> interfaceListGetFun) {
+	return requestInterfaceFilter(interfaceListGetFun, false);
+}
+
+/**
+ * 请求接口过滤器
+ * <p>此过滤器可以限定客户端可访问的接口</p>
+ *
+ * @param interfaceListGetFun 接口列表获取方法
+ * @param end                 成功是否直接返回，不进行下一步过滤
+ * @return 请求接口过滤器
+ */
+public static RequestInterfaceFilter requestInterfaceFilter(LambdaFunctional<UrlHashSet> interfaceListGetFun, boolean end) {
+	return requestInterfaceFilter(interfaceListGetFun, end, false);
+}
+
+/**
+ * 请求接口过滤器
+ * <p>此过滤器可以限定客户端可访问的接口</p>
+ *
+ * @param interfaceListGetFun 接口列表获取方法
+ * @param end                 成功是否直接返回，不进行下一步过滤
+ * @param logBefore           过滤前是否记录日志
+ * @return 请求接口过滤器
+ */
+public static RequestInterfaceFilter requestInterfaceFilter(LambdaFunctional<UrlHashSet> interfaceListGetFun, boolean end, boolean logBefore) {
+	if (requestInterfaceFilter == null) {
+		if (logBefore) {
+			requestInterfaceFilter = new RequestInterfaceFilterOnLogBeforeFilter(interfaceListGetFun, end);
+		} else {
+			requestInterfaceFilter = new RequestInterfaceFilter(interfaceListGetFun, end);
+		}
+	}
+	return requestInterfaceFilter;
 }
 ```
 

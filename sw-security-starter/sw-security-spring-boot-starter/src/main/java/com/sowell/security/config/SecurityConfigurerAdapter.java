@@ -2,10 +2,11 @@ package com.sowell.security.config;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.filter.IcpServletFilter;
-import com.sowell.security.spring.BeanRegister;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -14,17 +15,21 @@ import org.springframework.context.annotation.Import;
  * @Author: 孔胜
  * @Date: 2021/6/21 9:08
  */
-@Import({BeanRegister.class})
-public abstract class SecurityConfigurerAdapter {
+public abstract class SecurityConfigurerAdapter implements EnvironmentAware {
 
     private FilterRegistrationBean<IcpServletFilter> registration;
-    private IcpServletFilter filterContainer;
+
+    @Autowired
+    public void setRegistration(
+            FilterRegistrationBean<IcpServletFilter> registration
+    ) {
+        this.registration = registration;
+    }
 
     /**
      * 初始化
      */
     private void init() {
-        this.filterContainer = new IcpServletFilter();
         this.config(IcpManager.getFilterConfigurer());
     }
 
@@ -44,11 +49,17 @@ public abstract class SecurityConfigurerAdapter {
         registration.addUrlPatterns(urlPatterns);
     }
 
-    @Bean
+    @Override
+    public void setEnvironment(Environment environment) {
+        IcpConfig icpConfig = Binder.get(environment).bind("sw.security", IcpConfig.class).get();
+        IcpManager.setIcpConfig(icpConfig);
+        this.init();
+    }
+
+    /*@Bean
     protected FilterRegistrationBean<IcpServletFilter> initFilterRegistrationBean() {
         if (registration == null) {
             registration = new FilterRegistrationBean<>();
-            this.init();
             if (registration.getUrlPatterns().isEmpty()) {
                 registration.addUrlPatterns("/*");
             }
@@ -57,5 +68,5 @@ public abstract class SecurityConfigurerAdapter {
             registration.setName("filterContainer");
         }
         return registration;
-    }
+    }*/
 }

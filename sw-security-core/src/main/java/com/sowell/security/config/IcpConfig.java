@@ -144,6 +144,9 @@ public class IcpConfig {
 		 */
 		public long getTimeoutForMillis() {
 			final long timeout = getTimeout();
+			if (timeout == -1){
+				return timeout;
+			}
 			return TimeUnit.SECONDS.toMillis(timeout);
 		}
 		public void setTimeout(Long timeout) {

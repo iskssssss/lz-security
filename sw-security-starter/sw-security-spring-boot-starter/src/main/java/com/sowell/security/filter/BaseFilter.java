@@ -38,10 +38,15 @@ public abstract class BaseFilter implements Filter {
 	 */
 	protected IcpFilterAuthStrategy filterAfterHandler;
 
-	public abstract boolean doFilter(
-			SwRequest swRequest,
-			SwResponse swResponse
-	) throws Exception;
+	/**
+	 * 过滤
+	 *
+	 * @param swRequest  请求流
+	 * @param swResponse 响应流
+	 * @return 过滤结果
+	 * @throws Exception 异常
+	 */
+	public abstract boolean doFilter(SwRequest swRequest, SwResponse swResponse) throws Exception;
 
 	@Override
 	public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
@@ -80,10 +85,13 @@ public abstract class BaseFilter implements Filter {
 				} else if (e.getCause() instanceof SecurityException) {
 					securityException = (SecurityException) e.getCause();
 				} else {
-					securityException = new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
+					securityException = new SecurityException(RCode.INTERNAL_SERVER_ERROR, e);
 				}
-				//ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, securityException);
-				//IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+				if (securityException.getCause() != null){
+					IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+				} else {
+					IcpLoggerUtil.error(getClass(), e.getMessage(), e);
+				}
 			} finally {
 				final Object handlerData = IcpManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {
@@ -92,7 +100,6 @@ public abstract class BaseFilter implements Filter {
 					} else {
 						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
 					}
-					IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
 				}
 				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
 				if (logSwitch != null) {
@@ -100,30 +107,6 @@ public abstract class BaseFilter implements Filter {
 				}
 			}
 		});
-		/*try {
-			IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis());
-			SwRequest swRequest = IcpSpringContextHolder.getRequest();
-			SwResponse swResponse = IcpSpringContextHolder.getResponse();
-			if (filterHandler(swRequest, swResponse)) {
-				chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
-			}
-			if (swResponse.isEncrypt()) {
-				IcpManager.getRequestDataEncryptHandler().encrypt(swResponse, swResponse.getResponseDataBytes());
-			}
-		} catch (Exception e) {
-			SecurityException securityException;
-			if (e instanceof SecurityException) {
-				securityException = (SecurityException) e;
-			} else if (e.getCause() instanceof SecurityException) {
-				securityException = (SecurityException) e.getCause();
-			} else {
-				securityException = new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
-			}
-			ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, securityException);
-			IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
-		} finally {
-			IcpSpringContextHolder.removeContext();
-		}*/
 	}
 
 	/**
@@ -134,7 +117,6 @@ public abstract class BaseFilter implements Filter {
 	 * @return 是否放行
 	 */
 	private boolean filterHandler(SwRequest swRequest, SwResponse swResponse) throws SecurityException {
-		//Exception ex = null;
 		try {
 			final String requestPath = swRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
@@ -151,7 +133,6 @@ public abstract class BaseFilter implements Filter {
 			this.filterAfterHandler.run();
 			return filterResult;
 		} catch (Exception e) {
-			//ex = e;
 			if (e instanceof SecurityException) {
 				throw ((SecurityException) e);
 			} else if (e.getCause() instanceof SecurityException) {
@@ -159,21 +140,6 @@ public abstract class BaseFilter implements Filter {
 			} else {
 				throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
 			}
-			//return false;
 		}
-		/*finally {
-			final Object handlerData = IcpManager.getFilterDataHandler().handler(swRequest, swResponse, ex);
-			if (handlerData != null) {
-				if (handlerData instanceof RCode) {
-					ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
-				} else {
-					ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
-				}
-			}
-			final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
-			if (logSwitch != null) {
-				IcpManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), ex);
-			}
-		}*/
 	}
 }

@@ -11,12 +11,12 @@ import com.sowell.security.exception.SecurityException;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/7/7 11:26
  */
-public abstract class AbstractInterfacesFilter extends InterfacesFilterBuilder {
+public interface IInterfacesFilter {
 
     /**
      * 过滤器初始化
      */
-    public abstract void init();
+    void init();
 
     /**
      * 进行过滤
@@ -27,10 +27,10 @@ public abstract class AbstractInterfacesFilter extends InterfacesFilterBuilder {
      * @return 过滤结果
      * @throws SecurityException 过滤错误
      */
-    public abstract boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException;
+    boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException;
 
     /**
      * 销毁
      */
-    public abstract void destroy();
+    void destroy();
 }

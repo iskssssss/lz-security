@@ -3,6 +3,8 @@ package com.sowell.tool.test.core.string;
 import com.sowell.tool.core.string.StringUtil;
 import org.junit.Test;
 
+import java.util.UUID;
+
 /**
  * TODO
  *
@@ -14,6 +16,7 @@ public class StringTestMain {
 
 	@Test
 	public void test() {
+		System.out.println(UUID.randomUUID());
 		String text = "1 2 3 4";
 		System.out.println(StringUtil.delAllSpace(text));
 	}

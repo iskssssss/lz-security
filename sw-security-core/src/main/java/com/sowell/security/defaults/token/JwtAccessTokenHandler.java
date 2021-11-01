@@ -2,13 +2,12 @@ package com.sowell.security.defaults.token;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.defaults.token.model.DefaultAuthDetails;
 import com.sowell.security.exception.AccountNotExistException;
-import com.sowell.security.exception.HeaderNotAccessTokenException;
-import com.sowell.tool.core.string.StringUtil;
-import com.sowell.tool.jwt.model.AuthDetails;
 import com.sowell.security.token.IAccessTokenHandler;
+import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.jwt.JwtUtil;
+import com.sowell.tool.jwt.model.AuthDetails;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -17,67 +16,69 @@ import com.sowell.tool.jwt.JwtUtil;
  * @Author: 孔胜
  * @Date: 2021/09/18 10:11
  */
-public class JwtAccessTokenHandler implements IAccessTokenHandler {
-
-	private final BaseCacheManager cacheManager;
-	private final long timeoutMillis;
-
-	public JwtAccessTokenHandler() {
-		this.cacheManager = IcpManager.getCacheManager();
-		IcpConfig icpConfig = IcpManager.getIcpConfig();
-		IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
-		this.timeoutMillis = accessAccessTokenConfig.getTimeoutForMillis();
-	}
+public class JwtAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDetails> {
 
 	@Override
-	public <T extends AuthDetails<T>> AuthDetails<T> getAuthDetails() {
-		return getAuthDetails(getAccessToken());
-	}
-
-	@Override
-	public <T extends AuthDetails<T>> String generateAccessToken(AuthDetails<T> authDetails) {
-		String accessToken;
+	public Object generateAccessToken(DefaultAuthDetails authDetails) {
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		long timeoutMillis = IcpManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
 		String id = "JWT::" + authDetails.getId();
-		final Object idValue = this.cacheManager.get(id);
-		try {
-			if (StringUtil.isNotEmpty(idValue)) {
-				return ((String) idValue);
-			}
-			accessToken = getAccessToken();
-			if (!this.checkExpiration(accessToken)) {
-				return ((String) idValue);
-			}
-		} catch (HeaderNotAccessTokenException ignored) {
+		final Object idValue = cacheManager.get(id);
+		if (StringUtil.isNotEmpty(idValue)) {
+			return idValue;
 		}
-		this.cacheManager.remove(id);
-		accessToken = JwtUtil.generateToken(authDetails, ((int) this.timeoutMillis));
-		this.cacheManager.put(id, accessToken, this.timeoutMillis);
+		String accessToken = JwtUtil.generateToken(authDetails, ((int) timeoutMillis));
+		cacheManager.put(id, accessToken, timeoutMillis);
 		return accessToken;
 	}
 
 	@Override
-	public boolean checkExpiration(String accessToken) {
-		if (StringUtil.isEmpty(accessToken)) {
+	public boolean checkExpiration(Object accessTokenInfo) {
+		if (StringUtil.isEmpty(accessTokenInfo)) {
 			return false;
 		}
-		return JwtUtil.checkExpiration(accessToken);
+		final AuthDetails authDetails = JwtUtil.toBean(((String) accessTokenInfo));
+		if (authDetails == null) {
+			return true;
+		}
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		String id = "JWT::" + authDetails.getId();
+		final Object idValue = cacheManager.get(id);
+		if (StringUtil.isEmpty(idValue)) {
+			return true;
+		}
+		if (!accessTokenInfo.equals(idValue)) {
+			return true;
+		}
+		return JwtUtil.checkExpiration(((String) accessTokenInfo));
 	}
 
 	@Override
-	public <T extends AuthDetails<T>> AuthDetails<T> getAuthDetails(String accessToken) {
-		if (this.checkExpiration(accessToken)) {
+	public DefaultAuthDetails getAuthDetails(Object accessTokenInfo) {
+		if (this.checkExpiration(accessTokenInfo)) {
 			throw new AccountNotExistException();
 		}
-		final AuthDetails<T> authDetails = JwtUtil.toBean(accessToken);
+		final AuthDetails authDetails = JwtUtil.toBean(((String) accessTokenInfo));
 		if (authDetails == null) {
 			throw new AccountNotExistException();
 		}
-		return authDetails;
+		return ((DefaultAuthDetails) authDetails);
 	}
 
 	@Override
-	public <T extends AuthDetails<T>> void setAuthDetails(AuthDetails<T> authDetails) {
+	public void setAuthDetails(DefaultAuthDetails authDetails) {
 		//final String accessToken = getAccessToken();
-		//this.cacheManager.put(accessToken, authDetails);
+		//cacheManager.put(accessToken, authDetails);
+	}
+
+	@Override
+	public Object refreshAccessToken(Object accessTokenInfo) {
+		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+		final AuthDetails authDetails = this.getAuthDetails(accessTokenInfo);
+		String id = "JWT::" + authDetails.getId();
+		cacheManager.remove(id);
+		final Object token = generateAccessToken(((DefaultAuthDetails) authDetails));
+
+		return token;
 	}
 }

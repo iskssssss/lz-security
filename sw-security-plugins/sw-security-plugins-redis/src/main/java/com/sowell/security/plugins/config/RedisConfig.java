@@ -1,4 +1,4 @@
-package com.sowell.security.config;
+package com.sowell.security.plugins.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

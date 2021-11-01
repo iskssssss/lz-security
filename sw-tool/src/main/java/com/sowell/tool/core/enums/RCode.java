@@ -41,6 +41,10 @@ public enum RCode implements ICode {
      * 设置读取请求参数字符编码错误
      */
     UNSUPPORTED_ENCODING_EXCEPTION(5,"设置读取请求参数字符编码错误。"),
+    /**
+     * 内部服务器错误
+     */
+    INTERNAL_SERVER_ERROR(500, "内部服务器错误"),
 
     /**
      * appId或appSecret错误

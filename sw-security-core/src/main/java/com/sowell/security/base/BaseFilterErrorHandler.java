@@ -2,6 +2,7 @@ package com.sowell.security.base;
 
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.SecurityException;
 
 /**
  * 过滤错误处理器
@@ -15,10 +16,10 @@ public interface BaseFilterErrorHandler<T> {
     /**
      * 错误处理
      *
-     * @param request  请求流
-     * @param response 响应流
-     * @param error    错误信息
+     * @param request           请求流
+     * @param response          响应流
+     * @param securityException 错误信息
      * @return 要打印至客户端的信息
      */
-    T errorHandler(BaseRequest<?> request, BaseResponse<?> response, Exception error);
+    T errorHandler(BaseRequest<?> request, BaseResponse<?> response, SecurityException securityException);
 }

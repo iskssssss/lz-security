@@ -1,6 +1,7 @@
 package com.sowell.security;
 
-import com.sowell.security.base.AbstractInterfacesFilter;
+import com.sowell.security.base.IInterfacesFilter;
+import com.sowell.security.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
@@ -26,7 +27,7 @@ public class IcpFilter {
 		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
 		BaseRequest<?> request = icpContext.getRequest();
 		BaseResponse<?> response = icpContext.getResponse();
-		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
+		IInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
 		return interfacesFilter.doFilter(request, response, params);
 	}
 
@@ -34,10 +35,10 @@ public class IcpFilter {
 	 * 过滤器初始化
 	 */
 	public static void init() {
-		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
+		AbsInterfacesFilterBuilder interfacesFilter = IcpManager.getInterfacesFilter();
 		while (interfacesFilter != null) {
 			interfacesFilter.init();
-			interfacesFilter = interfacesFilter.getNextFilter();
+			interfacesFilter = ((AbsInterfacesFilterBuilder) interfacesFilter.getNextFilter());
 		}
 	}
 
@@ -46,10 +47,10 @@ public class IcpFilter {
 	 * 过滤器销毁
 	 */
 	public static void destroy() {
-		AbstractInterfacesFilter interfacesFilter = IcpManager.getInterfacesFilter();
+		AbsInterfacesFilterBuilder interfacesFilter = IcpManager.getInterfacesFilter();
 		while (interfacesFilter != null) {
 			interfacesFilter.destroy();
-			interfacesFilter = interfacesFilter.getNextFilter();
+			interfacesFilter = ((AbsInterfacesFilterBuilder) interfacesFilter.getNextFilter());
 		}
 	}
 }

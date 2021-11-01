@@ -1,6 +1,7 @@
 package com.sowell.security.filter;
 
-import com.sowell.security.base.AbstractInterfacesFilter;
+import com.sowell.security.base.AbsInterfacesFilterBuilder;
+import com.sowell.security.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
@@ -14,7 +15,7 @@ import com.sowell.security.log.IcpLoggerUtil;
  * @Author: 孔胜
  * @Date: 2021/6/25 12:23
  */
-public class StartFilter extends AbstractInterfacesFilter {
+public class StartFilter extends AbsInterfacesFilterBuilder {
     protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(StartFilter.class);
 
     @Override

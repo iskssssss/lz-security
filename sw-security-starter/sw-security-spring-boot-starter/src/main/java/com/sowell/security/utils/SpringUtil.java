@@ -62,6 +62,18 @@ public class SpringUtil implements BeanFactoryPostProcessor {
     }
 
     /**
+     * 销毁bean
+     * @param obj bean对象
+     */
+    public static void destroyBean(Object obj) {
+        try {
+            SpringUtil.beanFactory.destroyBean(obj);
+        } catch (Exception ignored) {
+
+        }
+    }
+
+    /**
      * 根据注解和父类的类型获取对象
      *
      * @param annoClass  注解

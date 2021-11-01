@@ -21,7 +21,10 @@ public class IcpLogger implements Closeable {
 	public IcpLogger(Class<?> clazz) {
 		logger = LoggerFactory.getLogger(clazz);
 	}
-
+	// 普通信息
+	public void info0(String format, Object... params) {
+		logger.info(format, params);
+	}
 	public void info(String format, Object... params) {
 		if (consoleLogPrint()) {
 			return;
@@ -29,14 +32,18 @@ public class IcpLogger implements Closeable {
 		logger.info(format, params);
 	}
 
+	// 错误信息
 	public void error(String format, Object... params) {
 		logger.error(format, params);
 	}
-
 	public void error(String message, Throwable t) {
 		logger.error(message, t);
 	}
 
+	// 调试信息
+	public void debug0(String format, Object... params) {
+		logger.debug(format, params);
+	}
 	public void debug(String format, Object... params) {
 		if (consoleLogPrint()) {
 			return;
@@ -44,6 +51,7 @@ public class IcpLogger implements Closeable {
 		logger.debug(format, params);
 	}
 
+	// 警告信息
 	public void warn(String format, Object... params) {
 		logger.warn(format, params);
 	}
@@ -57,8 +65,7 @@ public class IcpLogger implements Closeable {
 	}
 
 	public static String analysisLoggerInfo(
-			String format,
-			Object... params
+			String format, Object... params
 	) {
 		return format;
 	}

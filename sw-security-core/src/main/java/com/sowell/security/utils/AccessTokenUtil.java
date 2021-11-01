@@ -1,6 +1,7 @@
 package com.sowell.security.utils;
 
 import com.sowell.security.IcpManager;
+import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.tool.jwt.model.AuthDetails;
 import com.sowell.security.token.IAccessTokenHandler;
 
@@ -22,11 +23,10 @@ public final class AccessTokenUtil {
 	/**
 	 * 生成AccessToken
 	 *
-	 * @param t   数据
-	 * @param <T> 认证数据
+	 * @param t 数据
 	 * @return AccessToken
 	 */
-	public static <T extends AuthDetails<T>> String generateAccessToken(T t) {
+	public static Object generateAccessToken(AuthDetails t) {
 		return ACCESS_TOKEN_HANDLER.generateAccessToken(t);
 	}
 
@@ -36,8 +36,8 @@ public final class AccessTokenUtil {
 	 *
 	 * @return AccessToken
 	 */
-	public static String getAccessToken() {
-		return ACCESS_TOKEN_HANDLER.getAccessToken();
+	public static Object getAccessToken() {
+		return ACCESS_TOKEN_HANDLER.getAccessTokenInfo();
 	}
 
 	/**
@@ -58,7 +58,11 @@ public final class AccessTokenUtil {
 	 */
 	public static AuthDetails<?> getAuthDetails(boolean throwException) {
 		try {
-			return ACCESS_TOKEN_HANDLER.getAuthDetails();
+			final AuthDetails authDetails = ACCESS_TOKEN_HANDLER.getAuthDetails();
+			if (authDetails == null) {
+				throw new AccountNotExistException();
+			}
+			return authDetails;
 		} catch (Throwable throwable) {
 			if (throwException) {
 				throw throwable;
@@ -88,6 +92,9 @@ public final class AccessTokenUtil {
 	public static <T extends AuthDetails<T>> T getAuthDetails(Class<T> authDetailsClass, boolean throwException) {
 		try {
 			final AuthDetails<?> authDetails = ACCESS_TOKEN_HANDLER.getAuthDetails();
+			if (authDetails == null) {
+				throw new AccountNotExistException();
+			}
 			if (authDetails.getClass() == authDetailsClass) {
 				return ((T) authDetails);
 			}
@@ -120,7 +127,11 @@ public final class AccessTokenUtil {
 	 */
 	public static AuthDetails<?> getAuthDetails(String accessToken, boolean throwException) {
 		try {
-			return ACCESS_TOKEN_HANDLER.getAuthDetails(accessToken);
+			final AuthDetails authDetails = ACCESS_TOKEN_HANDLER.getAuthDetails(accessToken);
+			if (authDetails == null) {
+				throw new AccountNotExistException();
+			}
+			return authDetails;
 		} catch (Throwable throwable) {
 			if (throwException) {
 				throw throwable;
@@ -132,4 +143,13 @@ public final class AccessTokenUtil {
 	private static <T extends AuthDetails<T>> void setAuthDetails(AuthDetails<T> authDetails) {
 		ACCESS_TOKEN_HANDLER.setAuthDetails(authDetails);
 	}
+
+	public static Object refreshAccessToken() {
+		return ACCESS_TOKEN_HANDLER.refreshAccessToken();
+	}
+
+	public static Object refreshAccessToken(Object accessTokenInfo) {
+		return ACCESS_TOKEN_HANDLER.refreshAccessToken(accessTokenInfo);
+	}
 }
+
