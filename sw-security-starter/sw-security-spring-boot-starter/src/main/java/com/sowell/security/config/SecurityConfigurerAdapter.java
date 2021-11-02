@@ -1,7 +1,9 @@
 package com.sowell.security.config;
 
 import com.sowell.security.IcpManager;
+import com.sowell.security.filter.IcpFilter;
 import com.sowell.security.filter.IcpServletFilter;
+import com.sowell.security.filter.config.FilterConfigurer;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.EnvironmentAware;
@@ -25,7 +27,7 @@ public abstract class SecurityConfigurerAdapter implements EnvironmentAware {
      */
     private void init() {
         this.filterContainer = new IcpServletFilter();
-        this.config(IcpManager.getFilterConfigurer());
+        this.config(IcpFilter.getFilterConfigurer());
     }
 
     /**

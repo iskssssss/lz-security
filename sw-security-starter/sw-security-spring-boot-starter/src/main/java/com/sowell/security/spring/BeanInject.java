@@ -1,6 +1,7 @@
 package com.sowell.security.spring;
 
 import com.sowell.security.IcpManager;
+import com.sowell.security.filter.IcpFilter;
 import com.sowell.security.handler.BaseFilterErrorHandler;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.context.IcpContextTheadLocal;
@@ -24,7 +25,7 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:16
  */
-public class BeanInject extends IcpManager {
+public class BeanInject extends IcpFilter {
 
 	/*@Autowired
 	public void injectIcpConfig(IcpConfig icpConfig) {
@@ -55,11 +56,11 @@ public class BeanInject extends IcpManager {
 	 */
 	@Autowired(required = false)
 	public void injectFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
-		if (IcpManager.filterLogHandler != null) {
+		if (IcpFilter.filterLogHandler != null) {
 			SpringUtil.destroyBean(filterLogHandler);
 			return;
 		}
-		IcpManager.setFilterLogHandler(filterLogHandler);
+		IcpFilter.setFilterLogHandler(filterLogHandler);
 	}
 
 	/**
@@ -67,11 +68,11 @@ public class BeanInject extends IcpManager {
 	 */
 	@Autowired(required = false)
 	public void injectFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
-		if (IcpManager.filterErrorHandler != null) {
+		if (IcpFilter.filterErrorHandler != null) {
 			SpringUtil.destroyBean(filterErrorHandler);
 			return;
 		}
-		IcpManager.setFilterErrorHandler(filterErrorHandler);
+		IcpFilter.setFilterErrorHandler(filterErrorHandler);
 	}
 
 	/**

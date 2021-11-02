@@ -15,6 +15,7 @@
         <module>sw-security-plugins</module>
         <module>security-demo</module>
         <module>sw-security-auth</module>
+        <module>sw-security-filter</module>
         <module>sw-tool</module>
     </modules>
 
@@ -36,12 +37,14 @@
         <!-- 通用工具模块 -->
         <sw-tool.version>1.0.3</sw-tool.version>
 
-        <!-- 通用 -->
+        <!-- 通用模块 -->
         <sw-security-common.version>1.0.40</sw-security-common.version>
-        <!-- 核心 -->
+        <!-- 核心模块 -->
         <sw-security-core.version>1.0.48</sw-security-core.version>
-        <!-- 认证 -->
+        <!-- 认证模块 -->
         <sw-security-auth.version>1.0.0</sw-security-auth.version>
+        <!-- 过滤模块 -->
+        <sw-security-filter.version>1.0.0</sw-security-filter.version>
         <!-- 插件 -->
         <sw-security-plugins-redis.version>1.0.15</sw-security-plugins-redis.version>
         <!-- 启动相关 -->
@@ -134,11 +137,17 @@
                 <version>${sw-security-core.version}</version>
             </dependency>
 
-            <!--<dependency>
+            <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-auth</artifactId>
                 <version>${sw-security-auth.version}</version>
-            </dependency>-->
+            </dependency>
+
+            <dependency>
+                <groupId>com.sowell.security</groupId>
+                <artifactId>sw-security-filter</artifactId>
+                <version>${sw-security-filter.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>

@@ -94,7 +94,7 @@ public abstract class BaseFilter implements Filter {
 					IcpLoggerUtil.error(getClass(), e.getMessage(), e);
 				}
 			} finally {
-				final Object handlerData = IcpManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
+				final Object handlerData = IcpFilter.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {
 					if (handlerData instanceof RCode) {
 						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
@@ -104,7 +104,7 @@ public abstract class BaseFilter implements Filter {
 				}
 				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
 				if (logSwitch != null) {
-					IcpManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
+					IcpFilter.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
 				}
 			}
 		});
@@ -121,8 +121,8 @@ public abstract class BaseFilter implements Filter {
 		try {
 			final String requestPath = swRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
-			final boolean isIncludeUrl = !IcpManager.getFilterConfigurer().getIncludeUrls().containsUrl(requestPath);
-			final boolean isExcludeUrl = IcpManager.getFilterConfigurer().getExcludeUrls().containsUrl(requestPath);
+			final boolean isIncludeUrl = !IcpFilter.getFilterConfigurer().getIncludeUrls().containsUrl(requestPath);
+			final boolean isExcludeUrl = IcpFilter.getFilterConfigurer().getExcludeUrls().containsUrl(requestPath);
 			if (isIncludeUrl || isExcludeUrl) {
 				return true;
 			}

@@ -10,15 +10,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sw-security-auth</artifactId>
-    <version>${sw-security-auth.version}</version>
+    <artifactId>sw-security-filter</artifactId>
+    <version>${sw-security-filter.version}</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.sowell.security</groupId>
-            <artifactId>sw-security-filter</artifactId>
+            <artifactId>sw-security-core</artifactId>
         </dependency>
     </dependencies>
+
 
 </project>

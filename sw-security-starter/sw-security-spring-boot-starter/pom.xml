@@ -29,6 +29,11 @@
 
         <dependency>
             <groupId>com.sowell.security</groupId>
+            <artifactId>sw-security-filter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sowell.security</groupId>
             <artifactId>sw-security-common</artifactId>
         </dependency>
 

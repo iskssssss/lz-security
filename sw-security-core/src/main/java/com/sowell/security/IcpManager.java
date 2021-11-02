@@ -1,27 +1,13 @@
 package com.sowell.security;
 
-import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.FilterConfigurer;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.config.InterfacesMethodMap;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.IcpStorage;
-import com.sowell.security.defaults.DefaultCacheManager;
-import com.sowell.security.defaults.DefaultFilterErrorHandler;
-import com.sowell.security.defaults.DefaultFilterLogHandler;
-import com.sowell.security.defaults.DefaultRequestDataEncryptHandler;
-import com.sowell.security.defaults.token.JwtAccessTokenHandler;
-import com.sowell.security.defaults.token.UUIDAccessTokenHandler;
-import com.sowell.security.exception.SecurityException;
-import com.sowell.security.filter.StartFilter;
-import com.sowell.security.filter.base.AbsInterfacesFilterBuilder;
-import com.sowell.security.handler.BaseFilterErrorHandler;
-import com.sowell.security.handler.FilterDataHandler;
+import com.sowell.security.defaults.*;
 import com.sowell.security.handler.RequestDataEncryptHandler;
-import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.token.IAccessTokenHandler;
-import com.sowell.tool.core.enums.HttpStatus;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
 import java.util.Map;
@@ -54,19 +40,6 @@ public class IcpManager {
 	 */
 	public static IcpConfig getIcpConfig() {
 		return icpConfig;
-	}
-
-	//====================================================================================================================================
-
-	protected static final FilterConfigurer FILTER_CONFIGURER = new FilterConfigurer();
-
-	/**
-	 * 获取过滤配置文件
-	 *
-	 * @return 过滤配置文件
-	 */
-	public static FilterConfigurer getFilterConfigurer() {
-		return FILTER_CONFIGURER;
 	}
 
 	//====================================================================================================================================
@@ -114,14 +87,6 @@ public class IcpManager {
 	 */
 	public static BaseCacheManager getCacheManager() {
 		if (IcpManager.cacheManager == null) {
-//			final Class<?> redisConfigClass = ReflectUtil.forName("com.sowell.security.plugins.config.RedisConfig");
-//			if (redisConfigClass != null) {
-//				final Class<?> redisCacheManagerClass = ReflectUtil.forName("com.sowell.security.plugins.cache.RedisCacheManager");
-//				if (redisCacheManagerClass != null) {
-//					final Object redisCacheManager = ReflectUtil.newInstance(redisCacheManagerClass);
-//					IcpManager.cacheManager = ((BaseCacheManager) redisCacheManager);
-//				}
-//			}
 			synchronized (IcpManager.class) {
 				if (IcpManager.cacheManager == null) {
 					IcpManager.cacheManager = new DefaultCacheManager();
@@ -129,116 +94,6 @@ public class IcpManager {
 			}
 		}
 		return IcpManager.cacheManager;
-	}
-
-	//====================================================================================================================================
-
-	protected static final AbsInterfacesFilterBuilder INTERFACES_FILTER = new StartFilter();
-
-	/**
-	 * 设置接口过滤执行链
-	 * <p>注意：一定要按顺序放入过滤器</p>
-	 * <p>如:linkFilter(过滤器1, 过滤器2, 过滤器3)</p>
-	 * <p>设置后过滤顺序为 ：开始 -> 过滤器1 -> 过滤器2 -> 过滤器3 -> 结束</p>
-	 *
-	 * @param interfacesFilterList 过滤执行链
-	 */
-	public static void linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
-		if (interfacesFilterList == null || interfacesFilterList.length < 1) {
-			throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "接口过滤执行链不可为空!");
-		}
-		AbsInterfacesFilterBuilder ai = IcpManager.INTERFACES_FILTER;
-		boolean existLogBeforeFilter = false;
-		for (final AbsInterfacesFilterBuilder interfacesFilter : interfacesFilterList) {
-			if (interfacesFilter.getClass().getAnnotation(LogBeforeFilter.class) != null) {
-				if (existLogBeforeFilter) {
-					throw new RuntimeException("注解(LogBeforeFilter)全局只可存在一个。");
-				}
-				existLogBeforeFilter = true;
-			}
-			ai.linkFilter(interfacesFilter);
-			ai = interfacesFilter;
-		}
-	}
-
-	/**
-	 * 获取接口过滤执行链
-	 *
-	 * @return 接口过滤执行链
-	 */
-	public static AbsInterfacesFilterBuilder getInterfacesFilter() {
-		return ((AbsInterfacesFilterBuilder) IcpManager.INTERFACES_FILTER);
-	}
-
-	//====================================================================================================================================
-
-	protected static BaseFilterLogHandler filterLogHandler = null;
-
-	/**
-	 * 设置过滤日志处理器
-	 *
-	 * @param filterLogHandler 过滤日志处理器
-	 */
-	public static void setFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
-		IcpManager.filterLogHandler = filterLogHandler;
-	}
-
-	/**
-	 * 获取日志处理器
-	 *
-	 * @return 日志处理器
-	 */
-	public static BaseFilterLogHandler getFilterLogHandler() {
-		if (IcpManager.filterLogHandler == null) {
-			synchronized (IcpManager.class) {
-				if (IcpManager.filterLogHandler == null) {
-					IcpManager.filterLogHandler = new DefaultFilterLogHandler();
-				}
-			}
-		}
-		return IcpManager.filterLogHandler;
-	}
-
-	//====================================================================================================================================
-
-	protected static BaseFilterErrorHandler<?> filterErrorHandler = null;
-
-	/**
-	 * 设置过滤错误处理器
-	 *
-	 * @param filterErrorHandler 过滤错误处理器
-	 */
-	public static void setFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
-		IcpManager.filterErrorHandler = filterErrorHandler;
-	}
-
-	/**
-	 * 获取过滤错误处理器
-	 *
-	 * @return 过滤错误处理器
-	 */
-	public static BaseFilterErrorHandler<?> getFilterErrorHandler() {
-		if (IcpManager.filterErrorHandler == null) {
-			synchronized (IcpManager.class) {
-				if (IcpManager.filterErrorHandler == null) {
-					IcpManager.filterErrorHandler = new DefaultFilterErrorHandler();
-				}
-			}
-		}
-		return IcpManager.filterErrorHandler;
-	}
-
-	//====================================================================================================================================
-
-	protected static final FilterDataHandler FILTER_DATA_HANDLER = new FilterDataHandler();
-
-	/**
-	 * 获取数据处理器
-	 *
-	 * @return 数据处理器
-	 */
-	public static FilterDataHandler getFilterDataHandler() {
-		return IcpManager.FILTER_DATA_HANDLER;
 	}
 
 	//====================================================================================================================================
@@ -266,14 +121,14 @@ public class IcpManager {
 
 	//====================================================================================================================================
 
-	protected static IAccessTokenHandler accessTokenHandler = null;
+	protected static IAccessTokenHandler<?> accessTokenHandler = null;
 
 	/**
 	 * 设置AccessToken处理器
 	 *
 	 * @param accessTokenHandler accessToken处理器
 	 */
-	public static void setAccessTokenHandler(IAccessTokenHandler accessTokenHandler) {
+	public static void setAccessTokenHandler(IAccessTokenHandler<?> accessTokenHandler) {
 		IcpManager.accessTokenHandler = accessTokenHandler;
 	}
 
@@ -282,7 +137,7 @@ public class IcpManager {
 	 *
 	 * @return 方法
 	 */
-	public static IAccessTokenHandler getAccessTokenHandler() {
+	public static IAccessTokenHandler<?> getAccessTokenHandler() {
 		if (IcpManager.accessTokenHandler == null) {
 			synchronized (IcpManager.class) {
 				if (IcpManager.accessTokenHandler == null) {

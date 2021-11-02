@@ -1,8 +1,7 @@
 package com.sowell.security.filter;
 
-import com.sowell.security.IcpFilter;
 import com.sowell.security.IcpManager;
-import com.sowell.security.config.FilterConfigurer;
+import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.mode.SwRequest;
 import com.sowell.security.mode.SwResponse;
@@ -27,7 +26,7 @@ public final class IcpServletFilter extends BaseFilter {
 		/*if (SpringUtil.getBeansWithAnnotationCount(LogBeforeFilter.class) > 1) {
 			throw new RuntimeException("注解(LogBeforeFilter)全局只可存在一个。");
 		}*/
-		FilterConfigurer filterConfigurer = IcpManager.getFilterConfigurer();
+		FilterConfigurer filterConfigurer = IcpFilter.getFilterConfigurer();
 		super.filterBeforeHandler = filterConfigurer.getFilterBeforeHandler();
 		super.filterAfterHandler = filterConfigurer.getFilterAfterHandler();
 		IcpFilter.init();
