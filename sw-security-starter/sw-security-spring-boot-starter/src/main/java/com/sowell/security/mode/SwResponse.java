@@ -1,13 +1,11 @@
 package com.sowell.security.mode;
 
-import com.sowell.security.IcpManager;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.wrapper.HttpServletResponseWrapper;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.string.StringUtil;
-import com.sowell.tool.encrypt.model.SwPrivateKey;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;

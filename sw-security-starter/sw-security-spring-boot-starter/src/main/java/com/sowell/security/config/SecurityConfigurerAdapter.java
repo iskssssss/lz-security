@@ -2,7 +2,6 @@ package com.sowell.security.config;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.filter.IcpServletFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.EnvironmentAware;

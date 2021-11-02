@@ -4,6 +4,7 @@ import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
 import com.sowell.security.context.IcpSpringContextHolder;
 import com.sowell.security.exception.SecurityException;
+import com.sowell.security.fun.IcpFilterAuthStrategy;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.mode.SwRequest;

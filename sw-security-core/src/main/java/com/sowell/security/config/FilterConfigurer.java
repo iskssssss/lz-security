@@ -7,7 +7,7 @@ import com.sowell.security.arrays.UrlHashSet;
 //import com.sowell.security.defaults.DefaultPasswordEncoder;
 //import com.sowell.security.defaults.DefaultLoginErrorHandler;
 import com.sowell.security.config.builder.FilterConfigurerBuilder;
-import com.sowell.security.filter.IcpFilterAuthStrategy;
+import com.sowell.security.fun.IcpFilterAuthStrategy;
 //import com.sowell.security.service.PasswordEncoder;
 //import com.sowell.security.service.UserDetailsService;
 

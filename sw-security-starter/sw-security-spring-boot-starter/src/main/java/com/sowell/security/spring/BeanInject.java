@@ -1,7 +1,7 @@
 package com.sowell.security.spring;
 
 import com.sowell.security.IcpManager;
-import com.sowell.security.base.BaseFilterErrorHandler;
+import com.sowell.security.handler.BaseFilterErrorHandler;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.context.IcpContextTheadLocal;
 import com.sowell.security.handler.RequestDataEncryptHandler;

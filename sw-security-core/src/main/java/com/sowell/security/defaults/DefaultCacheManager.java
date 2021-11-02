@@ -64,7 +64,7 @@ public class DefaultCacheManager implements BaseCacheManager {
 
 	@Override
 	public boolean refreshKey(Object key, long timeout) {
-		// 默认缓存管理器无法修改过期时间
+		// 默认缓存管理器无法修改过期时间，只能通过访问更新的形式来进行刷新。
 		return cacheManager.get(key, true) != null;
 	}
 

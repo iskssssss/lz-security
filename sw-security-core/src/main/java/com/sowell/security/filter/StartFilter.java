@@ -1,7 +1,6 @@
 package com.sowell.security.filter;
 
-import com.sowell.security.base.AbsInterfacesFilterBuilder;
-import com.sowell.security.base.AbsInterfacesFilterBuilder;
+import com.sowell.security.filter.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;

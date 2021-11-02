@@ -1,6 +1,6 @@
 package com.sowell.security.defaults;
 
-import com.sowell.security.base.BaseFilterErrorHandler;
+import com.sowell.security.handler.BaseFilterErrorHandler;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;

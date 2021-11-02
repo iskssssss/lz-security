@@ -1,4 +1,4 @@
-package com.sowell.security.base;
+package com.sowell.security.filter.base;
 
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;

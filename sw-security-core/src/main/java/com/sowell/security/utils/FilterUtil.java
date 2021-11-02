@@ -2,7 +2,7 @@ package com.sowell.security.utils;
 
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.base.AbsInterfacesFilterBuilder;
+import com.sowell.security.filter.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.AccountNotExistException;
@@ -188,7 +188,7 @@ public class FilterUtil {
 		return requestInterfaceFilter;
 	}
 
-	static class AccessTokenFilter extends AbsInterfacesFilterBuilder {
+	public static class AccessTokenFilter extends AbsInterfacesFilterBuilder {
 		private final boolean end;
 
 		public AccessTokenFilter(boolean end) {
@@ -222,7 +222,7 @@ public class FilterUtil {
 		}
 	}
 
-	static class IpFilter extends AbsInterfacesFilterBuilder {
+	public static class IpFilter extends AbsInterfacesFilterBuilder {
 		private final LambdaFunctional<List<String>> ipListGetFun;
 		private final boolean end;
 
@@ -272,7 +272,7 @@ public class FilterUtil {
 		}
 	}
 
-	static class RequestInterfaceFilter extends AbsInterfacesFilterBuilder {
+	public static class RequestInterfaceFilter extends AbsInterfacesFilterBuilder {
 		private final LambdaFunctional<UrlHashSet> interfaceListGetFun;
 		private final boolean end;
 

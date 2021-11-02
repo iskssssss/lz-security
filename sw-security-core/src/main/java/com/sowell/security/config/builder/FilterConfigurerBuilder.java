@@ -2,14 +2,15 @@ package com.sowell.security.config.builder;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.base.BaseFilterErrorHandler;
-import com.sowell.security.base.AbsInterfacesFilterBuilder;
+import com.sowell.security.handler.BaseFilterErrorHandler;
+import com.sowell.security.filter.base.AbsInterfacesFilterBuilder;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.FilterConfigurer;
-import com.sowell.security.filter.IcpFilterAuthStrategy;
+import com.sowell.security.fun.IcpFilterAuthStrategy;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.token.IAccessTokenHandler;
+import com.sowell.security.utils.FilterUtil;
 
 import java.util.Arrays;
 
@@ -23,6 +24,7 @@ import java.util.Arrays;
 public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 
 	protected final FilterUrl filterUrl = new FilterUrl();
+	protected final FilterConfig filterConfig = new FilterConfig();
 	protected IcpFilterAuthStrategy filterAfterHandler = params -> { };
 	protected IcpFilterAuthStrategy filterBeforeHandler = params -> { };
 
@@ -35,19 +37,10 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		return filterUrl;
 	}
 
-	/**
-	 * 设置接口过滤执行链
-	 * <p>注意：一定要按顺序放入过滤器</p>
-	 * <p>如:linkFilter(过滤器1, 过滤器2, 过滤器3)</p>
-	 * <p>设置后过滤顺序为 ：开始 -> 过滤器1 -> 过滤器2 -> 过滤器3 -> 结束</p>
-	 *
-	 * @param interfacesFilterList 过滤执行链
-	 * @return this
-	 */
-	public FilterConfigurerBuilder<T> linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
-		IcpManager.linkInterfacesFilter(interfacesFilterList);
-		return this;
+	public FilterConfig filterConfig(){
+		return filterConfig;
 	}
+
 	/**
 	 * 设置过滤日志处理器
 	 *
@@ -123,6 +116,39 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	public T end() {
 		return ((T) FilterConfigurerBuilder.this);
 	}
+
+	public class FilterConfig {
+		protected Class<? extends AbsInterfacesFilterBuilder> logBeforeFilter;
+
+		/**
+		 * 设置接口过滤执行链
+		 * <p>注意：一定要按顺序放入过滤器</p>
+		 * <p>如:linkFilter(过滤器1, 过滤器2, 过滤器3)</p>
+		 * <p>设置后过滤顺序为 ：开始 -> 过滤器1 -> 过滤器2 -> 过滤器3 -> 结束</p>
+		 *
+		 * @param interfacesFilterList 过滤执行链
+		 * @return this
+		 */
+		public FilterConfig linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
+			IcpManager.linkInterfacesFilter(interfacesFilterList);
+			return this;
+		}
+
+		/**
+		 * 设置
+		 * @param logBeforeFilter
+		 * @return
+		 */
+		public FilterConfig setLogBeforeFilter(Class<? extends AbsInterfacesFilterBuilder> logBeforeFilter) {
+			this.logBeforeFilter = logBeforeFilter;
+			return this;
+		}
+
+		public FilterConfigurerBuilder<T> and() {
+			return FilterConfigurerBuilder.this;
+		}
+	}
+
 
 	public class FilterUrl {
 		/**

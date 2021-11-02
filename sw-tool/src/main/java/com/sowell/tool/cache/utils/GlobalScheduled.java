@@ -39,9 +39,7 @@ public enum GlobalScheduled {
 	}
 
 	public ScheduledFuture<?> scheduleAtFixedRate(
-			Runnable command,
-			long period,
-			TimeUnit unit
+			Runnable command, long period, TimeUnit unit
 	) {
 		return scheduledExecutorService.scheduleAtFixedRate(command, period, period, unit);
 	}
