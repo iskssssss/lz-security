@@ -1,4 +1,4 @@
-package com.sowell.demo.controller;
+package com.sowell.demo.filter.auth.controller;
 
 import com.sowell.common.core.web.result.R;
 import com.sowell.security.defaults.DefaultAuthDetails;

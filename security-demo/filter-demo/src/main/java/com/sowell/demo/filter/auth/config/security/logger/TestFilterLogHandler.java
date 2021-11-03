@@ -1,4 +1,4 @@
-package com.sowell.demo.config.security.logger;
+package com.sowell.demo.filter.auth.config.security.logger;
 
 import com.sowell.security.IcpManager;
 import com.sowell.security.filter.context.model.BaseRequest;

@@ -1,4 +1,4 @@
-//package com.sowell.demo.config.security.filter;
+//package com.sowell.demo.filter.auth.config.security.filter;
 //
 //import com.sowell.security.annotation.LogBeforeFilter;
 //import com.sowell.security.exception.SecurityException;

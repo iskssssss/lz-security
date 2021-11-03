@@ -1,4 +1,4 @@
-package com.sowell.demo.config;
+package com.sowell.demo.filter.auth.config;
 
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.config.CoreConfigurer;

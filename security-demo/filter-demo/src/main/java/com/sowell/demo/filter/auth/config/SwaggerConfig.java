@@ -1,4 +1,4 @@
-package com.sowell.demo.config;
+package com.sowell.demo.filter.auth.config;
 
 import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrapUI;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ public class SwaggerConfig {
 				.apiInfo(apiInfo())
 				.host("localhost:8080")
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.sowell.demo.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.sowell.demo.filter.auth.controller"))
 				.paths(PathSelectors.any())
 				.build();
 	}

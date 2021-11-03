@@ -13,6 +13,7 @@
         <module>sw-security-core</module>
         <module>sw-security-starter</module>
         <module>sw-security-plugins</module>
+        <module>security-demo</module>
         <module>sw-security-auth</module>
         <module>sw-security-filter</module>
         <module>sw-tool</module>

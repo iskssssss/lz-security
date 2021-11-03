@@ -1,4 +1,4 @@
-package com.sowell.demo.service;
+package com.sowell.demo.filter.service;
 
 import org.springframework.stereotype.Component;
 
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 public class AopService {
 
 	public void log() {
-		System.out.println("com.sowell.demo.service.AopService.log()");
+		System.out.println("com.sowell.demo.filter.service.AopService.log()");
 	}
 }

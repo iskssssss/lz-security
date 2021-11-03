@@ -1,4 +1,4 @@
-package com.sowell.demo.model;
+package com.sowell.demo.filter.model;
 
 import com.sowell.tool.core.model.BaseModel;
 import io.swagger.annotations.ApiModelProperty;

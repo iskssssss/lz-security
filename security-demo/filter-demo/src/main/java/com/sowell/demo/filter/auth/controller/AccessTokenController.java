@@ -1,12 +1,12 @@
-package com.sowell.demo.controller;
+package com.sowell.demo.filter.auth.controller;
 
 import com.sowell.common.core.web.result.R;
 import com.sowell.security.IcpManager;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.filter.utils.AccessTokenUtil;
-import com.sowell.demo.model.AccessTokenVO;
-//import com.sowell.demo.model.TestAuthDetails;
-import com.sowell.demo.service.AopService;
+import com.sowell.demo.filter.model.AccessTokenVO;
+//import com.sowell.demo.filter.model.TestAuthDetails;
+import com.sowell.demo.filter.service.AopService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
