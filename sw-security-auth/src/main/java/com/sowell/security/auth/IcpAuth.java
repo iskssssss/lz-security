@@ -1,6 +1,10 @@
 package com.sowell.security.auth;
 
 import com.sowell.security.auth.config.AuthConfigurer;
+import com.sowell.security.auth.defaults.DefaultCheckAccessAuthStatusHandler;
+import com.sowell.security.auth.defaults.DefaultLoginErrorHandler;
+import com.sowell.security.auth.defaults.DefaultLoginSuccessHandler;
+import com.sowell.security.auth.defaults.DefaultPasswordEncoder;
 import com.sowell.security.auth.handler.AccessStatusHandler;
 import com.sowell.security.auth.handler.CaptchaHandler;
 import com.sowell.security.auth.handler.ICheckAccessAuthStatusHandler;
@@ -29,19 +33,26 @@ public class IcpAuth {
 
 	//====================================================================================================================================
 
-
 	/**
 	 * 密码验证
 	 */
-	protected static PasswordEncoder passwordEncoder;
+	protected static volatile PasswordEncoder passwordEncoder;
 
 	public static PasswordEncoder getPasswordEncoder() {
+		if (IcpAuth.passwordEncoder == null) {
+			synchronized (IcpAuth.class) {
+				if (IcpAuth.passwordEncoder == null) {
+					IcpAuth.passwordEncoder = new DefaultPasswordEncoder();
+				}
+			}
+		}
 		return passwordEncoder;
 	}
 
 	public static void setPasswordEncoder(PasswordEncoder passwordEncoder) {
 		IcpAuth.passwordEncoder = passwordEncoder;
 	}
+
 	//====================================================================================================================================
 
 	/**
@@ -56,6 +67,7 @@ public class IcpAuth {
 	public static void setUserDetailsService(UserDetailsService userDetailsService) {
 		IcpAuth.userDetailsService = userDetailsService;
 	}
+
 	//====================================================================================================================================
 
 	/**
@@ -70,6 +82,7 @@ public class IcpAuth {
 	public static void setCaptchaHandler(CaptchaHandler captchaHandler) {
 		IcpAuth.captchaHandler = captchaHandler;
 	}
+
 	//====================================================================================================================================
 
 	/**
@@ -84,28 +97,44 @@ public class IcpAuth {
 	public static void setAccessStatusHandler(AccessStatusHandler accessStatusHandler) {
 		IcpAuth.accessStatusHandler = accessStatusHandler;
 	}
+
 	//====================================================================================================================================
 
 	/**
 	 * 登录成功处理器
 	 */
-	protected static LoginSuccessHandler loginSuccessHandler;
+	protected static volatile LoginSuccessHandler loginSuccessHandler;
 
 	public static LoginSuccessHandler getLoginSuccessHandler() {
+		if (IcpAuth.loginSuccessHandler == null) {
+			synchronized (IcpAuth.class) {
+				if (IcpAuth.loginSuccessHandler == null) {
+					IcpAuth.loginSuccessHandler = new DefaultLoginSuccessHandler();
+				}
+			}
+		}
 		return loginSuccessHandler;
 	}
 
 	public static void setLoginSuccessHandler(LoginSuccessHandler loginSuccessHandler) {
 		IcpAuth.loginSuccessHandler = loginSuccessHandler;
 	}
+
 	//====================================================================================================================================
 
 	/**
 	 * 登录错误处理器
 	 */
-	protected static LoginErrorHandler loginErrorHandler;
+	protected static volatile LoginErrorHandler loginErrorHandler;
 
 	public static LoginErrorHandler getLoginErrorHandler() {
+		if (IcpAuth.loginErrorHandler == null) {
+			synchronized (IcpAuth.class) {
+				if (IcpAuth.loginErrorHandler == null) {
+					IcpAuth.loginErrorHandler = new DefaultLoginErrorHandler();
+				}
+			}
+		}
 		return loginErrorHandler;
 	}
 
@@ -117,15 +146,23 @@ public class IcpAuth {
 	/**
 	 * 校验认证状态处理器
 	 */
-	protected static ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
+	protected static volatile ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
 
 	public static ICheckAccessAuthStatusHandler getCheckAccessAuthStatusHandler() {
-		return checkAccessAuthStatusHandler;
+		if (IcpAuth.checkAccessAuthStatusHandler == null) {
+			synchronized (IcpAuth.class) {
+				if (IcpAuth.checkAccessAuthStatusHandler == null) {
+					IcpAuth.checkAccessAuthStatusHandler = new DefaultCheckAccessAuthStatusHandler();
+				}
+			}
+		}
+		return IcpAuth.checkAccessAuthStatusHandler;
 	}
 
 	public static void setCheckAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
 		IcpAuth.checkAccessAuthStatusHandler = checkAccessAuthStatusHandler;
 	}
+
 	//====================================================================================================================================
 
 	protected static LogoutService logoutService;
