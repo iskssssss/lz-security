@@ -2,17 +2,16 @@ package com.sowell.security.tool.filters;
 
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpManager;
-import com.sowell.security.tool.context.IcpSpringContextHolder;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.filter.IcpFilter;
+import com.sowell.security.filter.utils.ServletUtil;
 import com.sowell.security.fun.IcpFilterAuthStrategy;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.IcpLoggerUtil;
+import com.sowell.security.tool.context.IcpSpringContextHolder;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;
-import com.sowell.security.filter.utils.ServletUtil;
 import com.sowell.tool.core.bytes.ByteUtil;
-import com.sowell.tool.core.enums.HttpStatus;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.model.RequestResult;
 import com.sowell.tool.http.enums.ContentTypeEnum;
@@ -23,22 +22,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/12 12:38
+ * TODO
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/11/03 11:16
  */
 public abstract class BaseFilter implements Filter {
-
-	/**
-	 * 过滤前处理
-	 */
-	protected IcpFilterAuthStrategy filterBeforeHandler;
-	/**
-	 * 过滤后处理
-	 */
-	protected IcpFilterAuthStrategy filterAfterHandler;
 
 	/**
 	 * 过滤
@@ -57,7 +47,7 @@ public abstract class BaseFilter implements Filter {
 			try {
 				// TODO 解密处理
 				// 过滤处理
-				if (filterHandler(swRequest, swResponse)) {
+				if (this.doFilter(swRequest, swResponse)) {
 					chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
 				}
 				// 加密处理
@@ -111,39 +101,5 @@ public abstract class BaseFilter implements Filter {
 				}
 			}
 		});
-	}
-
-	/**
-	 * 过滤处理
-	 *
-	 * @param swRequest  swRequest
-	 * @param swResponse swResponse
-	 * @return 是否放行
-	 */
-	private boolean filterHandler(SwRequest swRequest, SwResponse swResponse) throws SecurityException {
-		try {
-			final String requestPath = swRequest.getRequestPath();
-			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
-			final boolean isIncludeUrl = !IcpFilter.getFilterConfigurer().getIncludeUrls().containsUrl(requestPath);
-			final boolean isExcludeUrl = IcpFilter.getFilterConfigurer().getExcludeUrls().containsUrl(requestPath);
-			if (isIncludeUrl || isExcludeUrl) {
-				return true;
-			}
-			// 过滤前处理
-			this.filterBeforeHandler.run();
-			// 过滤
-			boolean filterResult = this.doFilter(swRequest, swResponse);
-			// 过滤后处理
-			this.filterAfterHandler.run();
-			return filterResult;
-		} catch (Exception e) {
-			if (e instanceof SecurityException) {
-				throw ((SecurityException) e);
-			} else if (e.getCause() instanceof SecurityException) {
-				throw (SecurityException) e.getCause();
-			} else {
-				throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
-			}
-		}
 	}
 }
