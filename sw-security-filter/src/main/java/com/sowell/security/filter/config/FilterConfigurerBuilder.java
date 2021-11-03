@@ -35,7 +35,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		return filterUrl;
 	}
 
-	public FilterConfig filterConfig(){
+	public FilterConfig filterConfig() {
 		return filterConfig;
 	}
 
@@ -45,65 +45,40 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @param filterLogHandler 过滤日志处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> filterLogHandler(BaseFilterLogHandler filterLogHandler) {
+	public FilterConfigurerBuilder<T> setFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
 		IcpFilter.setFilterLogHandler(filterLogHandler);
 		return this;
 	}
+
 	/**
 	 * 设置过滤错误处理器
 	 *
 	 * @param filterErrorHandler 过滤错误处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> filterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
+	public FilterConfigurerBuilder<T> setFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
 		IcpFilter.setFilterErrorHandler(filterErrorHandler);
 		return this;
 	}
-	/**
-	 * 设置缓存管理器
-	 *
-	 * @param cacheManager 缓存管理器
-	 * @return this
-	 */
-	public FilterConfigurerBuilder<T> cacheManager(BaseCacheManager cacheManager) {
-		IcpFilter.setCacheManager(cacheManager);
-		return this;
-	}
-	/**
-	 * 设置accessToken处理器
-	 *
-	 * @param accessTokenHandler accessToken处理器
-	 */
-	public FilterConfigurerBuilder<T> accessTokenHandler(IAccessTokenHandler accessTokenHandler) {
-		IcpFilter.setAccessTokenHandler(accessTokenHandler);
-		return this;
-	}
-	/**
-	 * 设置请求加解密处理器
-	 *
-	 * @param requestDataEncryptHandler 请求加解密处理器
-	 */
-	public FilterConfigurerBuilder<T> requestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
-		IcpFilter.setRequestDataEncryptHandler(requestDataEncryptHandler);
-		return this;
-	}
+
 	/**
 	 * 过滤前处理
 	 *
 	 * @param filterBeforeHandler 过滤后处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> filterBeforeHandler(IcpFilterAuthStrategy filterBeforeHandler) {
+	public FilterConfigurerBuilder<T> setFilterBeforeHandler(IcpFilterAuthStrategy filterBeforeHandler) {
 		this.filterBeforeHandler = filterBeforeHandler;
 		return this;
 	}
+
 	/**
 	 * 过滤后处理
 	 *
 	 * @param filterAfterHandler 过滤后处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> filterAfterHandler(IcpFilterAuthStrategy filterAfterHandler) {
+	public FilterConfigurerBuilder<T> setFilterAfterHandler(IcpFilterAuthStrategy filterAfterHandler) {
 		this.filterAfterHandler = filterAfterHandler;
 		return this;
 	}
@@ -111,6 +86,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	public FilterConfigurerBuilder<T> and() {
 		return FilterConfigurerBuilder.this;
 	}
+
 	public T end() {
 		return ((T) FilterConfigurerBuilder.this);
 	}
@@ -134,6 +110,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 
 		/**
 		 * 设置
+		 *
 		 * @param logBeforeFilter
 		 * @return
 		 */
@@ -146,7 +123,6 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 			return FilterConfigurerBuilder.this;
 		}
 	}
-
 
 	public class FilterUrl {
 		/**
@@ -167,6 +143,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 			addUrlHashSet(this.includeUrlSet, includeUrls);
 			return this;
 		}
+
 		/**
 		 * 设置开放接口
 		 *
@@ -181,12 +158,15 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 			return FilterConfigurerBuilder.this;
 		}
 	}
+
 	protected UrlHashSet getFilterUrlIncludeUrls() {
 		return this.filterUrl.includeUrlSet;
 	}
+
 	protected UrlHashSet getFilterUrlExcludeUrls() {
 		return this.filterUrl.excludeUrlSet;
 	}
+
 	private void addUrlHashSet(UrlHashSet urlHashSet, String... urls) {
 		//urlHashSet.clear();
 		if (urls == null || urls.length < 1) {

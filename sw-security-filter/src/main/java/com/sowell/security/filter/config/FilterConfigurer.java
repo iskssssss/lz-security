@@ -1,14 +1,7 @@
 package com.sowell.security.filter.config;
 
 import com.sowell.security.arrays.UrlHashSet;
-//import com.sowell.security.auth.*;
-//import com.sowell.security.auth.defaults.DefaultCheckAccessAuthStatusHandler;
-//import com.sowell.security.auth.defaults.DefaultLoginSuccessHandler;
-//import com.sowell.security.auth.defaults.DefaultPasswordEncoder;
-//import com.sowell.security.auth.defaults.DefaultLoginErrorHandler;
 import com.sowell.security.fun.IcpFilterAuthStrategy;
-//import com.sowell.security.auth.service.PasswordEncoder;
-//import com.sowell.security.auth.service.UserDetailsService;
 
 
 /**
@@ -28,6 +21,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
     public IcpFilterAuthStrategy getFilterBeforeHandler() {
         return super.filterBeforeHandler;
     }
+
     /**
      * 获取过滤后处理方法
      *
@@ -43,8 +37,13 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 拦截的接口列表
      */
     public UrlHashSet getIncludeUrls() {
-        return super.getFilterUrlIncludeUrls();
+        final UrlHashSet filterUrlIncludeUrls = super.getFilterUrlIncludeUrls();
+        if (filterUrlIncludeUrls.isEmpty()) {
+            filterUrlIncludeUrls.add("/**");
+        }
+        return filterUrlIncludeUrls;
     }
+
     /**
      * 获取排除的接口列表
      *

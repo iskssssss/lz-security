@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>sw-security-starter</artifactId>
+        <groupId>com.sowell.security</groupId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sw-security-spring-boot-tool</artifactId>
+    <version>${sw-security-spring-boot-tool.version}</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sowell.security</groupId>
+            <artifactId>sw-security-filter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sowell.security</groupId>
+            <artifactId>sw-security-core</artifactId>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sowell.security</groupId>
+                    <artifactId>sw-security-common</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sowell.security</groupId>
+            <artifactId>sw-security-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sowell.common</groupId>
+            <artifactId>sw-common-core</artifactId>
+            <optional>false</optional>
+
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sowell.common</groupId>
+                    <artifactId>sw-common-orm</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>jsr250-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+</project>

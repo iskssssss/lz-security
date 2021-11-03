@@ -1,7 +1,7 @@
 package com.sowell.security.arrays;
 
 import com.sowell.security.IcpManager;
-import com.sowell.security.context.IcpContext;
+import com.sowell.security.filter.context.IcpContext;
 
 import java.util.HashSet;
 import java.util.List;

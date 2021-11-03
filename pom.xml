@@ -48,7 +48,9 @@
         <!-- 插件 -->
         <sw-security-plugins-redis.version>1.0.15</sw-security-plugins-redis.version>
         <!-- 启动相关 -->
-        <sw-security-spring-boot-starter.version>1.1.33</sw-security-spring-boot-starter.version>
+        <sw-security-filter-spring-boot-starter.version>1.1.33</sw-security-filter-spring-boot-starter.version>
+
+        <sw-security-auth-spring-boot-starter.version>1.0.0</sw-security-auth-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -157,8 +159,14 @@
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-spring-boot-starter</artifactId>
-                <version>${sw-security-spring-boot-starter.version}</version>
+                <artifactId>sw-security-auth-spring-boot-starter</artifactId>
+                <version>${sw-security-auth-spring-boot-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sowell.security</groupId>
+                <artifactId>sw-security-filter-spring-boot-starter</artifactId>
+                <version>${sw-security-filter-spring-boot-starter.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

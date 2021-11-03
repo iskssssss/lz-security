@@ -1,8 +1,8 @@
 package com.sowell.security.filter.defaults;
 
 import com.sowell.security.handler.BaseFilterErrorHandler;
-import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.filter.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.model.RequestResult;

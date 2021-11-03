@@ -2,16 +2,14 @@ package com.sowell.security.filter.utils;
 
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.filter.context.model.BaseResponse;
 import com.sowell.security.exception.AccountNotExistException;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.security.exception.SecurityException;
 import com.sowell.security.filter.filters.AbsInterfacesFilterBuilder;
 import com.sowell.security.fun.LambdaFunctional;
 import com.sowell.security.log.IcpLoggerUtil;
-import com.sowell.security.utils.AccessTokenUtil;
-import com.sowell.security.utils.IpUtil;
 import com.sowell.tool.core.enums.RCode;
 
 import java.util.List;

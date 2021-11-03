@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.sowell.security.spring.BeanInject,\
-com.sowell.security.spring.BeanRegister

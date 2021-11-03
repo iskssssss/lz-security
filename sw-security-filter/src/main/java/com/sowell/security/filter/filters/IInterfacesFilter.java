@@ -1,7 +1,7 @@
 package com.sowell.security.filter.filters;
 
-import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.filter.context.model.BaseResponse;
 import com.sowell.security.exception.SecurityException;
 
 /**

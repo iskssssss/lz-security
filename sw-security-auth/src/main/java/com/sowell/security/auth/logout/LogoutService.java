@@ -1,7 +1,7 @@
 package com.sowell.security.auth.logout;
 
-import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.filter.context.model.BaseResponse;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司

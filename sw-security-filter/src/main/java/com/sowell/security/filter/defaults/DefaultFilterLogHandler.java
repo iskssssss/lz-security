@@ -1,8 +1,8 @@
 package com.sowell.security.filter.defaults;
 
 import com.sowell.security.IcpManager;
-import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.filter.context.model.BaseResponse;
 import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 

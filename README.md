@@ -13,7 +13,7 @@
 ```xml
 <dependency>
     <groupId>com.sowell.security</groupId>
-    <artifactId>sw-security-spring-boot-starter</artifactId>
+    <artifactId>sw-security-filter-spring-boot-starter</artifactId>
     <version>1.1.33</version>
 </dependency>
 ```

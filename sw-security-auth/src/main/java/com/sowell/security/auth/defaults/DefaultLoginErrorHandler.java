@@ -1,11 +1,11 @@
 package com.sowell.security.auth.defaults;
 
 import com.sowell.security.auth.login.LoginErrorHandler;
-import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.filter.context.model.BaseResponse;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.security.exception.SecurityException;
-import com.sowell.security.utils.ServletUtil;
+import com.sowell.security.filter.utils.ServletUtil;
 import com.sowell.tool.http.enums.ContentTypeEnum;
 
 /**

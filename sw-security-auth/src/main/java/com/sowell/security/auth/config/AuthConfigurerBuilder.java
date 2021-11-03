@@ -1,5 +1,6 @@
 package com.sowell.security.auth.config;
 
+import com.sowell.security.auth.IcpAuth;
 import com.sowell.security.auth.handler.*;
 import com.sowell.security.auth.login.LoginErrorHandler;
 import com.sowell.security.auth.login.LoginSuccessHandler;
@@ -23,6 +24,31 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		this.authUrlConfig = new AuthUrlConfig();
 		this.loginHandlerInfo = new LoginHandlerInfo();
 		this.logoutHandlerInfo = new LogoutHandlerInfo();
+	}
+
+	public AuthConfigurerBuilder<T> userDetailsService(UserDetailsService userDetailsService) {
+		IcpAuth.setUserDetailsService(userDetailsService);
+		return this;
+	}
+
+	public AuthConfigurerBuilder<T> captchaHandler(CaptchaHandler captchaHandler) {
+		IcpAuth.setCaptchaHandler(captchaHandler);
+		return this;
+	}
+
+	public AuthConfigurerBuilder<T> passwordEncoder(PasswordEncoder passwordEncoder) {
+		IcpAuth.setPasswordEncoder(passwordEncoder);
+		return this;
+	}
+
+	public AuthConfigurerBuilder<T> accessStatusHandler(AccessStatusHandler accessStatusHandler) {
+		IcpAuth.setAccessStatusHandler(accessStatusHandler);
+		return this;
+	}
+
+	public AuthConfigurerBuilder<T> checkAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
+		IcpAuth.setCheckAccessAuthStatusHandler(checkAccessAuthStatusHandler);
+		return this;
 	}
 
 	/**
@@ -71,67 +97,18 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 
 	public class LoginHandlerInfo {
 
-		/**
-		 * 密码验证
-		 */
-		protected PasswordEncoder passwordEncoder;
-		/**
-		 * 用户获取服务类
-		 */
-		protected UserDetailsService userDetailsService;
-		/**
-		 * 验证码处理器
-		 */
-		protected CaptchaHandler captchaHandler;
-		/**
-		 * 账号状态验证
-		 */
-		protected AccessStatusHandler accessStatusHandler;
-		/**
-		 * 登录成功处理器
-		 */
-		protected LoginSuccessHandler loginSuccessHandler;
-		/**
-		 * 登录错误处理器
-		 */
-		protected LoginErrorHandler loginErrorHandler;
-		/**
-		 * 校验认证状态处理器
-		 */
-		protected ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
-
 		protected String identifierKey = "identifier";
 		protected String credentialKey = "credential";
 		protected String codeKey = "code";
 		protected String rememberMeKey = "rememberMe";
 
-		public LoginHandlerInfo userDetailsService(UserDetailsService userDetailsService) {
-			this.userDetailsService = userDetailsService;
-			return LoginHandlerInfo.this;
-		}
-
-		public LoginHandlerInfo captchaHandler(CaptchaHandler captchaHandler) {
-			this.captchaHandler = captchaHandler;
-			return LoginHandlerInfo.this;
-		}
-
-		public LoginHandlerInfo passwordEncoder(PasswordEncoder passwordEncoder) {
-			this.passwordEncoder = passwordEncoder;
-			return LoginHandlerInfo.this;
-		}
-
-		public LoginHandlerInfo accessStatusHandler(AccessStatusHandler accessStatusHandler) {
-			this.accessStatusHandler = accessStatusHandler;
-			return LoginHandlerInfo.this;
-		}
-
 		public LoginHandlerInfo loginErrorHandler(LoginErrorHandler loginErrorHandler) {
-			this.loginErrorHandler = loginErrorHandler;
+			IcpAuth.setLoginErrorHandler(loginErrorHandler);
 			return LoginHandlerInfo.this;
 		}
 
 		public LoginHandlerInfo loginSuccessHandler(LoginSuccessHandler loginSuccessHandler) {
-			this.loginSuccessHandler = loginSuccessHandler;
+			IcpAuth.setLoginSuccessHandler(loginSuccessHandler);
 			return LoginHandlerInfo.this;
 		}
 
@@ -155,21 +132,15 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 			return LoginHandlerInfo.this;
 		}
 
-		public LoginHandlerInfo checkAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
-			this.checkAccessAuthStatusHandler = checkAccessAuthStatusHandler;
-			return LoginHandlerInfo.this;
-		}
-
 		public AuthConfigurerBuilder<T> and() {
 			return AuthConfigurerBuilder.this;
 		}
 	}
 
 	public class LogoutHandlerInfo {
-		protected LogoutService logoutService;
 
 		public LogoutHandlerInfo logoutService(LogoutService logoutService) {
-			this.logoutService = logoutService;
+			IcpAuth.setLogoutService(logoutService);
 			return this;
 		}
 
