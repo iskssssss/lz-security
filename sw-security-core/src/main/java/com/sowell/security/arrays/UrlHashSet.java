@@ -1,7 +1,7 @@
 package com.sowell.security.arrays;
 
-import com.sowell.security.IcpManager;
-import com.sowell.security.filter.context.IcpContext;
+import com.sowell.security.IcpCoreManager;
+import com.sowell.security.context.IcpContext;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,12 +32,12 @@ public class UrlHashSet extends HashSet<String> {
 	 * @param url 接口地址
 	 * @return 是否匹配
 	 */
-	public boolean containsUrl(String url) {
+	public boolean containsPath(String url) {
 		final boolean isContains = super.contains(url);
 		if (isContains) {
 			return true;
 		}
-		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
+		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
 		for (String value : this) {
 			final String pattern = value.replace(" ", "");
 			if (icpContext.matchUrl(pattern, url)) {

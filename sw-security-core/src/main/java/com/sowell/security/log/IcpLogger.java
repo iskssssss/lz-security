@@ -1,6 +1,6 @@
 package com.sowell.security.log;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.filter.config.IcpConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class IcpLogger implements Closeable {
 	}
 
 	private boolean consoleLogPrint() {
-		final IcpConfig icpConfig = IcpManager.getIcpConfig();
+		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
 		if (icpConfig == null) {
 			return false;
 		}

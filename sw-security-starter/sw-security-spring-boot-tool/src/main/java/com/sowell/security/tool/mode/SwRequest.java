@@ -1,10 +1,11 @@
 package com.sowell.security.tool.mode;
 
 import cn.hutool.core.io.FastByteArrayOutputStream;
-import com.sowell.security.IcpManager;
-import com.sowell.security.filter.context.IcpContext;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.IcpCoreManager;
+import com.sowell.security.context.IcpContext;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.exception.base.SecurityException;
+import com.sowell.security.tool.utils.CookieUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.io.IoUtil;
 
@@ -35,13 +36,18 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 	}
 
 	@Override
+	public String getRequestURL() {
+		return getRequest().getRequestURL().toString();
+	}
+
+	@Override
 	public String getRequestPath() {
 		return getRequest().getServletPath();
 	}
 
 	@Override
 	public boolean matchUrl(String path) {
-		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
+		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
 		return icpContext.matchUrl(path, this.getRequestPath());
 	}
 
@@ -91,13 +97,12 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 	}
 
 	@Override
+	public String getCookieValue(String name) {
+		return CookieUtil.getValue(getRequest(), name);
+	}
+
+	@Override
 	public String getRemoteAddr() {
 		return getRequest().getRemoteAddr();
 	}
-
-//	@Override
-//	public Object decrypt(byte[] bytes) {
-//		final SwPrivateKey priKey = IcpManager.getIcpConfig().getEncryptConfig().getPrivateKey();
-//		return priKey.decrypt(bytes);
-//	}
 }

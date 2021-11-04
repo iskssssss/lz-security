@@ -2,14 +2,15 @@ package com.sowell.security.filter.utils;
 
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
-import com.sowell.security.exception.AccountNotExistException;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.filters.AbsInterfacesFilterBuilder;
 import com.sowell.security.fun.LambdaFunctional;
 import com.sowell.security.log.IcpLoggerUtil;
+import com.sowell.security.utils.IpUtil;
 import com.sowell.tool.core.enums.RCode;
 
 import java.util.List;
@@ -197,12 +198,12 @@ public class FilterUtil {
 
 		@Override
 		public void init() {
-			IcpLoggerUtil.info(this.getClass(), "AccessTokenFilter-init");
+			IcpLoggerUtil.info(AccessTokenFilter.class, "AccessTokenFilter-init");
 		}
 
 		@Override
 		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
-			IcpLoggerUtil.info(this.getClass(), "AccessTokenFilter-filter");
+			IcpLoggerUtil.info(AccessTokenFilter.class, "AccessTokenFilter-filter");
 			try {
 				AccessTokenUtil.getAuthDetails();
 			} catch (HeaderNotAccessTokenException headerNotAccessTokenException) {
@@ -218,7 +219,7 @@ public class FilterUtil {
 
 		@Override
 		public void destroy() {
-			IcpLoggerUtil.info(this.getClass(), "AccessTokenFilter-destroy");
+			IcpLoggerUtil.info(AccessTokenFilter.class, "AccessTokenFilter-destroy");
 		}
 	}
 
@@ -233,12 +234,12 @@ public class FilterUtil {
 
 		@Override
 		public void init() {
-			IcpLoggerUtil.info(this.getClass(), "IpFilter-init");
+			IcpLoggerUtil.info(IpFilter.class, "IpFilter-init");
 		}
 
 		@Override
 		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
-			IcpLoggerUtil.info(this.getClass(), "IpFilter-filter");
+			IcpLoggerUtil.info(IpFilter.class, "IpFilter-filter");
 			final List<String> ipList = ipListGetFun.run(params);
 			if (ipList == null || ipList.isEmpty()) {
 				return no(RCode.NOT_WHITE_IP);
@@ -268,7 +269,7 @@ public class FilterUtil {
 
 		@Override
 		public void destroy() {
-			IcpLoggerUtil.info(this.getClass(), "IpFilter-destroy");
+			IcpLoggerUtil.info(IpFilter.class, "IpFilter-destroy");
 		}
 	}
 
@@ -283,19 +284,19 @@ public class FilterUtil {
 
 		@Override
 		public void init() {
-			IcpLoggerUtil.info(this.getClass(), "RequestInterfaceFilter-init");
+			IcpLoggerUtil.info(RequestInterfaceFilter.class, "RequestInterfaceFilter-init");
 		}
 
 		@Override
 		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
-			IcpLoggerUtil.info(this.getClass(), "RequestInterfaceFilter-filter");
+			IcpLoggerUtil.info(RequestInterfaceFilter.class, "RequestInterfaceFilter-filter");
 			final UrlHashSet interfaceList = interfaceListGetFun.run(params);
 			if (interfaceList == null || interfaceList.isEmpty()) {
 				return no(RCode.NOT_ACCESS_INTERFACE);
 			}
 			final String requestPath = request.getRequestPath();
 			boolean isYes = false;
-			if (interfaceList.containsUrl(requestPath)) {
+			if (interfaceList.containsPath(requestPath)) {
 				isYes = true;
 			}
 			if (isYes) {
@@ -309,7 +310,7 @@ public class FilterUtil {
 
 		@Override
 		public void destroy() {
-			IcpLoggerUtil.info(this.getClass(), "RequestInterfaceFilter-destroy");
+			IcpLoggerUtil.info(RequestInterfaceFilter.class, "RequestInterfaceFilter-destroy");
 		}
 	}
 

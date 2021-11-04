@@ -1,8 +1,8 @@
 package com.sowell.security.auth.logout;
 
-import com.sowell.security.auth.IcpAuth;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
+import com.sowell.security.auth.IcpAuthManager;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -18,7 +18,7 @@ public class LogoutHandler extends AbstractLogoutHandler {
             BaseRequest<?> request,
             BaseResponse<?> response
     ) {
-        final LogoutService logoutService = IcpAuth.getLogoutService();
+        final LogoutService logoutService = IcpAuthManager.getLogoutService();
         return logoutService.logout(request, response);
     }
 }

@@ -1,8 +1,8 @@
 package com.sowell.security.filter.defaults;
 
-import com.sowell.security.IcpManager;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
+import com.sowell.security.IcpCoreManager;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 
@@ -20,7 +20,7 @@ public class DefaultFilterLogHandler implements BaseFilterLogHandler {
 			BaseRequest<?> request,
 			BaseResponse<?> response
 	) {
-		IcpLoggerUtil.info(getClass(), "客户端信息：" + IcpManager.getStorage().getUserAgentInfo().toJson());
+		IcpLoggerUtil.info(getClass(), "客户端信息：" + IcpCoreManager.getStorage().getUserAgentInfo().toJson());
 		return null;
 	}
 
@@ -31,6 +31,6 @@ public class DefaultFilterLogHandler implements BaseFilterLogHandler {
 			Object logEntity,
 			Exception ex
 	) {
-		IcpLoggerUtil.info(getClass(), "本次请求总时间：" + IcpManager.getStorage().getRequestTime().toString());
+		IcpLoggerUtil.info(getClass(), "本次请求总时间：" + IcpCoreManager.getStorage().getRequestTime().toString());
 	}
 }

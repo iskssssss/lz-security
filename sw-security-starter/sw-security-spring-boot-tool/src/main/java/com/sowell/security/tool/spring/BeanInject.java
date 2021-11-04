@@ -1,9 +1,9 @@
 package com.sowell.security.tool.spring;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.filter.config.IcpConfig;
-import com.sowell.security.filter.context.IcpContextTheadLocal;
+import com.sowell.security.context.IcpContextTheadLocal;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.security.tool.utils.SpringUtil;
@@ -23,16 +23,16 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:16
  */
-public class BeanInject extends IcpManager {
+public class BeanInject extends IcpCoreManager {
 
 	@Autowired
 	public void injectIcpConfig(IcpConfig icpConfig) {
-		IcpManager.setIcpConfig(icpConfig);
+		IcpCoreManager.setIcpConfig(icpConfig);
 	}
 
 	@Autowired
 	public void injectInterfacesMethodMap(Map<String, ControllerMethod> initControllerMethodMap) {
-		IcpManager.setInterfacesMethodMap(initControllerMethodMap);
+		IcpCoreManager.setInterfacesMethodMap(initControllerMethodMap);
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class BeanInject extends IcpManager {
 	@Autowired(required = false)
 	@Qualifier("mvcPathMatcher")
 	public void injectIcpContext(PathMatcher pathMatcher) {
-		IcpManager.setIcpContext(new IcpContextTheadLocal<HttpServletRequest, HttpServletResponse>() {
+		IcpCoreManager.setIcpContext(new IcpContextTheadLocal<HttpServletRequest, HttpServletResponse>() {
 			@Override
 			public boolean matchUrl(String pattern, String path) {
 				return pathMatcher.match(pattern, path);
@@ -54,11 +54,11 @@ public class BeanInject extends IcpManager {
 	 */
 	@Autowired(required = false)
 	public void injectAccessTokenHandler(IAccessTokenHandler accessTokenHandler) {
-		if (IcpManager.accessTokenHandler != null) {
+		if (IcpCoreManager.accessTokenHandler != null) {
 			SpringUtil.destroyBean(accessTokenHandler);
 			return;
 		}
-		IcpManager.setAccessTokenHandler(accessTokenHandler);
+		IcpCoreManager.setAccessTokenHandler(accessTokenHandler);
 	}
 
 	/**
@@ -66,11 +66,11 @@ public class BeanInject extends IcpManager {
 	 */
 	@Autowired(required = false)
 	public void injectRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
-		if (IcpManager.requestDataEncryptHandler != null) {
+		if (IcpCoreManager.requestDataEncryptHandler != null) {
 			SpringUtil.destroyBean(requestDataEncryptHandler);
 			return;
 		}
-		IcpManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
+		IcpCoreManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
 	}
 
 	/**
@@ -78,11 +78,11 @@ public class BeanInject extends IcpManager {
 	 */
 	@Autowired(required = false)
 	public void injectCacheManager(BaseCacheManager cacheManager) {
-		if (IcpManager.cacheManager != null) {
+		if (IcpCoreManager.cacheManager != null) {
 			SpringUtil.destroyBean(cacheManager);
 			return;
 		}
-		IcpManager.setCacheManager(cacheManager);
+		IcpCoreManager.setCacheManager(cacheManager);
 	}
 
 

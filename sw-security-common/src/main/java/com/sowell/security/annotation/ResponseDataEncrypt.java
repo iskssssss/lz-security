@@ -3,7 +3,7 @@ package com.sowell.security.annotation;
 import java.lang.annotation.*;
 
 /**
- * 响应数据加密
+ * 数据加密注解
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -14,4 +14,17 @@ import java.lang.annotation.*;
 @Documented
 public @interface ResponseDataEncrypt {
 
+	/**
+	 * 请求数据是否加密
+	 *
+	 * @return true加密 false 不加密
+	 */
+	boolean requestEncrypt() default false;
+
+	/**
+	 * 响应数据是否加密
+	 *
+	 * @return true加密 false 不加密
+	 */
+	boolean responseEncrypt() default true;
 }

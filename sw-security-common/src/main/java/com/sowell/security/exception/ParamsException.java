@@ -1,14 +1,14 @@
 package com.sowell.security.exception;
 
-
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.tool.core.enums.RCode;
 
 /**
- * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/6/24 13:56
+ * 参数错误异常
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/11/03 17:06
  */
 public class ParamsException extends SecurityException {
 
@@ -25,6 +25,6 @@ public class ParamsException extends SecurityException {
     }
 
     private ParamsException(Object responseData, Throwable cause) {
-        super(RCode.ERROR_PARAMS.getCode(), RCode.ERROR_PARAMS.getMessage(), responseData, cause);
+        super(RCode.ERROR_PARAMS, responseData, cause);
     }
 }

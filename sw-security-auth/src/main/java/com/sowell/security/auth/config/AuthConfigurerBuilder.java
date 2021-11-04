@@ -1,12 +1,13 @@
 package com.sowell.security.auth.config;
 
-import com.sowell.security.auth.IcpAuth;
+import com.sowell.security.auth.IcpAuthManager;
 import com.sowell.security.auth.handler.*;
-import com.sowell.security.auth.login.LoginErrorHandler;
-import com.sowell.security.auth.login.LoginSuccessHandler;
+import com.sowell.security.auth.login.AuthErrorHandler;
+import com.sowell.security.auth.login.AuthSuccessHandler;
 import com.sowell.security.auth.logout.LogoutService;
 import com.sowell.security.auth.service.PasswordEncoder;
 import com.sowell.security.auth.service.UserDetailsService;
+import com.sowell.security.fun.IcpFilterAuthStrategy;
 
 /**
  * TODO
@@ -16,38 +17,39 @@ import com.sowell.security.auth.service.UserDetailsService;
  * @date 2021/11/02 15:18
  */
 public class AuthConfigurerBuilder<T extends AuthConfigurer> {
-	protected final AuthUrlConfig authUrlConfig;
+
 	protected final LoginHandlerInfo loginHandlerInfo;
 	protected final LogoutHandlerInfo logoutHandlerInfo;
+	protected IcpFilterAuthStrategy authAfterHandler = params -> { };
+	protected IcpFilterAuthStrategy authBeforeHandler = params -> { };
 
 	public AuthConfigurerBuilder() {
-		this.authUrlConfig = new AuthUrlConfig();
 		this.loginHandlerInfo = new LoginHandlerInfo();
 		this.logoutHandlerInfo = new LogoutHandlerInfo();
 	}
 
 	public AuthConfigurerBuilder<T> userDetailsService(UserDetailsService userDetailsService) {
-		IcpAuth.setUserDetailsService(userDetailsService);
+		IcpAuthManager.setUserDetailsService(userDetailsService);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> captchaHandler(CaptchaHandler captchaHandler) {
-		IcpAuth.setCaptchaHandler(captchaHandler);
+		IcpAuthManager.setCaptchaHandler(captchaHandler);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> passwordEncoder(PasswordEncoder passwordEncoder) {
-		IcpAuth.setPasswordEncoder(passwordEncoder);
+		IcpAuthManager.setPasswordEncoder(passwordEncoder);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> accessStatusHandler(AccessStatusHandler accessStatusHandler) {
-		IcpAuth.setAccessStatusHandler(accessStatusHandler);
+		IcpAuthManager.setAccessStatusHandler(accessStatusHandler);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> checkAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
-		IcpAuth.setCheckAccessAuthStatusHandler(checkAccessAuthStatusHandler);
+		IcpAuthManager.setCheckAccessAuthStatusHandler(checkAccessAuthStatusHandler);
 		return this;
 	}
 
@@ -69,47 +71,55 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		return logoutHandlerInfo;
 	}
 
-	static class AuthUrlConfig {
+	/**
+	 * 认证前处理
+	 *
+	 * @param authBeforeHandler 认证后处理器
+	 * @return this
+	 */
+	public AuthConfigurerBuilder<T> setAuthBeforeHandler(IcpFilterAuthStrategy authBeforeHandler) {
+		this.authBeforeHandler = authBeforeHandler;
+		return this;
+	}
+
+	/**
+	 * 认证后处理
+	 *
+	 * @param authAfterHandler 认证后处理器
+	 * @return this
+	 */
+	public AuthConfigurerBuilder<T> setAuthAfterHandler(IcpFilterAuthStrategy authAfterHandler) {
+		this.authAfterHandler = authAfterHandler;
+		return this;
+	}
+
+	public class LoginHandlerInfo {
 
 		protected String loginUrl = "/api/login/login.do";
-		protected String logoutUrl = "/api/logout/logout.do";
+
+		protected String identifierKey = "username";
+		protected String credentialKey = "password";
+		protected String codeKey = "code";
+		protected String rememberMeKey = "rememberMe";
+
+		public LoginHandlerInfo loginErrorHandler(AuthErrorHandler authErrorHandler) {
+			IcpAuthManager.setLoginErrorHandler(authErrorHandler);
+			return LoginHandlerInfo.this;
+		}
+
+		public LoginHandlerInfo loginSuccessHandler(AuthSuccessHandler authSuccessHandler) {
+			IcpAuthManager.setLoginSuccessHandler(authSuccessHandler);
+			return LoginHandlerInfo.this;
+		}
 
 		/**
 		 * 设置登录地址
 		 *
 		 * @param loginUrl 登录地址
 		 */
-		public AuthUrlConfig loginUrl(String loginUrl) {
+		public LoginHandlerInfo loginUrl(String loginUrl) {
 			this.loginUrl = loginUrl;
 			return this;
-		}
-
-		/**
-		 * 设置登出地址
-		 *
-		 * @param logoutUrl 登出地址
-		 */
-		public AuthUrlConfig logoutUrl(String logoutUrl) {
-			this.logoutUrl = logoutUrl;
-			return this;
-		}
-	}
-
-	public class LoginHandlerInfo {
-
-		protected String identifierKey = "identifier";
-		protected String credentialKey = "credential";
-		protected String codeKey = "code";
-		protected String rememberMeKey = "rememberMe";
-
-		public LoginHandlerInfo loginErrorHandler(LoginErrorHandler loginErrorHandler) {
-			IcpAuth.setLoginErrorHandler(loginErrorHandler);
-			return LoginHandlerInfo.this;
-		}
-
-		public LoginHandlerInfo loginSuccessHandler(LoginSuccessHandler loginSuccessHandler) {
-			IcpAuth.setLoginSuccessHandler(loginSuccessHandler);
-			return LoginHandlerInfo.this;
 		}
 
 		public LoginHandlerInfo identifierKey(String identifierKey) {
@@ -138,9 +148,20 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	}
 
 	public class LogoutHandlerInfo {
+		protected String logoutUrl = "/api/logout/logout.do";
+
+		/**
+		 * 设置登出地址
+		 *
+		 * @param logoutUrl 登出地址
+		 */
+		public LogoutHandlerInfo logoutUrl(String logoutUrl) {
+			this.logoutUrl = logoutUrl;
+			return this;
+		}
 
 		public LogoutHandlerInfo logoutService(LogoutService logoutService) {
-			IcpAuth.setLogoutService(logoutService);
+			IcpAuthManager.setLogoutService(logoutService);
 			return this;
 		}
 

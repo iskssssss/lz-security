@@ -1,11 +1,11 @@
 package com.sowell.security.auth.defaults;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.auth.handler.ICheckAccessAuthStatusHandler;
 import com.sowell.security.filter.config.IcpConfig;
-import com.sowell.security.filter.context.IcpSecurityContextThreadLocal;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
+import com.sowell.security.context.IcpSecurityContextThreadLocal;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 import com.sowell.tool.core.string.StringUtil;
 
 /**
@@ -23,7 +23,7 @@ public class DefaultCheckAccessAuthStatusHandler implements ICheckAccessAuthStat
 			BaseResponse<?> response
 	) {
 		final BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		final IcpConfig icpConfig = IcpManager.getIcpConfig();
+		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
 		final String headerName = icpConfig.getHeaderName();
 		final String authorizationToken = servletRequest.getHeader(headerName);
 		return StringUtil.isNotEmpty(authorizationToken);

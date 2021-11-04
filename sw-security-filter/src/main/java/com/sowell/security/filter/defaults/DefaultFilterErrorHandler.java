@@ -1,9 +1,9 @@
 package com.sowell.security.filter.defaults;
 
 import com.sowell.security.handler.BaseFilterErrorHandler;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.model.RequestResult;
 import com.sowell.tool.json.JsonUtil;
@@ -23,11 +23,11 @@ public class DefaultFilterErrorHandler implements BaseFilterErrorHandler<Request
 	) {
 		final Object data = securityException.getResponseData();
 		RequestResult requestResult = new RequestResult();
-		requestResult.setCode(securityException.getCode());
+		requestResult.setCode(securityException.getResponseCode());
 		requestResult.setData(data == null ? null : JsonUtil.toJsonString(data));
 		requestResult.setMessage(securityException.getMessage());
 
-		if (securityException.getCode().equals(RCode.INTERNAL_SERVER_ERROR.getCode())) {
+		if (securityException.getResponseCode().equals(RCode.INTERNAL_SERVER_ERROR.getCode())) {
 			response.setStatus(requestResult.getCode());
 		}
 		return requestResult;

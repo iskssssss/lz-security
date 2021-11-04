@@ -1,6 +1,6 @@
 package com.sowell.security.tool.config;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.config.CoreConfigurer;
 import com.sowell.security.config.CoreConfigurerBuilder;
 import com.sowell.security.filter.config.IcpConfig;
@@ -32,7 +32,8 @@ public abstract class SecurityConfigurerAdapter implements EnvironmentAware {
     @Override
     public void setEnvironment(Environment environment) {
         IcpConfig icpConfig = Binder.get(environment).bind("sw.security", IcpConfig.class).get();
-        IcpManager.setIcpConfig(icpConfig);
+        IcpCoreManager.setIcpConfig(icpConfig);
+        this.config(IcpCoreManager.getCoreConfigurer());
         this.init();
     }
 }

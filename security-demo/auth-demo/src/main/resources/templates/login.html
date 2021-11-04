@@ -67,7 +67,7 @@
             </div>
             <div class="form-item">
                 <p style="width: 56px">密&emsp;码:</p>
-                <label for="pwd"></label><input id="pwd" name="pwd" value="123456" type="password" placeholder="请输入密码">
+                <label for="password"></label><input id="password" name="password" value="123456" type="password" placeholder="请输入密码">
             </div>
             <div style="margin: 8px 0; width: 100%;">
                 <input style="width: 100%; cursor:pointer;" id="login" type="button" value="登录">
@@ -83,20 +83,34 @@
         $("#login").click(function () {
             const getRequest = GetRequest();
             let redirectUrl = getRequest["redirectUrl"];
-            $.post("/api/login/login.do", {
+
+            $.ajax({
+                type: "post",
+                url: "/api/login/login.do",
+                data: JSON.stringify({
                     username: $("#username").val(),
-                    pwd: $("#pwd").val(),
+                    password: $("#password").val(),
                     redirectUrl: redirectUrl
-                }, function (data, status) {
-                    if (data.code !== 200 && data.code !== 0) {
-                        alert("登录失败！");
+                }),
+                timeout: (90 * 1000),
+                traditional: true,
+                dataType: "json",
+                contentType: "application/json",
+                success: (result) => {
+                    console.info(result);
+                    if (result.code !== 200 && result.code !== 0) {
+                        alert(result.message);
                         return;
                     }
-                    if (redirectUrl === undefined || redirectUrl === ''){
+                    if (redirectUrl === undefined || redirectUrl === '') {
                         redirectUrl = "/";
                     }
                     location.href = redirectUrl;
-                });
+                },
+                error: (error) => {
+                    alert("登录失败！");
+                }
+            });
         });
     });
     function GetRequest() {

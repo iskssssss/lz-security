@@ -1,12 +1,11 @@
 package com.sowell.security.defaults;
 
 import cn.hutool.crypto.SmUtil;
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.exception.AccountNotExistException;
+import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.core.string.StringUtil;
-import com.sowell.tool.jwt.model.AuthDetails;
 
 import java.util.HashMap;
 
@@ -20,13 +19,13 @@ import java.util.HashMap;
 public class UUIDAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDetails> {
 
 	@Override
-	public Object generateAccessToken(DefaultAuthDetails authDetails) {
-		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
-		long timeoutMillis = IcpManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
+	public String generateAccessToken(DefaultAuthDetails authDetails) {
+		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
+		long timeoutMillis = IcpCoreManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
 		String id = "UUID::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isNotEmpty(idValue)) {
-			return idValue;
+			return ((String) idValue);
 		}
 		cacheManager.remove(idValue);
 		String accessToken = SmUtil.sm3(authDetails.toJson() + System.currentTimeMillis());
@@ -38,32 +37,31 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDe
 	}
 
 	@Override
-	public boolean checkExpiration(Object accessTokenInfo) {
-		if (StringUtil.isEmpty(accessTokenInfo)) {
+	public boolean checkExpiration(String accessToken) {
+		if (StringUtil.isEmpty(accessToken)) {
 			return false;
 		}
-		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
-		final Object authDetailsObj = cacheManager.get(accessTokenInfo);
-		if (!(authDetailsObj instanceof AuthDetails)) {
+		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
+		final Object authDetailsObj = cacheManager.get(accessToken);
+		if (!(authDetailsObj instanceof DefaultAuthDetails)) {
 			return true;
 		}
-		final AuthDetails<?> authDetails = (AuthDetails<?>) authDetailsObj;
+		final DefaultAuthDetails authDetails = (DefaultAuthDetails) authDetailsObj;
 		String id = "UUID::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isEmpty(idValue)) {
 			return true;
 		}
-		return !accessTokenInfo.equals(idValue);
+		return !accessToken.equals(idValue);
 	}
 
 	@Override
-	public DefaultAuthDetails getAuthDetails(Object accessTokenInfo) {
-		if (this.checkExpiration(accessTokenInfo)) {
+	public DefaultAuthDetails getAuthDetails(String accessToken) {
+		if (this.checkExpiration(accessToken)) {
 			throw new AccountNotExistException();
 		}
-		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
-		final Object authDetails = cacheManager.get(accessTokenInfo);
-		if (!(authDetails instanceof AuthDetails)) {
+		final Object authDetails = IcpCoreManager.getCacheManager().get(accessToken);
+		if (!(authDetails instanceof DefaultAuthDetails)) {
 			throw new AccountNotExistException();
 		}
 		return ((DefaultAuthDetails) authDetails);
@@ -71,20 +69,15 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDe
 
 	@Override
 	public void setAuthDetails(DefaultAuthDetails authDetails) {
-		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
-		final Object accessToken = getAccessTokenInfo();
-		cacheManager.put(accessToken, authDetails);
+		final String accessToken = getAccessTokenInfo();
+		IcpCoreManager.getCacheManager().put(accessToken, authDetails);
 	}
 
 	@Override
-	public Object refreshAccessToken(Object accessTokenInfo) {
-		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
-		long timeoutMillis = IcpManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
-		final AuthDetails<?> authDetails = this.getAuthDetails(accessTokenInfo);
+	public String refreshAccessToken(String accessToken) {
+		final DefaultAuthDetails authDetails = this.getAuthDetails(accessToken);
 		String id = "UUID::" + authDetails.getId();
-		if (cacheManager.refreshKeys(timeoutMillis, id, accessTokenInfo)) {
-			return accessTokenInfo;
-		}
-		return null;
+		IcpCoreManager.getCacheManager().remove(id);
+		return generateAccessToken(authDetails);
 	}
 }

@@ -1,9 +1,9 @@
 package com.sowell.security.token;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.filter.config.IcpConfig;
-import com.sowell.security.filter.context.IcpSecurityContextThreadLocal;
-import com.sowell.security.filter.context.model.BaseRequest;
+import com.sowell.security.context.IcpSecurityContextThreadLocal;
+import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
@@ -18,15 +18,18 @@ import com.sowell.tool.jwt.model.AuthDetails;
 public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 
 	/**
-	 * 获取获取客户端的AccessToken信息
+	 * 获取获取客户端的AccessToken
 	 *
-	 * @return AccessToken信息
+	 * @return AccessToken
 	 */
-	default Object getAccessTokenInfo() {
+	default String getAccessTokenInfo() {
 		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		final IcpConfig icpConfig = IcpManager.getIcpConfig();
+		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
 		final String headerName = icpConfig.getHeaderName();
-		final String accessToken = servletRequest.getHeader(headerName);
+		String accessToken = servletRequest.getHeader(headerName);
+		if (StringUtil.isEmpty(accessToken)) {
+			accessToken = servletRequest.getCookieValue(headerName);
+		}
 		if (StringUtil.isEmpty(accessToken)) {
 			throw new HeaderNotAccessTokenException();
 		}
@@ -34,16 +37,15 @@ public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 	}
 
 	/**
-	 * 生成AccessToken信息
+	 * 生成AccessToken
 	 *
 	 * @param authDetails 认证信息
-	 * @param <T>         类型
-	 * @return AccessToken信息
+	 * @return AccessToken
 	 */
-	Object generateAccessToken(T authDetails);
+	String generateAccessToken(T authDetails);
 
 	/**
-	 * 校验AccessToken信息是否过期
+	 * 校验AccessToken是否过期
 	 *
 	 * @return true：过期 反之未过期
 	 */
@@ -52,12 +54,12 @@ public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 	}
 
 	/**
-	 * 校验AccessToken信息是否过期
+	 * 校验AccessToken是否过期
 	 *
-	 * @param accessTokenInfo AccessToken信息
+	 * @param accessToken AccessToken
 	 * @return true：过期 反之未过期
 	 */
-	boolean checkExpiration(Object accessTokenInfo);
+	boolean checkExpiration(String accessToken);
 
 	/**
 	 * 获取认证信息
@@ -71,10 +73,10 @@ public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 	/**
 	 * 获取认证信息
 	 *
-	 * @param accessTokenInfo AccessToken信息
+	 * @param accessToken AccessToken
 	 * @return 认证信息
 	 */
-	T getAuthDetails(Object accessTokenInfo);
+	T getAuthDetails(String accessToken);
 
 	/**
 	 * 设置认证信息
@@ -86,18 +88,18 @@ public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 	/**
 	 * 刷新AccessToken过期时间
 	 *
-	 * @return 刷新后的AccessToken信息
+	 * @return 刷新后的AccessToken
 	 */
-	default Object refreshAccessToken() {
+	default String refreshAccessToken() {
 		return this.refreshAccessToken(this.getAccessTokenInfo());
 	}
 
 	/**
 	 * 刷新AccessToken过期时间
 	 *
-	 * @param accessTokenInfo AccessToken信息
-	 * @return 刷新后的AccessToken信息
+	 * @param accessToken AccessToken
+	 * @return 刷新后的AccessToken
 	 */
-	Object refreshAccessToken(Object accessTokenInfo);
+	String refreshAccessToken(String accessToken);
 
 }

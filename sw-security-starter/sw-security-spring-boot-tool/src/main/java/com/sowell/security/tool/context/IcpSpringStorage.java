@@ -1,6 +1,6 @@
 package com.sowell.security.tool.context;
 
-import com.sowell.security.filter.context.model.IcpStorage;
+import com.sowell.security.context.model.IcpStorage;
 import com.sowell.security.tool.mode.SwRequest;
 
 import javax.servlet.http.HttpServletRequest;

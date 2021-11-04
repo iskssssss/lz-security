@@ -1,19 +1,19 @@
 package com.sowell.security.auth.handler.impl;
 
-import com.sowell.security.auth.IcpAuth;
+import com.sowell.security.auth.IcpAuthManager;
 import com.sowell.security.auth.config.AuthConfigurer;
 import com.sowell.security.auth.handler.AbstractAuthorizationHandler;
 import com.sowell.security.auth.handler.AccessStatusHandler;
 import com.sowell.security.auth.handler.CaptchaHandler;
-import com.sowell.security.auth.login.LoginErrorHandler;
-import com.sowell.security.auth.login.LoginSuccessHandler;
+import com.sowell.security.auth.login.AuthErrorHandler;
+import com.sowell.security.auth.login.AuthSuccessHandler;
 import com.sowell.security.auth.service.PasswordEncoder;
 import com.sowell.security.auth.service.UserDetailsService;
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
-import com.sowell.security.exception.BadCredentialsException;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.auth.BadCredentialsException;
 import com.sowell.security.exception.ParamsException;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.json.JsonUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
@@ -34,7 +34,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
     private final String codeKey;
 
     public AuthorizationHandler() {
-        AuthConfigurer authConfigurer = IcpAuth.getAuthConfigurer();
+        AuthConfigurer authConfigurer = IcpAuthManager.getAuthConfigurer();
         identifierName = authConfigurer.getIdentifierKey();
         credentialName = authConfigurer.getCredentialKey();
         codeKey = authConfigurer.getCodeKey();
@@ -59,7 +59,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
                 throw new ParamsException();
             }
             // 验证验证码
-            final CaptchaHandler captchaHandler = IcpAuth.getCaptchaHandler();
+            final CaptchaHandler captchaHandler = IcpAuthManager.getCaptchaHandler();
             if (captchaHandler != null) {
                 final Object codeValue = loginData.get(codeKey);
                 if (StringUtil.isEmpty(codeValue)) {
@@ -68,28 +68,28 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
                 captchaHandler.handler(codeValue);
             }
             // 获取用户信息
-            final UserDetailsService userDetailsService = IcpAuth.getUserDetailsService();
+            final UserDetailsService userDetailsService = IcpAuthManager.getUserDetailsService();
             final AuthDetails<?> authDetails = userDetailsService.readUserByUsername((String) usernameValue);
             // 验证用户密码
             final String password = authDetails.getCredential();
-            final PasswordEncoder passwordEncoder = IcpAuth.getPasswordEncoder();
+            final PasswordEncoder passwordEncoder = IcpAuthManager.getPasswordEncoder();
             if (!passwordEncoder.matches((String) passwordValue, password)) {
                 throw new BadCredentialsException(authDetails.getIdentifier());
             }
             // 验证账号信息
-            final AccessStatusHandler accessStatusHandler = IcpAuth.getAccessStatusHandler();
+            final AccessStatusHandler accessStatusHandler = IcpAuthManager.getAccessStatusHandler();
             accessStatusHandler.verification(authDetails);
             // 验证成功
-            final LoginSuccessHandler loginSuccessHandler = IcpAuth.getLoginSuccessHandler();
-            loginSuccessHandler.success(swRequest, swResponse, authDetails);
+            final AuthSuccessHandler authSuccessHandler = IcpAuthManager.getLoginSuccessHandler();
+            authSuccessHandler.success(swRequest, swResponse, authDetails);
             return true;
         } catch (SecurityException securityException) {
             // 验证失败
             if (StringUtil.isEmpty(securityException.getResponseData())) {
                 securityException.setResponseData(usernameValue);
             }
-            final LoginErrorHandler loginErrorHandler = IcpAuth.getLoginErrorHandler();
-            loginErrorHandler.error(swRequest, swResponse, securityException);
+            final AuthErrorHandler authErrorHandler = IcpAuthManager.getLoginErrorHandler();
+            authErrorHandler.error(swRequest, swResponse, securityException);
             return false;
         }
     }

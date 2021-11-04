@@ -1,16 +1,16 @@
 package com.sowell.security.tool.filters;
 
 import com.sowell.security.IcpConstant;
-import com.sowell.security.IcpManager;
-import com.sowell.security.exception.SecurityException;
-import com.sowell.security.filter.IcpFilter;
-import com.sowell.security.filter.utils.ServletUtil;
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.IcpCoreManager;
+import com.sowell.security.exception.base.SecurityException;
+import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.tool.context.IcpSpringContextHolder;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;
+import com.sowell.tool.cache.utils.GlobalScheduled;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.model.RequestResult;
@@ -54,7 +54,7 @@ public abstract class BaseFilter implements Filter {
 				if (swResponse.isEncrypt()) {
 					try {
 						byte[] encryptBytes;
-						final RequestDataEncryptHandler requestDataEncryptHandler = IcpManager.getRequestDataEncryptHandler();
+						final RequestDataEncryptHandler requestDataEncryptHandler = IcpCoreManager.getRequestDataEncryptHandler();
 						final byte[] responseDataBytes = swResponse.getResponseDataBytes();
 						final RequestResult resultObject = ByteUtil.toObject(responseDataBytes, RequestResult.class);
 						if (resultObject != null) {
@@ -70,8 +70,7 @@ public abstract class BaseFilter implements Filter {
 						throw new SecurityException(RCode.DATA_ENCRYPT_FAILED);
 					}
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				// 错误处理
 				if (e instanceof SecurityException) {
 					securityException = (SecurityException) e;
@@ -80,14 +79,13 @@ public abstract class BaseFilter implements Filter {
 				} else {
 					securityException = new SecurityException(RCode.INTERNAL_SERVER_ERROR, e);
 				}
-				if (securityException.getCause() != null){
+				if (securityException.getCause() != null) {
 					IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
 				} else {
 					IcpLoggerUtil.error(getClass(), e.getMessage(), e);
 				}
-			}
-			finally {
-				final Object handlerData = IcpFilter.getFilterDataHandler().handler(swRequest, swResponse, securityException);
+			} finally {
+				final Object handlerData = IcpFilterManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {
 					if (handlerData instanceof RCode) {
 						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
@@ -97,9 +95,19 @@ public abstract class BaseFilter implements Filter {
 				}
 				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
 				if (logSwitch != null) {
-					IcpFilter.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
+					IcpFilterManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
 				}
 			}
 		});
+	}
+
+	@Override
+	public void destroy() {
+		if (GlobalScheduled.INSTANCE.shutdownNow().isEmpty()) {
+			// TODO ...
+		}
+		if (IcpLoggerUtil.removeIcpLoggerMap()) {
+			// TODO ...
+		}
 	}
 }

@@ -1,9 +1,8 @@
 package com.sowell.security.filter.utils;
 
-import com.sowell.security.IcpManager;
-import com.sowell.security.exception.AccountNotExistException;
+import com.sowell.security.IcpCoreManager;
+import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.tool.jwt.model.AuthDetails;
-import com.sowell.security.token.IAccessTokenHandler;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -14,20 +13,14 @@ import com.sowell.security.token.IAccessTokenHandler;
  */
 public final class AccessTokenUtil {
 
-	private static final IAccessTokenHandler ACCESS_TOKEN_HANDLER;
-
-	static {
-		ACCESS_TOKEN_HANDLER = IcpManager.getAccessTokenHandler();
-	}
-
 	/**
 	 * 生成AccessToken
 	 *
 	 * @param t 数据
 	 * @return AccessToken
 	 */
-	public static Object generateAccessToken(AuthDetails t) {
-		return ACCESS_TOKEN_HANDLER.generateAccessToken(t);
+	public static String generateAccessToken(AuthDetails<?> t) {
+		return IcpCoreManager.getAccessTokenHandler().generateAccessToken(t);
 	}
 
 	/**
@@ -36,8 +29,8 @@ public final class AccessTokenUtil {
 	 *
 	 * @return AccessToken
 	 */
-	public static Object getAccessToken() {
-		return ACCESS_TOKEN_HANDLER.getAccessTokenInfo();
+	public static String getAccessToken() {
+		return IcpCoreManager.getAccessTokenHandler().getAccessTokenInfo();
 	}
 
 	/**
@@ -58,7 +51,7 @@ public final class AccessTokenUtil {
 	 */
 	public static AuthDetails<?> getAuthDetails(boolean throwException) {
 		try {
-			final AuthDetails authDetails = ACCESS_TOKEN_HANDLER.getAuthDetails();
+			final AuthDetails<?> authDetails = IcpCoreManager.getAccessTokenHandler().getAuthDetails();
 			if (authDetails == null) {
 				throw new AccountNotExistException();
 			}
@@ -91,7 +84,7 @@ public final class AccessTokenUtil {
 	 */
 	public static <T extends AuthDetails<T>> T getAuthDetails(Class<T> authDetailsClass, boolean throwException) {
 		try {
-			final AuthDetails<?> authDetails = ACCESS_TOKEN_HANDLER.getAuthDetails();
+			final AuthDetails<?> authDetails = IcpCoreManager.getAccessTokenHandler().getAuthDetails();
 			if (authDetails == null) {
 				throw new AccountNotExistException();
 			}
@@ -127,7 +120,7 @@ public final class AccessTokenUtil {
 	 */
 	public static AuthDetails<?> getAuthDetails(String accessToken, boolean throwException) {
 		try {
-			final AuthDetails authDetails = ACCESS_TOKEN_HANDLER.getAuthDetails(accessToken);
+			final AuthDetails<?> authDetails = IcpCoreManager.getAccessTokenHandler().getAuthDetails(accessToken);
 			if (authDetails == null) {
 				throw new AccountNotExistException();
 			}
@@ -140,16 +133,16 @@ public final class AccessTokenUtil {
 		}
 	}
 
-	private static <T extends AuthDetails<T>> void setAuthDetails(AuthDetails<T> authDetails) {
-		ACCESS_TOKEN_HANDLER.setAuthDetails(authDetails);
+	private static <T extends AuthDetails<?>> void setAuthDetails(T authDetails) {
+		IcpCoreManager.getAccessTokenHandler().setAuthDetails(authDetails);
 	}
 
 	public static Object refreshAccessToken() {
-		return ACCESS_TOKEN_HANDLER.refreshAccessToken();
+		return IcpCoreManager.getAccessTokenHandler().refreshAccessToken();
 	}
 
-	public static Object refreshAccessToken(Object accessTokenInfo) {
-		return ACCESS_TOKEN_HANDLER.refreshAccessToken(accessTokenInfo);
+	public static String refreshAccessToken(String accessToken) {
+		return IcpCoreManager.getAccessTokenHandler().refreshAccessToken(accessToken);
 	}
 }
 

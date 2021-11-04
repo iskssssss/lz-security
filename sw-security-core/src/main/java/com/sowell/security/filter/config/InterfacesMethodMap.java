@@ -1,8 +1,8 @@
 package com.sowell.security.filter.config;
 
 
-import com.sowell.security.IcpManager;
-import com.sowell.security.filter.context.IcpContext;
+import com.sowell.security.IcpCoreManager;
+import com.sowell.security.context.IcpContext;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public final class InterfacesMethodMap extends HashMap<String, ControllerMethod>
 		if (method != null) {
 			return method;
 		}
-		final IcpContext<?, ?> icpContext = IcpManager.getIcpContext();
+		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
 		final Set<Entry<String, ControllerMethod>> entrySet = this.entrySet();
 		for (Entry<String, ControllerMethod> stringMethodEntry : entrySet) {
 			final String key = stringMethodEntry.getKey();

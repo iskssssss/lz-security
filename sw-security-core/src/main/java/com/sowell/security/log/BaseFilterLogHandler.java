@@ -1,7 +1,7 @@
 package com.sowell.security.log;
 
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 
 /**
  * 过滤日志处理器

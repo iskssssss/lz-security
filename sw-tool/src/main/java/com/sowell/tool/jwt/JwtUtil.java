@@ -75,7 +75,7 @@ public final class JwtUtil {
 	 * @param <T>    目标类
 	 * @return T
 	 */
-	public static <T extends AuthDetails<T>> AuthDetails<T> toBean(String token, Class<T> tClass) {
+	public static <T extends AuthDetails<T>> T toBean(String token, Class<T> tClass) {
 		Optional<Claims> claimsOptional = Optional.ofNullable(toClaims(token));
 		if (!claimsOptional.isPresent()) {
 			return null;
@@ -85,13 +85,12 @@ public final class JwtUtil {
 	}
 
 	/**
-	 * 将Token转换为 T
+	 * 将Token转换为AuthDetails对象
 	 *
 	 * @param token token
-	 * @param <T>   目标类
 	 * @return T
 	 */
-	public static <T extends AuthDetails<T>> AuthDetails<T> toBean(String token) {
+	public static AuthDetails<?> toBean(String token) {
 		Optional<Claims> claimsOptional = Optional.ofNullable(toClaims(token));
 		if (!claimsOptional.isPresent()) {
 			return null;
@@ -100,7 +99,7 @@ public final class JwtUtil {
 		final String sourceClass = claims.get(SOURCE_CLASS_KEY, String.class);
 		final Optional<Class<?>> sourceClassOptional = Optional.ofNullable(ReflectUtil.forName(sourceClass));
 		return sourceClassOptional
-				.map(tClass -> BeanUtil.toBean(claims, (Class<T>) tClass))
+				.map(tClass -> BeanUtil.toBean(claims, (Class<AuthDetails>) tClass))
 				.orElse(null);
 	}
 
@@ -110,7 +109,7 @@ public final class JwtUtil {
 	 * @param token token
 	 * @return Claims
 	 */
-	public static Claims toClaims(String token) {
+	private static Claims toClaims(String token) {
 		try {
 			return Jwts.parser().setSigningKey(KEY_BYTE_LIST).parseClaimsJws(token).getBody();
 		} catch (Exception exception) {
@@ -151,7 +150,6 @@ public final class JwtUtil {
 		if (!serializedLambdaOptional.isPresent()) {
 			return null;
 		}
-
 		// lambda表达式解析
 		final SerializedLambda serializedLambda = serializedLambdaOptional.get();
 		final Optional<Class<?>> aClassOptional = Optional.ofNullable(ReflectUtil.forName(serializedLambda.getImplMethodSignature()));

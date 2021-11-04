@@ -1,13 +1,12 @@
 package com.sowell.security.tool.spring;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.filter.config.IcpConfig;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class BeanRegister {
 	@Bean
 	@DependsOn({"registerIcpConfig", "registerSpringUtil"})
 	public Map<String, ControllerMethod> registerInterfacesMethodMap() {
-		final IcpConfig icpConfig = IcpManager.getIcpConfig();
+		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
 		final List<String> methodScanPath = icpConfig.getControllerMethodScanPathList();
 		return SpringUtil.getControllerMethodMap(methodScanPath);
 	}

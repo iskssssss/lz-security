@@ -1,5 +1,6 @@
 package com.sowell.security.exception;
 
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.tool.core.enums.RCode;
 
 /**
@@ -24,6 +25,6 @@ public class HeaderNotAccessTokenException extends SecurityException {
 	}
 
 	private HeaderNotAccessTokenException(Object responseData, Throwable cause) {
-		super(RCode.HEADER_NOT_ACCESS_TOKEN.getCode(), RCode.HEADER_NOT_ACCESS_TOKEN.getMessage(), responseData, cause);
+		super(RCode.HEADER_NOT_ACCESS_TOKEN, responseData, cause);
 	}
 }

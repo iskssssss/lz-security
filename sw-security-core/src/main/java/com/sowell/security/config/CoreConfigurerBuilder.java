@@ -1,6 +1,6 @@
 package com.sowell.security.config;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.token.IAccessTokenHandler;
@@ -21,7 +21,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @return this
 	 */
 	public CoreConfigurerBuilder<T> setCacheManager(BaseCacheManager cacheManager) {
-		IcpManager.setCacheManager(cacheManager);
+		IcpCoreManager.setCacheManager(cacheManager);
 		return this;
 	}
 
@@ -31,7 +31,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @param accessTokenHandler accessToken处理器
 	 */
 	public CoreConfigurerBuilder<T> setAccessTokenHandler(IAccessTokenHandler<?> accessTokenHandler) {
-		IcpManager.setAccessTokenHandler(accessTokenHandler);
+		IcpCoreManager.setAccessTokenHandler(accessTokenHandler);
 		return this;
 	}
 
@@ -41,7 +41,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @param requestDataEncryptHandler 请求加解密处理器
 	 */
 	public CoreConfigurerBuilder<T> setRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
-		IcpManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
+		IcpCoreManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
 		return this;
 	}
 }

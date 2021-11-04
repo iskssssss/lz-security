@@ -3,14 +3,14 @@
 //import com.sowell.security.IcpConstant;
 //import com.sowell.security.IcpManager;
 //import com.sowell.security.tool.context.IcpSpringContextHolder;
-//import com.sowell.security.exception.SecurityException;
+//import com.sowell.security.exception.base.SecurityException;
 //import com.sowell.security.filter.IcpFilter;
 //import com.sowell.security.fun.IcpFilterAuthStrategy;
 //import com.sowell.security.handler.RequestDataEncryptHandler;
 //import com.sowell.security.log.IcpLoggerUtil;
 //import com.sowell.security.tool.mode.SwRequest;
 //import com.sowell.security.tool.mode.SwResponse;
-//import com.sowell.security.filter.utils.ServletUtil;
+//import com.sowell.security.utils.ServletUtil;
 //import com.sowell.tool.core.bytes.ByteUtil;
 //import com.sowell.tool.core.enums.HttpStatus;
 //import com.sowell.tool.core.enums.RCode;

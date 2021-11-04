@@ -1,8 +1,8 @@
 package com.sowell.security.tool.filters;
 
-import com.sowell.security.filter.context.model.BaseRequest;
-import com.sowell.security.filter.context.model.BaseResponse;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.filters.AbsInterfacesFilterBuilder;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;

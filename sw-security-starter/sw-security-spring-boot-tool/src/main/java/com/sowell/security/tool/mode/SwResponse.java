@@ -1,7 +1,8 @@
 package com.sowell.security.tool.mode;
 
-import com.sowell.security.filter.context.model.BaseResponse;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.context.model.BaseResponse;
+import com.sowell.security.exception.base.SecurityException;
+import com.sowell.security.tool.utils.CookieUtil;
 import com.sowell.security.tool.wrapper.HttpServletResponseWrapper;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
@@ -34,26 +35,6 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 		return this;
 	}
 
-//	@Override
-//	public String encrypt(byte[] bytes) {
-//		final SwPrivateKey priKey = IcpManager.getIcpConfig().getEncryptConfig().getPrivateKey();
-//		final String encryptResult = priKey.encrypt(bytes);
-//		return encryptResult;
-//	}
-
-	/*@Override
-	public void print(RCode rCode, Object... data) {
-		JSONObject resultJson = new JSONObject();
-		resultJson.put("code", rCode.getCode());
-		if (data != null && data.length > 0) {
-			resultJson.put("data", JsonUtil.toJsonString(data[0]));
-		} else {
-			resultJson.put("data", null);
-		}
-		resultJson.put("message", rCode.getMessage());
-		this.print(resultJson.toJSONString());
-	}*/
-
 	@Override
 	public void print(String message) {
 		final byte[] bytes = ByteUtil.toBytes(message);
@@ -78,7 +59,7 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 			return;
 		}
 		final HttpServletResponse response = getResponse();
-		try(ServletOutputStream outputStream = response instanceof HttpServletResponseWrapper ?
+		try (ServletOutputStream outputStream = response instanceof HttpServletResponseWrapper ?
 				((HttpServletResponseWrapper) response).getResponseOutputStream() : response.getOutputStream()) {
 			response.setContentLength(len);
 			outputStream.write(bytes, off, len);
@@ -115,5 +96,15 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 	@Override
 	public void setStatus(int status) {
 		getResponse().setStatus(status);
+	}
+
+	@Override
+	public void addCookie(String name, String value, String path, String domain, int expiry) {
+		CookieUtil.set(getResponse(), name, value, path, domain, expiry);
+	}
+
+	@Override
+	public void removeCookie(String name) {
+		CookieUtil.remove(getResponse(), name);
 	}
 }

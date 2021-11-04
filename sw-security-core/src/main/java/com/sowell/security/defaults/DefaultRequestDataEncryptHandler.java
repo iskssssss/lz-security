@@ -1,6 +1,6 @@
 package com.sowell.security.defaults;
 
-import com.sowell.security.IcpManager;
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.tool.encrypt.model.SwPrivateKey;
 
@@ -15,14 +15,14 @@ public class DefaultRequestDataEncryptHandler implements RequestDataEncryptHandl
 
 	@Override
 	public String encrypt(byte[] bytes) {
-		final SwPrivateKey priKey = IcpManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+		final SwPrivateKey priKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKey();
 		final String encryptResult = priKey.encrypt(bytes);
 		return encryptResult;
 	}
 
 	@Override
 	public Object decrypt(byte[] bytes) {
-		final SwPrivateKey privateKey = IcpManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+		final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKey();
 		final Object decryptResult = privateKey.decrypt(bytes);
 		return decryptResult;
 	}

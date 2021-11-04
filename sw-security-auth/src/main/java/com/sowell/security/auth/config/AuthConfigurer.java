@@ -1,5 +1,7 @@
 package com.sowell.security.auth.config;
 
+import com.sowell.security.fun.IcpFilterAuthStrategy;
+
 /**
  * TODO
  *
@@ -9,12 +11,26 @@ package com.sowell.security.auth.config;
  */
 public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 
-	public String getLoginUrl() {
-		return this.authUrlConfig.loginUrl;
+	/**
+	 * 获取认证前处理方法
+	 *
+	 * @return 认证前处理方法
+	 */
+	public IcpFilterAuthStrategy getAuthBeforeHandler() {
+		return super.authBeforeHandler;
 	}
 
-	public String getLogoutUrl() {
-		return this.authUrlConfig.logoutUrl;
+	/**
+	 * 获取认证后处理方法
+	 *
+	 * @return 认证后处理方法
+	 */
+	public IcpFilterAuthStrategy getAuthAfterHandler() {
+		return super.authAfterHandler;
+	}
+
+	public String getLoginUrl() {
+		return this.loginHandlerInfo.loginUrl;
 	}
 
 	public String getIdentifierKey() {
@@ -31,5 +47,9 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 
 	public String getRememberMeKey() {
 		return this.loginHandlerInfo.rememberMeKey;
+	}
+
+	public String getLogoutUrl() {
+		return this.logoutHandlerInfo.logoutUrl;
 	}
 }

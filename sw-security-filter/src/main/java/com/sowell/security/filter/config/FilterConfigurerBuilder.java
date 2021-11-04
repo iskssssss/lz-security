@@ -1,14 +1,11 @@
 package com.sowell.security.filter.config;
 
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.filter.IcpFilter;
+import com.sowell.security.filter.IcpFilterManager;
 import com.sowell.security.filter.filters.AbsInterfacesFilterBuilder;
 import com.sowell.security.fun.IcpFilterAuthStrategy;
 import com.sowell.security.handler.BaseFilterErrorHandler;
-import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.BaseFilterLogHandler;
-import com.sowell.security.token.IAccessTokenHandler;
 
 import java.util.Arrays;
 
@@ -46,7 +43,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @return this
 	 */
 	public FilterConfigurerBuilder<T> setFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
-		IcpFilter.setFilterLogHandler(filterLogHandler);
+		IcpFilterManager.setFilterLogHandler(filterLogHandler);
 		return this;
 	}
 
@@ -57,7 +54,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @return this
 	 */
 	public FilterConfigurerBuilder<T> setFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
-		IcpFilter.setFilterErrorHandler(filterErrorHandler);
+		IcpFilterManager.setFilterErrorHandler(filterErrorHandler);
 		return this;
 	}
 
@@ -104,7 +101,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		 * @return this
 		 */
 		public FilterConfig linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
-			IcpFilter.linkInterfacesFilter(interfacesFilterList);
+			IcpFilterManager.linkInterfacesFilter(interfacesFilterList);
 			return this;
 		}
 

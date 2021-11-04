@@ -3,7 +3,7 @@ package com.sowell.security.tool.utils;
 import com.sowell.common.core.web.result.ResultCode;
 import com.sowell.common.core.web.result.ResultEntity;
 import com.sowell.tool.core.enums.HttpStatus;
-import com.sowell.security.exception.SecurityException;
+import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.model.ResponseData;
 import com.sowell.tool.json.JsonUtil;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -25,7 +25,7 @@ public class ErrorDataHandlerUtil {
 			final SecurityException securityException = (SecurityException) error;
 			final Object data = securityException.getResponseData();
 			ResultEntity resultEntity = new ResultEntity();
-			resultEntity.setCode(securityException.getCode());
+			resultEntity.setCode(securityException.getResponseCode());
 			resultEntity.setData(data == null ? null : JsonUtil.toJsonString(data));
 			resultEntity.setMessage(securityException.getMessage());
 			responseData.setMsg("SecurityException错误");
