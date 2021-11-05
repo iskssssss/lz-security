@@ -154,7 +154,7 @@ public class IcpSpringContextHolder {
 			// 设置响应流包装方式
 			SwRequest swRequest;
 			if (isEncrypt) {
-				return new SwRequest(new HttpServletRequestWrapper(request));
+				swRequest = new SwRequest(new HttpServletRequestWrapper(request));
 			} else {
 				swRequest = new SwRequest(request);
 			}

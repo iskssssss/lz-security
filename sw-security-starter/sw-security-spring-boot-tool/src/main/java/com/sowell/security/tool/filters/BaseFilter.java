@@ -4,22 +4,26 @@ import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.IcpFilterManager;
-import com.sowell.security.utils.ServletUtil;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.tool.context.IcpSpringContextHolder;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;
+import com.sowell.security.tool.wrapper.HttpServletRequestWrapper;
+import com.sowell.security.utils.ServletUtil;
 import com.sowell.tool.cache.utils.GlobalScheduled;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.model.RequestResult;
+import com.sowell.tool.encrypt.model.SwPrivateKey;
 import com.sowell.tool.http.enums.ContentTypeEnum;
+import com.sowell.tool.http.enums.RequestMethodEnum;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * TODO
@@ -45,7 +49,18 @@ public abstract class BaseFilter implements Filter {
 		IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 			SecurityException securityException = null;
 			try {
-				// TODO 解密处理
+				// 解密处理
+				if (swRequest.isEncrypt() && RequestMethodEnum.POST.is(swRequest.getMethod())) {
+					try {
+						final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) swRequest.getRequest();
+						final byte[] bodyBytes = httpServletRequestWrapper.getBody();
+						final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+						final Object decrypt = privateKey.decrypt(bodyBytes);
+						httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
+					} catch (Exception e) {
+						throw new SecurityException(RCode.DATA_DECRYPT_FAILED);
+					}
+				}
 				// 过滤处理
 				if (this.doFilter(swRequest, swResponse)) {
 					chain.doFilter(swRequest.getRequest(), swResponse.getResponse());

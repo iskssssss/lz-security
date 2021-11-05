@@ -2,7 +2,7 @@ package com.sowell.tool.http.model;
 
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.http.enums.ContentTypeEnum;
-import com.sowell.tool.http.enums.RequestMethod;
+import com.sowell.tool.http.enums.RequestMethodEnum;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,7 +34,7 @@ public class HttpRequest {
 	/**
 	 * 请求类型
 	 */
-	private RequestMethod method;
+	private RequestMethodEnum method;
 	/**
 	 * 超时时间
 	 */
@@ -65,7 +65,7 @@ public class HttpRequest {
 		this.headers = new HeadersInfoModel();
 	}
 
-	public HttpRequest method(RequestMethod method) {
+	public HttpRequest method(RequestMethodEnum method) {
 		this.method = method;
 		return this;
 	}
@@ -149,7 +149,7 @@ public class HttpRequest {
 		try {
 			this.connection.setDoInput(true);
 
-			if (this.method == RequestMethod.GET && !this.rest) {
+			if (this.method == RequestMethodEnum.GET && !this.rest) {
 				this.connection.setDoOutput(false);
 				this.connection.connect();
 				return;

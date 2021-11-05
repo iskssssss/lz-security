@@ -2,7 +2,7 @@ package com.sowell.tool.http;
 
 import com.sowell.tool.http.model.HttpRequest;
 import com.sowell.tool.http.enums.ContentTypeEnum;
-import com.sowell.tool.http.enums.RequestMethod;
+import com.sowell.tool.http.enums.RequestMethodEnum;
 import com.sowell.tool.http.model.HeadersInfoModel;
 import com.sowell.tool.json.JsonUtil;
 
@@ -16,12 +16,12 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class HttpUtil {
 	// base 请求
-	public static HttpRequest baseHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, RequestMethod requestMethod) {
-		return baseHttpRequest(requestUrl, headersInfoModel, requestMethod, 5000);
+	public static HttpRequest baseHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, RequestMethodEnum requestMethodEnum) {
+		return baseHttpRequest(requestUrl, headersInfoModel, requestMethodEnum, 5000);
 	}
-	public static HttpRequest baseHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, RequestMethod requestMethod, int timeout) {
+	public static HttpRequest baseHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, RequestMethodEnum requestMethodEnum, int timeout) {
 		return new HttpRequest(requestUrl)
-				.method(requestMethod)
+				.method(requestMethodEnum)
 				.headers(headersInfoModel)
 				.timeout(timeout)
 				.charset(StandardCharsets.UTF_8);
@@ -29,7 +29,7 @@ public class HttpUtil {
 
 	// delete 相关请求
 	public static HttpRequest deleteReHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel) {
-		return baseHttpRequest(requestUrl, headersInfoModel, RequestMethod.DELETE);
+		return baseHttpRequest(requestUrl, headersInfoModel, RequestMethodEnum.DELETE);
 	}
 	public static String deleteReString(String requestUrl) {
 		return deleteReString(requestUrl, null);
@@ -50,7 +50,7 @@ public class HttpUtil {
 		return getReHttpRequest(requestUrl, null);
 	}
 	public static HttpRequest getReHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel) {
-		return baseHttpRequest(requestUrl, headersInfoModel, RequestMethod.GET);
+		return baseHttpRequest(requestUrl, headersInfoModel, RequestMethodEnum.GET);
 	}
 	public static String getReString(String requestUrl) {
 		return getReString(requestUrl, null);
@@ -71,7 +71,7 @@ public class HttpUtil {
 		final HttpRequest httpRequest = new HttpRequest(requestUrl)
 				.headers(headersInfoModel).timeout(6000)
 				.contentType(contentTypeEnum)
-				.method(RequestMethod.POST)
+				.method(RequestMethodEnum.POST)
 				.charset(StandardCharsets.UTF_8);
 		if (data != null) {
 			if (contentTypeEnum == ContentTypeEnum.JSON) {

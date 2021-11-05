@@ -3,6 +3,7 @@ package com.sowell.demo.filter.controller;
 import com.sowell.common.core.web.result.R;
 import com.sowell.demo.filter.model.AccessTokenVO;
 import com.sowell.security.IcpCoreManager;
+import com.sowell.security.annotation.ResponseDataEncrypt;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.filter.utils.AccessTokenUtil;
 import com.sowell.security.plugins.utils.RedisUtil;
@@ -11,14 +12,12 @@ import com.sowell.tool.core.number.NumberUtil;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.encrypt.EncryptUtil;
 import com.sowell.tool.encrypt.model.AppKeyPair;
+import com.sowell.tool.encrypt.model.SwPublicKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,5 +92,37 @@ public class AccessTokenController {
 		resultMap.put("sign", sign);
 		resultMap.put("currentTimeMillis", currentTimeMillis);
 		return R.success(resultMap);
+	}
+
+	@GetMapping("/pubEncrypt")
+	@ResponseDataEncrypt(responseEncrypt = false, requestEncrypt = false)
+	@ApiOperation(value = "公钥加密数据", notes = "公钥加密数据")
+	@ApiImplicitParam(paramType = "query", dataType = "String", name = "text", value = "text", required = true)
+	public R<Object> pubEncrypt(
+			@RequestParam("text") String text
+	) {
+		final SwPublicKey publicKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPublicKey();
+		return R.success(publicKey.encrypt(text));
+	}
+
+	@GetMapping("/priDecrypt")
+	@ResponseDataEncrypt(responseEncrypt = false, requestEncrypt = true)
+	@ApiOperation(value = "访问请求数据加密接口", notes = "访问请求数据加密接口")
+	@ApiImplicitParam(paramType = "query", dataType = "String", name = "text", value = "text", required = true)
+	public R<Object> priDecrypt(
+			@RequestParam("text") String text
+	) {
+		System.out.println(text);
+		return R.success(text);
+	}
+
+	@PostMapping(value = "/postPriDecrypt", produces = "application/json")
+	@ResponseDataEncrypt(responseEncrypt = true, requestEncrypt = true)
+	@ApiOperation(value = "post请求数据加密接口", notes = "post请求数据加密接口")
+	public R<Object> postPriDecrypt(
+			@RequestBody AccessTokenVO accessTokenVO
+	) {
+		System.out.println(accessTokenVO.toJson());
+		return R.success(accessTokenVO.toJson());
 	}
 }

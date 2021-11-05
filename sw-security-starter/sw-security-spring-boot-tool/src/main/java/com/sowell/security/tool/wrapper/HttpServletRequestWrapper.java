@@ -18,7 +18,7 @@ import java.util.Enumeration;
  */
 public class HttpServletRequestWrapper extends javax.servlet.http.HttpServletRequestWrapper {
 
-    private final byte[] body;
+    private byte[] body;
     private BufferedReader reader;
 
     public HttpServletRequestWrapper(HttpServletRequest request) throws IOException {
@@ -43,6 +43,14 @@ public class HttpServletRequestWrapper extends javax.servlet.http.HttpServletReq
 
     public byte[] getBody() {
         return this.body;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+        try {
+            this.reader = new BufferedReader(new InputStreamReader(getInputStream(), getCharacterEncoding()));
+        } catch (IOException ignored) {
+        }
     }
 
     @Override
