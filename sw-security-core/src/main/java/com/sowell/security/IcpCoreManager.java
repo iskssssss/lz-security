@@ -151,8 +151,8 @@ public class IcpCoreManager {
 			synchronized (IcpCoreManager.class) {
 				if (IcpCoreManager.accessTokenHandler == null) {
 					final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-					final IcpConfig.AccessTokenConfig accessAccessTokenConfig = icpConfig.getAccessTokenConfig();
-					if (IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID.equals(accessAccessTokenConfig.getAccessTokenType())) {
+					final IcpConfig.TokenConfig accessTokenConfig = icpConfig.getTokenConfig();
+					if (IcpConstant.TOKEN_TYPE_BY_UUID.equals(accessTokenConfig.getType())) {
 						IcpCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
 					} else {
 						IcpCoreManager.accessTokenHandler = new JwtAccessTokenHandler();

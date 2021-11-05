@@ -35,22 +35,22 @@
 
         <sw-common-core.version>0.0.10</sw-common-core.version>
         <!-- 通用工具模块 -->
-        <sw-tool.version>1.0.3</sw-tool.version>
+        <sw-tool.version>1.0.4</sw-tool.version>
 
         <!-- 通用模块 -->
-        <sw-security-common.version>1.0.40</sw-security-common.version>
+        <sw-security-common.version>1.2.1</sw-security-common.version>
         <!-- 核心模块 -->
-        <sw-security-core.version>1.0.48</sw-security-core.version>
+        <sw-security-core.version>1.2.2</sw-security-core.version>
         <!-- 认证模块 -->
-        <sw-security-auth.version>1.0.0</sw-security-auth.version>
+        <sw-security-auth.version>1.2.1</sw-security-auth.version>
         <!-- 过滤模块 -->
-        <sw-security-filter.version>1.0.0</sw-security-filter.version>
+        <sw-security-filter.version>1.2.1</sw-security-filter.version>
         <!-- 插件 -->
-        <sw-security-plugins-redis.version>1.0.15</sw-security-plugins-redis.version>
+        <sw-security-plugins-redis.version>1.2.1</sw-security-plugins-redis.version>
         <!-- 启动相关 -->
-        <sw-security-filter-spring-boot-starter.version>1.1.33</sw-security-filter-spring-boot-starter.version>
+        <sw-security-filter-spring-boot-starter.version>1.2.1</sw-security-filter-spring-boot-starter.version>
 
-        <sw-security-auth-spring-boot-starter.version>1.0.0</sw-security-auth-spring-boot-starter.version>
+        <sw-security-auth-spring-boot-starter.version>1.2.1</sw-security-auth-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>

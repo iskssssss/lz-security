@@ -6,6 +6,7 @@ import com.sowell.security.annotation.DataEncrypt;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.filter.utils.AccessTokenUtil;
+import com.sowell.tool.encrypt.EncryptUtil;
 import com.sowell.tool.encrypt.model.SwPublicKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -86,5 +87,14 @@ public class IncludeController {
 		final SwPublicKey publicKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPublicKeyStr();
 		final Object decrypt = publicKey.decrypt(encryptText);
 		return R.success(decrypt);
+	}
+
+	public static void main(String[] args) {
+
+		final long currentTimeMillis = System.currentTimeMillis();
+		final String sign = EncryptUtil.sign("53ed9a21d9b9c10de4856001338a1f5aab59df40", "2d5fa60a13d0f5c5d144dc1eb916ee59f48a7ddf5b0eb5061e38209088102b9a", currentTimeMillis);
+
+		System.out.println(currentTimeMillis);
+		System.out.println(sign);
 	}
 }

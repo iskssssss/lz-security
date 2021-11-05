@@ -93,13 +93,14 @@ public class IcpContextManager {
 			// 当前访问的接口
 			final String requestPath = httpServletRequest.getServletPath();
 			// 获取当前接口访问方法
-			ControllerMethod method = IcpCoreManager.getMethodByInterfaceUrl(requestPath);
+			ControllerMethod controllerMethod = IcpCoreManager.getMethodByInterfaceUrl(requestPath);
 			// 校验当前请求接口返回数据是否要加密
 			final IcpConfig.EncryptConfig encryptConfig = IcpCoreManager.getIcpConfig().getEncryptConfig();
 			// 获取当前访问接口方法/类的加密注解
-			DataEncrypt dataEncrypt = method == null ? null : method.getMethodAndControllerAnnotation(DataEncrypt.class);
+			DataEncrypt dataEncrypt = controllerMethod == null ? null : controllerMethod.getMethodAndControllerAnnotation(DataEncrypt.class);
 			// 处理请求流和响应流信息
 			SwRequest swRequest = handlerRequest(encryptConfig, dataEncrypt, requestPath, httpServletRequest);
+			swRequest.setControllerMethod(controllerMethod);
 			SwResponse swResponse = handlerResponse(encryptConfig, dataEncrypt, requestPath, (HttpServletResponse) response);
 			// 设置上下文
 			IcpContextManager.setContext(swRequest, swResponse, startRequestTime);

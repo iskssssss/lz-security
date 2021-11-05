@@ -1,13 +1,12 @@
 package com.sowell.demo.filter.config;
 
+import com.sowell.security.IcpCoreManager;
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.config.CoreConfigurer;
 import com.sowell.security.config.CoreConfigurerBuilder;
-import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
 import com.sowell.security.filter.config.SecurityFilterConfigurerAdapter;
-import com.sowell.security.filter.utils.AccessTokenUtil;
 import com.sowell.security.filter.utils.FilterUtil;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.tool.context.IcpContextManager;
@@ -31,6 +30,7 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 
 	@Override
 	protected void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer) {
+		System.out.println(IcpCoreManager.getIcpConfig().toString());
 		filterConfigurer
 				.filterUrl()
 				// 拦截的接口

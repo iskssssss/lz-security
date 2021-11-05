@@ -29,20 +29,18 @@ sw:
   security:
     # [非必需] 是否打印日志信息(默认true)
     console-log-print: true
-    # AccessToken相关配置
-    access-token-config:
-      # [非必需] AccessToken存放标识(默认Authorization)
+    # Token相关配置
+    token-config:
+      # [非必需] Token存放标识(默认Authorization)
       name: FILTER_TOKEN
       # [非必需] 类型(默认UUID)(UUID、JWT)(可通过重写IAccessTokenHandler.class来实现自定义token类型,重写后此项将无效)
-      access-token-type: UUID
+      type: UUID
       # [非必需] 过期时间(秒)(默认3600秒)
       timeout: 10
     # 加解密相关配置
     encrypt-config:
       # [非必需] 是否加解密(默认false)
       encrypt: true
-      # [非必需] 加密接口列表（逗号(,)隔开）例：/a/**,/b 或 /a/**, /b
-      encrypt-url-list:
       # [未重写请求加解密处理器时该项为必需] 公钥
       public-key-str: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCFi9vYzmI+ktpZsv7VTKOEHrNqpRSm5QaA0EHYv72G72ehgTKNuHw0CDskASCJ85gKMzy5uANX+6Q4gz9uAE/1duH3Oc9zxLiyr4iptrZj4v667kW5VcXXdho4shP6LOX+8KaW0ddG6Rt9BX8qUjM8J+7yVjo4EJzJ3Pri0TvvZwIDAQAB
       # [未重写请求加解密处理器时该项为必需] 私钥

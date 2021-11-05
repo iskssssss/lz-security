@@ -15,7 +15,7 @@ import com.sowell.tool.jwt.model.AuthDetails;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/10/26 17:13
  */
-public interface IAccessTokenHandler<T extends AuthDetails<T>> {
+public interface IAccessTokenHandler<T extends AuthDetails> {
 
 	/**
 	 * 获取获取客户端的AccessToken
@@ -25,7 +25,7 @@ public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 	default String getAccessTokenInfo() {
 		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
 		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		final String saveName = icpConfig.getAccessTokenConfig().getName();
+		final String saveName = icpConfig.getTokenConfig().getName();
 		// 从请求头中获取Token
 		String accessToken = servletRequest.getHeader(saveName);
 		if (StringUtil.isEmpty(accessToken)) {

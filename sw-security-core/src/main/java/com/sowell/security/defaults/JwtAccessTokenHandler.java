@@ -15,12 +15,12 @@ import com.sowell.tool.jwt.model.AuthDetails;
  * @Author: 孔胜
  * @Date: 2021/09/18 10:11
  */
-public class JwtAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDetails> {
+public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 
 	@Override
-	public String generateAccessToken(DefaultAuthDetails authDetails) {
+	public String generateAccessToken(AuthDetails authDetails) {
 		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
-		long timeoutMillis = IcpCoreManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
+		long timeoutMillis = IcpCoreManager.getIcpConfig().getTokenConfig().getTimeoutForMillis();
 		String id = "JWT::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isNotEmpty(idValue)) {
@@ -36,7 +36,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDet
 		if (StringUtil.isEmpty(accessToken)) {
 			return false;
 		}
-		final DefaultAuthDetails authDetails = JwtUtil.toBean(accessToken, DefaultAuthDetails.class);
+		final AuthDetails authDetails = JwtUtil.toBean(accessToken, AuthDetails.class);
 		if (authDetails == null) {
 			return true;
 		}
@@ -53,7 +53,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDet
 	}
 
 	@Override
-	public DefaultAuthDetails getAuthDetails(String accessToken) {
+	public AuthDetails getAuthDetails(String accessToken) {
 		if (this.checkExpiration(accessToken)) {
 			throw new AccountNotExistException();
 		}
@@ -61,17 +61,17 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<DefaultAuthDet
 		if (authDetails == null) {
 			throw new AccountNotExistException();
 		}
-		return ((DefaultAuthDetails) authDetails);
+		return authDetails;
 	}
 
 	@Override
-	public void setAuthDetails(DefaultAuthDetails authDetails) {
+	public void setAuthDetails(AuthDetails authDetails) {
 	}
 
 	@Override
 	public String refreshAccessToken(String accessToken) {
 		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
-		final DefaultAuthDetails authDetails = this.getAuthDetails(accessToken);
+		final AuthDetails authDetails = this.getAuthDetails(accessToken);
 		String id = "JWT::" + authDetails.getId();
 		cacheManager.remove(id);
 		return generateAccessToken(authDetails);

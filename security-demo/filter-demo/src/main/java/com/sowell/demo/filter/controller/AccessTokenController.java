@@ -61,17 +61,17 @@ public class AccessTokenController {
 			return R.failed(RCode.APP_ID_NOT_EXIST);
 		}
 		// 生成token
-		final String token = AccessTokenUtil.generateAccessToken(new DefaultAuthDetails() {{
-			setId(appKey);
-			setIdentifier(appKey);
-			setCredential(appSecret);
-		}});
+		final DefaultAuthDetails defaultAuthDetails = new DefaultAuthDetails();
+		defaultAuthDetails.setId(appKey);
+		defaultAuthDetails.setIdentifier(appKey);
+		defaultAuthDetails.setCredential(appSecret);
+		final String token = AccessTokenUtil.generateAccessToken(defaultAuthDetails);
 		// 将token存放值cookie中
-		final IcpConfig.AccessTokenConfig accessTokenConfig = IcpCoreManager.getIcpConfig().getAccessTokenConfig();
-		IcpContextManager.getResponse().addCookie(accessTokenConfig.getName(), token, null, null, ((int) accessTokenConfig.getTimeout()));
+		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		IcpContextManager.getResponse().addCookie(tokenConfig.getName(), token, null, null, ((int) tokenConfig.getTimeout()));
 		return R.success(new AccessTokenVO() {{
 			setAccessToken(token);
-			setTtl(accessTokenConfig.getTimeoutForMillis());
+			setTtl(tokenConfig.getTimeoutForMillis());
 		}});
 	}
 

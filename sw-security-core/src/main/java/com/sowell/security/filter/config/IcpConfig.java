@@ -7,7 +7,9 @@ import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.encrypt.model.SwPrivateKey;
 import com.sowell.tool.encrypt.model.SwPublicKey;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,11 +26,11 @@ public class IcpConfig {
 	 */
 	private Boolean consoleLogPrint = true;
 	/**
-	 * AccessToken 相关信息
+	 * Token配置信息
 	 */
-	private AccessTokenConfig accessTokenConfig;
+	private TokenConfig tokenConfig;
 	/**
-	 * 加密相关配置
+	 * 加密配置信息
 	 */
 	private EncryptConfig encryptConfig;
 	/**
@@ -40,30 +42,77 @@ public class IcpConfig {
 	 */
 	private String icpType = "FILTER";
 
+	/**
+	 * 获取是否打印日志
+	 *
+	 * @return 是否打印
+	 */
 	public Boolean getConsoleLogPrint() {
 		return consoleLogPrint;
 	}
+
+	/**
+	 * 设置是否打印日志
+	 *
+	 * @param consoleLogPrint 是否打印
+	 */
 	public void setConsoleLogPrint(Boolean consoleLogPrint) {
 		this.consoleLogPrint = consoleLogPrint;
 	}
 
-	public AccessTokenConfig getAccessTokenConfig() {
-		return accessTokenConfig;
-	}
-	public void setAccessTokenConfig(AccessTokenConfig accessTokenConfig) {
-		this.accessTokenConfig = accessTokenConfig;
+	/**
+	 * 获取Token配置信息
+	 *
+	 * @return Token配置信息
+	 */
+	public TokenConfig getTokenConfig() {
+		return tokenConfig;
 	}
 
+	/**
+	 * 设置Token配置信息
+	 *
+	 * @param tokenConfig Token配置信息
+	 */
+	public void setTokenConfig(TokenConfig tokenConfig) {
+		this.tokenConfig = tokenConfig;
+	}
+
+	/**
+	 * 获取加解密配置信息
+	 *
+	 * @return 加解密配置信息
+	 */
 	public EncryptConfig getEncryptConfig() {
 		return encryptConfig;
 	}
+
+	/**
+	 * 获取加解密配置信息
+	 *
+	 * @param encryptConfig 加解密配置信息
+	 */
 	public void setEncryptConfig(EncryptConfig encryptConfig) {
 		this.encryptConfig = encryptConfig;
 	}
 
+	/**
+	 * 获取接口扫描路径列表
+	 *
+	 * @return 接口扫描路径列表
+	 */
 	public List<String> getControllerMethodScanPathList() {
+		if (StringUtil.isNull(this.controllerMethodScanPathList)) {
+			this.controllerMethodScanPathList = Collections.emptyList();
+		}
 		return this.controllerMethodScanPathList;
 	}
+
+	/**
+	 * 设置接口扫描路径
+	 *
+	 * @param controllerMethodScanPathList 接口扫描路径
+	 */
 	public void setControllerMethodScanPathList(String controllerMethodScanPathList) {
 		if (StringUtil.isEmpty(controllerMethodScanPathList)) {
 			this.controllerMethodScanPathList = Collections.emptyList();
@@ -72,55 +121,83 @@ public class IcpConfig {
 		this.controllerMethodScanPathList = ArraysUtil.toList(StringUtil.delAllSpace(controllerMethodScanPathList), ",", true);
 	}
 
+	/**
+	 * 获取启用类型
+	 *
+	 * @return 启用类型
+	 */
 	public String getIcpType() {
 		return icpType;
 	}
+
+	/**
+	 * 设置类型
+	 *
+	 * @param icpType 类型
+	 */
 	public void setIcpType(String icpType) {
 		this.icpType = icpType;
 	}
 
 	@Override
 	public String toString() {
-		return " 配置信息：" +
-				"\n     token配置信息：" + accessTokenConfig +
-				"\n     加密配置信息：" + encryptConfig +
-				"\n     扫描位置：'" + controllerMethodScanPathList + '\'' +
-				'}';
+		StringBuilder sb = new StringBuilder("配置信息：");
+		sb.append("\n     ").append("TOKEN配置信息").append("：").append(tokenConfig.toString());
+		sb.append("\n     ").append("加密配置信息").append("：").append(encryptConfig.toString());
+		sb.append("\n     ").append("扫描位置").append("：").append(this.getControllerMethodScanPathList());
+		return sb.toString();
 	}
 
-	public static class AccessTokenConfig {
+	public static class TokenConfig {
 		/**
-		 * accessToken 存放标识
+		 * Token 存放标识
 		 */
 		private String name = "Authorization";
 		/**
-		 * AccessToken默认过期时间(3600秒)
+		 * Token 默认过期时间(3600秒)
 		 */
 		private static final long DEFAULT_TIMEOUT = 3600L;
 		/**
-		 * AccessToken类型（uuid, jwt）
+		 * Token 类型（uuid, jwt）
 		 */
-		private String accessTokenType = "UUID";
+		private String type = "UUID";
 		/**
-		 * AccessToken过期时间（秒）(默认3600秒)
+		 * Token 过期时间（秒）(默认3600秒)
 		 */
 		private Long timeout = 3600L;
 
 		public String getName() {
 			return this.name;
 		}
+
+		/**
+		 * 设置Token存放标识
+		 *
+		 * @param name 标识
+		 */
 		public void setName(String name) {
 			this.name = name;
 		}
 
-		public String getAccessTokenType() {
-			if (StringUtil.isEmpty(this.accessTokenType)) {
-				return IcpConstant.ACCESS_TOKEN_TYPE_BY_UUID;
+		/**
+		 * 获取类型
+		 *
+		 * @return 类型
+		 */
+		public String getType() {
+			if (StringUtil.isEmpty(this.type)) {
+				return IcpConstant.TOKEN_TYPE_BY_UUID;
 			}
-			return this.accessTokenType.toUpperCase(Locale.ROOT);
+			return this.type.toUpperCase(Locale.ROOT);
 		}
-		public void setAccessTokenType(String accessTokenType) {
-			this.accessTokenType = accessTokenType;
+
+		/**
+		 * 设置类型
+		 *
+		 * @param type 类型
+		 */
+		public void setType(String type) {
+			this.type = type;
 		}
 
 		/**
@@ -135,6 +212,7 @@ public class IcpConfig {
 			}
 			return timeout.intValue();
 		}
+
 		/**
 		 * 获取过期时间（毫秒）
 		 *
@@ -142,13 +220,28 @@ public class IcpConfig {
 		 */
 		public long getTimeoutForMillis() {
 			final long timeout = getTimeout();
-			if (timeout == -1){
+			if (timeout == -1) {
 				return timeout;
 			}
 			return TimeUnit.SECONDS.toMillis(timeout);
 		}
+
+		/**
+		 * 设置过期时间（秒）
+		 *
+		 * @param timeout 过期时间（秒）
+		 */
 		public void setTimeout(Long timeout) {
 			this.timeout = timeout;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("\n          ").append("Token 存放标识").append("：").append(name);
+			sb.append("\n          ").append("Token 类型").append("：").append(type);
+			sb.append("\n          ").append("Token 过期时间（秒）").append("：").append(timeout);
+			return sb.toString();
 		}
 	}
 
@@ -172,16 +265,38 @@ public class IcpConfig {
 		 */
 		private UrlHashSet encryptUrlList;
 
+		/**
+		 * 获取是否加密
+		 *
+		 * @return 是否加密
+		 */
 		public Boolean getEncrypt() {
 			return encrypt;
 		}
+
+		/**
+		 * 设置是否加密
+		 *
+		 * @param encrypt 是否加密
+		 */
 		public void setEncrypt(Boolean encrypt) {
 			this.encrypt = encrypt;
 		}
 
+		/**
+		 * 获取公钥
+		 *
+		 * @return 公钥
+		 */
 		public SwPublicKey getPublicKeyStr() {
 			return publicKeyStr;
 		}
+
+		/**
+		 * 设置公钥
+		 *
+		 * @param publicKeyStr 公钥
+		 */
 		public void setPublicKeyStr(String publicKeyStr) {
 			if (StringUtil.isEmpty(publicKeyStr)) {
 				return;
@@ -189,9 +304,20 @@ public class IcpConfig {
 			this.publicKeyStr = new SwPublicKey(publicKeyStr);
 		}
 
+		/**
+		 * 获取私钥
+		 *
+		 * @return 私钥
+		 */
 		public SwPrivateKey getPrivateKeyStr() {
 			return privateKeyStr;
 		}
+
+		/**
+		 * 设置私钥
+		 *
+		 * @param privateKeyStr 私钥
+		 */
 		public void setPrivateKeyStr(String privateKeyStr) {
 			if (StringUtil.isEmpty(privateKeyStr)) {
 				return;
@@ -199,18 +325,39 @@ public class IcpConfig {
 			this.privateKeyStr = new SwPrivateKey(privateKeyStr);
 		}
 
+		/**
+		 * 获取加密接口列表
+		 *
+		 * @return 加密接口列表
+		 */
 		public UrlHashSet getEncryptUrlList() {
-			if (this.encryptUrlList == null){
+			if (this.encryptUrlList == null) {
 				this.encryptUrlList = UrlHashSet.empty();
 			}
 			return this.encryptUrlList;
 		}
+
+		/**
+		 * 设置加密接口列表
+		 *
+		 * @param encryptUrlList 加密接口列表
+		 */
 		public void setEncryptUrlList(String encryptUrlList) {
 			if (StringUtil.isEmpty(encryptUrlList)) {
 				this.encryptUrlList = UrlHashSet.empty();
 				return;
 			}
 			this.encryptUrlList = new UrlHashSet(ArraysUtil.toList(StringUtil.delAllSpace(encryptUrlList), ",", true));
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("\n          ").append("是否加密").append("：").append(encrypt);
+			sb.append("\n          ").append("私钥").append("：").append(privateKeyStr.getPrivateKeyStr());
+			sb.append("\n          ").append("公钥").append("：").append(publicKeyStr.getPublicKeyStr());
+			sb.append("\n          ").append("加密接口列表").append("：").append(this.getEncryptUrlList().toString());
+			return sb.toString();
 		}
 	}
 }

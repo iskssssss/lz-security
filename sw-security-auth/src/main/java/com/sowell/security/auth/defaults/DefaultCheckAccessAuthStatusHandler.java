@@ -24,7 +24,7 @@ public class DefaultCheckAccessAuthStatusHandler implements ICheckAccessAuthStat
 	) {
 		final BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
 		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		final String saveName = icpConfig.getAccessTokenConfig().getName();
+		final String saveName = icpConfig.getTokenConfig().getName();
 		final String authorizationToken = servletRequest.getHeader(saveName);
 		return StringUtil.isNotEmpty(authorizationToken);
 	}

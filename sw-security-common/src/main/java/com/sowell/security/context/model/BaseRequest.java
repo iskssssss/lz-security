@@ -1,8 +1,9 @@
 package com.sowell.security.context.model;
 
-import com.sowell.tool.core.enums.RCode;
 import com.sowell.security.exception.base.SecurityException;
+import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.reflect.BeanUtil;
+import com.sowell.tool.reflect.model.ControllerMethod;
 
 import java.util.List;
 
@@ -16,8 +17,8 @@ import java.util.List;
 public abstract class BaseRequest<T> {
 
 	protected T request;
-
 	protected boolean encrypt;
+	private ControllerMethod controllerMethod;
 
 	public BaseRequest() {
 	}
@@ -187,4 +188,12 @@ public abstract class BaseRequest<T> {
 	 * @return IP地址
 	 */
 	public abstract String getRemoteAddr();
+
+	public ControllerMethod getControllerMethod() {
+		return this.controllerMethod;
+	}
+
+	public void setControllerMethod(ControllerMethod controllerMethod) {
+		this.controllerMethod = controllerMethod;
+	}
 }
