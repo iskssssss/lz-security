@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ResponseDataEncrypt {
+public @interface DataEncrypt {
 
 	/**
 	 * 请求数据是否加密

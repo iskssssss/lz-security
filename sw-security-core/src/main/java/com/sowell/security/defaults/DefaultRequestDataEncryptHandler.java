@@ -15,14 +15,14 @@ public class DefaultRequestDataEncryptHandler implements RequestDataEncryptHandl
 
 	@Override
 	public String encrypt(byte[] bytes) {
-		final SwPrivateKey priKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+		final SwPrivateKey priKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKeyStr();
 		final String encryptResult = priKey.encrypt(bytes);
 		return encryptResult;
 	}
 
 	@Override
 	public Object decrypt(byte[] bytes) {
-		final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+		final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKeyStr();
 		final Object decryptResult = privateKey.decrypt(bytes);
 		return decryptResult;
 	}

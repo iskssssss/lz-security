@@ -3,16 +3,16 @@ package com.sowell.demo.filter.controller;
 import com.sowell.common.core.web.result.R;
 import com.sowell.demo.filter.model.AccessTokenVO;
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.annotation.ResponseDataEncrypt;
 import com.sowell.security.defaults.DefaultAuthDetails;
+import com.sowell.security.filter.config.IcpConfig;
 import com.sowell.security.filter.utils.AccessTokenUtil;
 import com.sowell.security.plugins.utils.RedisUtil;
+import com.sowell.security.tool.context.IcpContextManager;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.number.NumberUtil;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.encrypt.EncryptUtil;
 import com.sowell.tool.encrypt.model.AppKeyPair;
-import com.sowell.tool.encrypt.model.SwPublicKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -46,26 +46,33 @@ public class AccessTokenController {
 			@RequestParam("sign") String sign,
 			@RequestParam("timestamp") String timestamp
 	) {
+		// 校验请求参数是否正确
 		if (!NumberUtil.checkNumber(timestamp)) {
 			return R.failed(RCode.ERROR_PARAMS);
 		}
+		// 校验当前应用是否存在
 		final String appSecret = ((String) RedisUtil.hashGet("APP::LIST", appKey));
 		if (StringUtil.isEmpty(appSecret)) {
 			return R.failed(RCode.APP_ID_NOT_EXIST);
 		}
+		// 校验加密数据是否匹配
 		String verSign = EncryptUtil.sign(appKey, appSecret, Long.parseLong(timestamp));
 		if (!sign.equals(verSign)) {
 			return R.failed(RCode.APP_ID_NOT_EXIST);
 		}
-		DefaultAuthDetails testAuthDetails = new DefaultAuthDetails();
-		testAuthDetails.setId(appKey);
-		testAuthDetails.setIdentifier(appKey);
-		testAuthDetails.setCredential(appSecret);
-		final Object token = AccessTokenUtil.generateAccessToken(testAuthDetails);
-		AccessTokenVO accessTokenVO = new AccessTokenVO();
-		accessTokenVO.setAccessToken(token);
-		accessTokenVO.setTtl(IcpCoreManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis());
-		return R.success(accessTokenVO);
+		// 生成token
+		final String token = AccessTokenUtil.generateAccessToken(new DefaultAuthDetails() {{
+			setId(appKey);
+			setIdentifier(appKey);
+			setCredential(appSecret);
+		}});
+		// 将token存放值cookie中
+		final IcpConfig.AccessTokenConfig accessTokenConfig = IcpCoreManager.getIcpConfig().getAccessTokenConfig();
+		IcpContextManager.getResponse().addCookie(accessTokenConfig.getName(), token, null, null, ((int) accessTokenConfig.getTimeout()));
+		return R.success(new AccessTokenVO() {{
+			setAccessToken(token);
+			setTtl(accessTokenConfig.getTimeoutForMillis());
+		}});
 	}
 
 	@ApiOperation(value = "getAppKeyPair", notes = "getAppKeyPair")
@@ -92,37 +99,5 @@ public class AccessTokenController {
 		resultMap.put("sign", sign);
 		resultMap.put("currentTimeMillis", currentTimeMillis);
 		return R.success(resultMap);
-	}
-
-	@GetMapping("/pubEncrypt")
-	@ResponseDataEncrypt(responseEncrypt = false, requestEncrypt = false)
-	@ApiOperation(value = "公钥加密数据", notes = "公钥加密数据")
-	@ApiImplicitParam(paramType = "query", dataType = "String", name = "text", value = "text", required = true)
-	public R<Object> pubEncrypt(
-			@RequestParam("text") String text
-	) {
-		final SwPublicKey publicKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPublicKey();
-		return R.success(publicKey.encrypt(text));
-	}
-
-	@GetMapping("/priDecrypt")
-	@ResponseDataEncrypt(responseEncrypt = false, requestEncrypt = true)
-	@ApiOperation(value = "访问请求数据加密接口", notes = "访问请求数据加密接口")
-	@ApiImplicitParam(paramType = "query", dataType = "String", name = "text", value = "text", required = true)
-	public R<Object> priDecrypt(
-			@RequestParam("text") String text
-	) {
-		System.out.println(text);
-		return R.success(text);
-	}
-
-	@PostMapping(value = "/postPriDecrypt", produces = "application/json")
-	@ResponseDataEncrypt(responseEncrypt = true, requestEncrypt = true)
-	@ApiOperation(value = "post请求数据加密接口", notes = "post请求数据加密接口")
-	public R<Object> postPriDecrypt(
-			@RequestBody AccessTokenVO accessTokenVO
-	) {
-		System.out.println(accessTokenVO.toJson());
-		return R.success(accessTokenVO.toJson());
 	}
 }

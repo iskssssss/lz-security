@@ -9,6 +9,8 @@ import com.sowell.security.filter.config.FilterConfigurerBuilder;
 import com.sowell.security.filter.config.SecurityFilterConfigurerAdapter;
 import com.sowell.security.filter.utils.AccessTokenUtil;
 import com.sowell.security.filter.utils.FilterUtil;
+import com.sowell.security.log.IcpLoggerUtil;
+import com.sowell.security.tool.context.IcpContextManager;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedList;
@@ -35,52 +37,41 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 				.addIncludeUrls("/**")
 				// [非必需] 排除的接口
 				.addExcludeUrls(
-						"/favicon.ico", "/webjars/**", "/doc.html", "/swagger-resources",
-						"/v2/api-docs", "/v2/api-docs-ext", "/auth/**", "/exclude/**"
+						"/favicon.ico", /*"/webjars/**", "/doc.html", "/swagger-resources",
+						"/v2/api-docs", "/v2/api-docs-ext",*/ "/auth/**", "/exclude/**"
 				).and()
 				.filterConfig()
 				// [非必需] 设置接口过滤执行链
 				.linkInterfacesFilter(
-						FilterUtil.accessTokenFilter/*OnLogBefore*/(),
+						FilterUtil.accessTokenFilterOnLogBefore(),
 						FilterUtil.ipFilter(params -> {
-							final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
-							final String id = authDetails.getId();
 							final LinkedList<String> ipList = new LinkedList<>();
-							if ("1".equals(id)) {
-								ipList.add("*");
-							} else if ("2".equals(id)) {
-								ipList.add("127.0.0.0/24");
-							} else if ("3".equals(id)) {
-								ipList.add("127.0.0.2");
-							} else {
-								ipList.add("127.0.0.1");
-							}
+							ipList.add("*");
 							return ipList;
 						}),
 						FilterUtil.requestInterfaceFilter(params -> {
-							final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
-							final String id = authDetails.getId();
 							UrlHashSet urlHashSet = new UrlHashSet();
-							if ("1".equals(id)) {
-								urlHashSet.add("/include/getUserInfo");
-								urlHashSet.add("/include/1");
-							} else if ("2".equals(id)) {
-								urlHashSet.add("/include/getUserInfo");
-								urlHashSet.add("/include/2");
-							} else if ("3".equals(id)) {
-								urlHashSet.add("/include/getUserInfo");
-								urlHashSet.add("/include/3");
-							} else {
-								urlHashSet.add("/**");
-							}
+							urlHashSet.add("/**");
 							return urlHashSet;
 						})
 				)
 				.setLogBeforeFilter(FilterUtil.AccessTokenFilter.class)
 				.and()
 				// [非必需] 过滤前处理
-				.setFilterBeforeHandler(params -> {})
+				.setFilterBeforeHandler(params -> {
+					if (IcpContextManager.getRequest().isEncrypt()) {
+						IcpLoggerUtil.info(getClass(), "请求数据已加密。");
+						return;
+					}
+					IcpLoggerUtil.info(getClass(), "请求数据未加密。");
+				})
 				// [非必需] 过滤后处理
-				.setFilterAfterHandler(params -> {}).end();
+				.setFilterAfterHandler(params -> {
+					if (IcpContextManager.getResponse().isEncrypt()) {
+						IcpLoggerUtil.info(getClass(), "响应数据需加密。");
+						return;
+					}
+					IcpLoggerUtil.info(getClass(), "响应数据无需加密。");
+				}).end();
 	}
 }

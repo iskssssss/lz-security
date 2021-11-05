@@ -37,19 +37,31 @@ public class IcpSecurityContextThreadLocal {
 	}
 
 	private static Box getBox() {
-		final Optional<Box> box = Optional.ofNullable(BOX_THREAD_LOCAL.get());
-		return box.orElse(new Box());
+		Box box = BOX_THREAD_LOCAL.get();
+		return box;
 	}
 
 	public static BaseRequest getServletRequest() {
-		return getBox().getRequest();
+		final Box box = getBox();
+		if (box == null){
+			return null;
+		}
+		return box.getRequest();
 	}
 
 	public static BaseResponse getServletResponse() {
-		return getBox().getResponse();
+		final Box box = getBox();
+		if (box == null){
+			return null;
+		}
+		return box.getResponse();
 	}
 
 	public static IcpStorage getIcpStorage() {
-		return getBox().getIcpStorage();
+		final Box box = getBox();
+		if (box == null){
+			return null;
+		}
+		return box.getIcpStorage();
 	}
 }

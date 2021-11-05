@@ -6,7 +6,7 @@ import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.IcpFilterManager;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.log.IcpLoggerUtil;
-import com.sowell.security.tool.context.IcpSpringContextHolder;
+import com.sowell.security.tool.context.IcpContextManager;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;
 import com.sowell.security.tool.wrapper.HttpServletRequestWrapper;
@@ -23,7 +23,6 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * TODO
@@ -46,7 +45,7 @@ public abstract class BaseFilter implements Filter {
 
 	@Override
 	public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
-		IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
+		IcpContextManager.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 			SecurityException securityException = null;
 			try {
 				// 解密处理
@@ -54,7 +53,7 @@ public abstract class BaseFilter implements Filter {
 					try {
 						final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) swRequest.getRequest();
 						final byte[] bodyBytes = httpServletRequestWrapper.getBody();
-						final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKey();
+						final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKeyStr();
 						final Object decrypt = privateKey.decrypt(bodyBytes);
 						httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
 					} catch (Exception e) {
@@ -103,9 +102,9 @@ public abstract class BaseFilter implements Filter {
 				final Object handlerData = IcpFilterManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {
 					if (handlerData instanceof RCode) {
-						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
+						ServletUtil.printResponse(IcpContextManager.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
 					} else {
-						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
+						ServletUtil.printResponse(IcpContextManager.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
 					}
 				}
 				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);

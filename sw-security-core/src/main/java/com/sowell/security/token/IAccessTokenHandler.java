@@ -25,10 +25,12 @@ public interface IAccessTokenHandler<T extends AuthDetails<T>> {
 	default String getAccessTokenInfo() {
 		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
 		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		final String headerName = icpConfig.getHeaderName();
-		String accessToken = servletRequest.getHeader(headerName);
+		final String saveName = icpConfig.getAccessTokenConfig().getName();
+		// 从请求头中获取Token
+		String accessToken = servletRequest.getHeader(saveName);
 		if (StringUtil.isEmpty(accessToken)) {
-			accessToken = servletRequest.getCookieValue(headerName);
+			// 从Cookie中获取Token
+			accessToken = servletRequest.getCookieValue(saveName);
 		}
 		if (StringUtil.isEmpty(accessToken)) {
 			throw new HeaderNotAccessTokenException();

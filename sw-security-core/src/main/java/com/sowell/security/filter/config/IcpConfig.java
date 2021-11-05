@@ -24,10 +24,6 @@ public class IcpConfig {
 	 */
 	private Boolean consoleLogPrint = true;
 	/**
-	 * accessToken 在请求头中的键名
-	 */
-	private String headerName = "Authorization";
-	/**
 	 * AccessToken 相关信息
 	 */
 	private AccessTokenConfig accessTokenConfig;
@@ -40,7 +36,7 @@ public class IcpConfig {
 	 */
 	private List<String> controllerMethodScanPathList;
 	/**
-	 * 功能类型:AUTH/FILTER
+	 * 功能类型:AUTH/FILTER（暂时无用）
 	 */
 	private String icpType = "FILTER";
 
@@ -49,13 +45,6 @@ public class IcpConfig {
 	}
 	public void setConsoleLogPrint(Boolean consoleLogPrint) {
 		this.consoleLogPrint = consoleLogPrint;
-	}
-
-	public String getHeaderName() {
-		return headerName;
-	}
-	public void setHeaderName(String headerName) {
-		this.headerName = headerName;
 	}
 
 	public AccessTokenConfig getAccessTokenConfig() {
@@ -93,7 +82,6 @@ public class IcpConfig {
 	@Override
 	public String toString() {
 		return " 配置信息：" +
-				"\n     头名称：" + headerName +
 				"\n     token配置信息：" + accessTokenConfig +
 				"\n     加密配置信息：" + encryptConfig +
 				"\n     扫描位置：'" + controllerMethodScanPathList + '\'' +
@@ -101,6 +89,10 @@ public class IcpConfig {
 	}
 
 	public static class AccessTokenConfig {
+		/**
+		 * accessToken 存放标识
+		 */
+		private String name = "Authorization";
 		/**
 		 * AccessToken默认过期时间(3600秒)
 		 */
@@ -113,6 +105,13 @@ public class IcpConfig {
 		 * AccessToken过期时间（秒）(默认3600秒)
 		 */
 		private Long timeout = 3600L;
+
+		public String getName() {
+			return this.name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
 
 		public String getAccessTokenType() {
 			if (StringUtil.isEmpty(this.accessTokenType)) {
@@ -161,11 +160,11 @@ public class IcpConfig {
 		/**
 		 * 公钥
 		 */
-		private SwPublicKey publicKey;
+		private SwPublicKey publicKeyStr;
 		/**
 		 * 私钥
 		 */
-		private SwPrivateKey privateKey;
+		private SwPrivateKey privateKeyStr;
 
 		/**
 		 * 加密接口列表（逗号(,)隔开）
@@ -180,24 +179,24 @@ public class IcpConfig {
 			this.encrypt = encrypt;
 		}
 
-		public SwPublicKey getPublicKey() {
-			return publicKey;
+		public SwPublicKey getPublicKeyStr() {
+			return publicKeyStr;
 		}
-		public void setPublicKey(String publicKey) {
-			if (StringUtil.isEmpty(publicKey)) {
+		public void setPublicKeyStr(String publicKeyStr) {
+			if (StringUtil.isEmpty(publicKeyStr)) {
 				return;
 			}
-			this.publicKey = new SwPublicKey(publicKey);
+			this.publicKeyStr = new SwPublicKey(publicKeyStr);
 		}
 
-		public SwPrivateKey getPrivateKey() {
-			return privateKey;
+		public SwPrivateKey getPrivateKeyStr() {
+			return privateKeyStr;
 		}
-		public void setPrivateKey(String privateKey) {
-			if (StringUtil.isEmpty(privateKey)) {
+		public void setPrivateKeyStr(String privateKeyStr) {
+			if (StringUtil.isEmpty(privateKeyStr)) {
 				return;
 			}
-			this.privateKey = new SwPrivateKey(privateKey);
+			this.privateKeyStr = new SwPrivateKey(privateKeyStr);
 		}
 
 		public UrlHashSet getEncryptUrlList() {
