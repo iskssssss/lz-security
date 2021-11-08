@@ -1,7 +1,7 @@
 package com.sowell.security.token;
 
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.filter.config.IcpConfig;
+import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.HeaderNotAccessTokenException;

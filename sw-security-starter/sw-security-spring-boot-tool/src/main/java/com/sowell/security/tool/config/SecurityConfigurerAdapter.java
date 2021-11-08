@@ -3,7 +3,7 @@ package com.sowell.security.tool.config;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.config.CoreConfigurer;
 import com.sowell.security.config.CoreConfigurerBuilder;
-import com.sowell.security.filter.config.IcpConfig;
+import com.sowell.security.config.IcpConfig;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;

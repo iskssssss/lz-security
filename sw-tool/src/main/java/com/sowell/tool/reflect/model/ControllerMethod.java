@@ -2,6 +2,7 @@ package com.sowell.tool.reflect.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * TODO
@@ -11,11 +12,15 @@ import java.lang.reflect.Method;
  * @date 2021/10/27 10:47
  */
 public class ControllerMethod {
+	private final List<String> requestPaths;
 	private final Class<?> controllerClass;
-
 	private final Method method;
 
-	public ControllerMethod(Class<?> controllerClass, Method method) {
+	public ControllerMethod(List<String> requestPaths,
+	                        Class<?> controllerClass,
+	                        Method method
+	) {
+		this.requestPaths = requestPaths;
 		this.controllerClass = controllerClass;
 		this.method = method;
 	}
@@ -56,10 +61,15 @@ public class ControllerMethod {
 		return this.controllerClass.getAnnotation(annotationClass);
 	}
 
+	public List<String> getRequestPaths() {
+		return requestPaths;
+	}
+
 	@Override
 	public String toString() {
 		return "ControllerMethod{" +
-				"controllerClass=" + controllerClass +
+				"requestPaths=" + requestPaths +
+				", controllerClass=" + controllerClass +
 				", method=" + method +
 				'}';
 	}

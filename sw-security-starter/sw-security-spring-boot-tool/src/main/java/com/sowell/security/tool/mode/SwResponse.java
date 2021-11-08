@@ -29,6 +29,11 @@ public class SwResponse extends BaseResponse<HttpServletResponse> {
 		super(response);
 	}
 
+	public SwResponse(HttpServletResponse response, boolean encrypt) {
+		super(response);
+		super.encrypt = encrypt;
+	}
+
 	@Override
 	public BaseResponse<HttpServletResponse> setHeader(String name, String value) {
 		getResponse().setHeader(name, value);

@@ -40,7 +40,7 @@ public enum RCode implements ICode {
     /**
      * 设置读取请求参数字符编码错误
      */
-    UNSUPPORTED_ENCODING_EXCEPTION(5,"设置读取请求参数字符编码错误。"),
+    UNSUPPORTED_ENCODING_EXCEPTION(5, "设置读取请求参数字符编码错误。"),
     /**
      * 内部服务器错误
      */
@@ -127,18 +127,10 @@ public enum RCode implements ICode {
         this.message = message;
     }
 
-    public String toJson() throws IllegalAccessException {
+    public String toJson() {
         JSONObject resultJson = new JSONObject();
-        final Field[] fields = RCode.class.getDeclaredFields();
-        for (Field declaredField : fields) {
-            declaredField.setAccessible(true);
-            if (Modifier.isStatic(declaredField.getModifiers())) {
-                continue;
-            }
-            final String name = declaredField.getName();
-            final Object value = declaredField.get(this);
-            resultJson.put(name, value);
-        }
+        resultJson.put("code", this.code);
+        resultJson.put("message", this.message);
         return resultJson.toJSONString();
     }
 }

@@ -30,10 +30,14 @@ public class IcpSecurityContextThreadLocal {
 	public static void remove() {
 		final Box box = getBox();
 		try {
+			if (box == null) {
+				return;
+			}
 			box.close();
 		} catch (IOException ignored) {
+		} finally {
+			BOX_THREAD_LOCAL.remove();
 		}
-		BOX_THREAD_LOCAL.remove();
 	}
 
 	private static Box getBox() {
@@ -43,7 +47,7 @@ public class IcpSecurityContextThreadLocal {
 
 	public static BaseRequest getServletRequest() {
 		final Box box = getBox();
-		if (box == null){
+		if (box == null) {
 			return null;
 		}
 		return box.getRequest();
@@ -51,7 +55,7 @@ public class IcpSecurityContextThreadLocal {
 
 	public static BaseResponse getServletResponse() {
 		final Box box = getBox();
-		if (box == null){
+		if (box == null) {
 			return null;
 		}
 		return box.getResponse();
@@ -59,7 +63,7 @@ public class IcpSecurityContextThreadLocal {
 
 	public static IcpStorage getIcpStorage() {
 		final Box box = getBox();
-		if (box == null){
+		if (box == null) {
 			return null;
 		}
 		return box.getIcpStorage();

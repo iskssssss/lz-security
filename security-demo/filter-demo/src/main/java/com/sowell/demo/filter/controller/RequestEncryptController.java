@@ -25,9 +25,9 @@ public class RequestEncryptController {
 
 	@PostMapping(value = "/postPriDecrypt", produces = "application/json")
 	@ApiOperation(value = "测试接口", notes = "测试接口")
-	public R<Object> postPriDecrypt(
+	public R<AccessTokenVO> postPriDecrypt(
 			@RequestBody AccessTokenVO accessTokenVO
 	) {
-		return R.success(accessTokenVO.toJson());
+		return R.success(accessTokenVO);
 	}
 }

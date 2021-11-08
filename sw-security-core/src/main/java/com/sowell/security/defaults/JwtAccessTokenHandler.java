@@ -36,7 +36,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 		if (StringUtil.isEmpty(accessToken)) {
 			return false;
 		}
-		final AuthDetails authDetails = JwtUtil.toBean(accessToken, AuthDetails.class);
+		final AuthDetails<?> authDetails = JwtUtil.toBean(accessToken);
 		if (authDetails == null) {
 			return true;
 		}
@@ -71,7 +71,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 	@Override
 	public String refreshAccessToken(String accessToken) {
 		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
-		final AuthDetails authDetails = this.getAuthDetails(accessToken);
+		final AuthDetails<?> authDetails = this.getAuthDetails(accessToken);
 		String id = "JWT::" + authDetails.getId();
 		cacheManager.remove(id);
 		return generateAccessToken(authDetails);

@@ -1,4 +1,4 @@
-package com.sowell.security.filter.config;
+package com.sowell.security.config;
 
 import com.sowell.security.IcpConstant;
 import com.sowell.security.arrays.UrlHashSet;
@@ -142,9 +142,9 @@ public class IcpConfig {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("配置信息：");
-		sb.append("\n     ").append("TOKEN配置信息").append("：").append(tokenConfig.toString());
-		sb.append("\n     ").append("加密配置信息").append("：").append(encryptConfig.toString());
-		sb.append("\n     ").append("扫描位置").append("：").append(this.getControllerMethodScanPathList());
+		sb.append("\n     ").append("- Token配置信息").append("：").append(tokenConfig.toString());
+		sb.append("\n     ").append("- 加密配置信息").append("：").append(encryptConfig.toString());
+		sb.append("\n     ").append("• 扫描位置").append("：").append(this.getControllerMethodScanPathList());
 		return sb.toString();
 	}
 
@@ -238,9 +238,9 @@ public class IcpConfig {
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("\n          ").append("Token 存放标识").append("：").append(name);
-			sb.append("\n          ").append("Token 类型").append("：").append(type);
-			sb.append("\n          ").append("Token 过期时间（秒）").append("：").append(timeout);
+			sb.append("\n          ").append("• Token 存放标识").append("：").append(name);
+			sb.append("\n          ").append("• Token 类型").append("：").append(type);
+			sb.append("\n          ").append("• Token 过期时间（秒）").append("：").append(timeout);
 			return sb.toString();
 		}
 	}
@@ -353,10 +353,10 @@ public class IcpConfig {
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("\n          ").append("是否加密").append("：").append(encrypt);
-			sb.append("\n          ").append("私钥").append("：").append(privateKeyStr.getPrivateKeyStr());
-			sb.append("\n          ").append("公钥").append("：").append(publicKeyStr.getPublicKeyStr());
-			sb.append("\n          ").append("加密接口列表").append("：").append(this.getEncryptUrlList().toString());
+			sb.append("\n          ").append("• 是否加密").append("：").append(encrypt);
+			sb.append("\n          ").append("• 私钥").append("：").append(privateKeyStr.getPrivateKeyStr());
+			sb.append("\n          ").append("• 公钥").append("：").append(publicKeyStr.getPublicKeyStr());
+			sb.append("\n          ").append("• 加密接口列表").append("：").append(this.getEncryptUrlList().toString());
 			return sb.toString();
 		}
 	}

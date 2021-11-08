@@ -37,8 +37,8 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 				.addIncludeUrls("/**")
 				// [非必需] 排除的接口
 				.addExcludeUrls(
-						"/favicon.ico", /*"/webjars/**", "/doc.html", "/swagger-resources",
-						"/v2/api-docs", "/v2/api-docs-ext",*/ "/auth/**", "/exclude/**"
+						"/favicon.ico", "/webjars/**", "/doc.html", "/swagger-resources",
+						"/v2/api-docs", "/v2/api-docs-ext", "/auth/**", "/exclude/**"
 				).and()
 				.filterConfig()
 				// [非必需] 设置接口过滤执行链
@@ -59,7 +59,7 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 				.and()
 				// [非必需] 过滤前处理
 				.setFilterBeforeHandler(params -> {
-					if (IcpContextManager.getRequest().isEncrypt()) {
+					if (IcpContextManager.getRequest().isDecrypt()) {
 						IcpLoggerUtil.info(getClass(), "请求数据已加密。");
 						return;
 					}

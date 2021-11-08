@@ -1,4 +1,4 @@
-package com.sowell.security.filter.config;
+package com.sowell.security.arrays;
 
 
 import com.sowell.security.IcpCoreManager;

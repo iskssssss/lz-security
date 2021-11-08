@@ -8,12 +8,10 @@ import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.tool.utils.CookieUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.io.IoUtil;
-import com.sowell.tool.reflect.model.ControllerMethod;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,11 +27,11 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 
 	public SwRequest(HttpServletRequest request) {
 		super(request);
-		try {
-			request.setCharacterEncoding("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new SecurityException(RCode.UNSUPPORTED_ENCODING_EXCEPTION);
-		}
+	}
+
+	public SwRequest(HttpServletRequest request, boolean decrypt) {
+		super(request);
+		super.decrypt = decrypt;
 	}
 
 	@Override

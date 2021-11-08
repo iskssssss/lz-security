@@ -33,6 +33,9 @@ public class UrlHashSet extends HashSet<String> {
 	 * @return 是否匹配
 	 */
 	public boolean containsPath(String url) {
+		if (super.isEmpty()) {
+			return false;
+		}
 		final boolean isContains = super.contains(url);
 		if (isContains) {
 			return true;

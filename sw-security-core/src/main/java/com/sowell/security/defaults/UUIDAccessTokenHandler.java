@@ -47,7 +47,7 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 		if (!(authDetailsObj instanceof AuthDetails)) {
 			return true;
 		}
-		final AuthDetails authDetails = (AuthDetails) authDetailsObj;
+		final AuthDetails<?> authDetails = (AuthDetails<?>) authDetailsObj;
 		String id = "UUID::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isEmpty(idValue)) {
@@ -76,7 +76,7 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 
 	@Override
 	public String refreshAccessToken(String accessToken) {
-		final AuthDetails authDetails = this.getAuthDetails(accessToken);
+		final AuthDetails<?> authDetails = this.getAuthDetails(accessToken);
 		String id = "UUID::" + authDetails.getId();
 		IcpCoreManager.getCacheManager().remove(id);
 		return generateAccessToken(authDetails);

@@ -15,9 +15,7 @@ import com.sowell.tool.cache.utils.GlobalScheduled;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.model.RequestResult;
-import com.sowell.tool.encrypt.model.SwPrivateKey;
 import com.sowell.tool.http.enums.ContentTypeEnum;
-import com.sowell.tool.http.enums.RequestMethodEnum;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -48,56 +46,18 @@ public abstract class BaseFilter implements Filter {
 		IcpContextManager.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 			SecurityException securityException = null;
 			try {
+				final RequestDataEncryptHandler requestDataEncryptHandler = IcpCoreManager.getRequestDataEncryptHandler();
 				// 解密处理
-				if (swRequest.isEncrypt() && RequestMethodEnum.POST.is(swRequest.getMethod())) {
-					try {
-						final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) swRequest.getRequest();
-						final byte[] bodyBytes = httpServletRequestWrapper.getBody();
-						final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKeyStr();
-						final Object decrypt = privateKey.decrypt(bodyBytes);
-						httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
-					} catch (Exception e) {
-						throw new SecurityException(RCode.DATA_DECRYPT_FAILED);
-					}
-				}
+				this.decryptHandler(requestDataEncryptHandler, swRequest);
 				// 过滤处理
 				if (this.doFilter(swRequest, swResponse)) {
 					chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
 				}
 				// 加密处理
-				if (swResponse.isEncrypt()) {
-					try {
-						byte[] encryptBytes;
-						final RequestDataEncryptHandler requestDataEncryptHandler = IcpCoreManager.getRequestDataEncryptHandler();
-						final byte[] responseDataBytes = swResponse.getResponseDataBytes();
-						final RequestResult resultObject = ByteUtil.toObject(responseDataBytes, RequestResult.class);
-						if (resultObject != null) {
-							resultObject.setData(requestDataEncryptHandler.encrypt(ByteUtil.toBytes(resultObject.getData())));
-							encryptBytes = ByteUtil.toBytes(resultObject.toJson());
-						} else {
-							RequestResult requestResult = new RequestResult();
-							requestResult.setData(requestDataEncryptHandler.encrypt(responseDataBytes));
-							encryptBytes = ByteUtil.toBytes(requestResult.toJson());
-						}
-						ServletUtil.printResponse(swResponse, ContentTypeEnum.JSON.name, encryptBytes);
-					} catch (Exception e) {
-						throw new SecurityException(RCode.DATA_ENCRYPT_FAILED);
-					}
-				}
+				this.encryptHandler(requestDataEncryptHandler, swResponse);
 			} catch (Exception e) {
 				// 错误处理
-				if (e instanceof SecurityException) {
-					securityException = (SecurityException) e;
-				} else if (e.getCause() instanceof SecurityException) {
-					securityException = (SecurityException) e.getCause();
-				} else {
-					securityException = new SecurityException(RCode.INTERNAL_SERVER_ERROR, e);
-				}
-				if (securityException.getCause() != null) {
-					IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
-				} else {
-					IcpLoggerUtil.error(getClass(), e.getMessage(), e);
-				}
+				securityException = exceptionHandler(e);
 			} finally {
 				final Object handlerData = IcpFilterManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {
@@ -108,11 +68,64 @@ public abstract class BaseFilter implements Filter {
 					}
 				}
 				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
-				if (logSwitch != null) {
+				if (logSwitch instanceof Boolean && ((Boolean) logSwitch)) {
 					IcpFilterManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
 				}
 			}
 		});
+	}
+
+	private void decryptHandler(RequestDataEncryptHandler requestDataEncryptHandler, SwRequest swRequest) {
+		if (!swRequest.isDecrypt()) {
+			return;
+		}
+		try {
+			final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) swRequest.getRequest();
+			final byte[] bodyBytes = httpServletRequestWrapper.getBody();
+			final Object decrypt = requestDataEncryptHandler.decrypt(bodyBytes);
+			httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
+		} catch (Exception e) {
+			throw new SecurityException(RCode.DATA_DECRYPT_FAILED);
+		}
+	}
+
+	public void encryptHandler(RequestDataEncryptHandler requestDataEncryptHandler, SwResponse swResponse) {
+		if (!swResponse.isEncrypt()) {
+			return;
+		}
+		try {
+			byte[] encryptBytes;
+			final byte[] responseDataBytes = swResponse.getResponseDataBytes();
+			final RequestResult resultObject = ByteUtil.toObject(responseDataBytes, RequestResult.class);
+			if (resultObject != null) {
+				resultObject.setData(requestDataEncryptHandler.encrypt(ByteUtil.toBytes(resultObject.getData())));
+				encryptBytes = ByteUtil.toBytes(resultObject.toJson());
+			} else {
+				RequestResult requestResult = new RequestResult();
+				requestResult.setData(requestDataEncryptHandler.encrypt(responseDataBytes));
+				encryptBytes = ByteUtil.toBytes(requestResult.toJson());
+			}
+			ServletUtil.printResponse(swResponse, ContentTypeEnum.JSON.name, encryptBytes);
+		} catch (Exception e) {
+			throw new SecurityException(RCode.DATA_ENCRYPT_FAILED);
+		}
+	}
+
+	public SecurityException exceptionHandler(Exception filterException) {
+		SecurityException securityException;
+		if (filterException instanceof SecurityException) {
+			securityException = (SecurityException) filterException;
+		} else if (filterException.getCause() instanceof SecurityException) {
+			securityException = (SecurityException) filterException.getCause();
+		} else {
+			securityException = new SecurityException(RCode.INTERNAL_SERVER_ERROR, filterException);
+		}
+		if (securityException.getCause() != null) {
+			IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+		} else {
+			IcpLoggerUtil.error(getClass(), filterException.getMessage(), filterException);
+		}
+		return securityException;
 	}
 
 	@Override

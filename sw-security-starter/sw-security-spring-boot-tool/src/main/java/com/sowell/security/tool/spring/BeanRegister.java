@@ -1,7 +1,7 @@
 package com.sowell.security.tool.spring;
 
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.filter.config.IcpConfig;
+import com.sowell.security.config.IcpConfig;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.boot.context.properties.ConfigurationProperties;

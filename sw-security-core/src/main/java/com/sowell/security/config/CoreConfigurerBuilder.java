@@ -2,6 +2,7 @@ package com.sowell.security.config;
 
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
+import com.sowell.security.handler.EncryptSwitchHandler;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.token.IAccessTokenHandler;
 
@@ -42,6 +43,16 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 */
 	public CoreConfigurerBuilder<T> setRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
 		IcpCoreManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
+		return this;
+	}
+
+	/**
+	 * 设置加解密开关处理器
+	 *
+	 * @param encryptHandler 加解密开关处理器
+	 */
+	public CoreConfigurerBuilder<T> setEncryptSwitchHandler(EncryptSwitchHandler encryptHandler) {
+		IcpCoreManager.setEncryptSwitchHandler(encryptHandler);
 		return this;
 	}
 }

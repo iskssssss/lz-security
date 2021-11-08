@@ -1,14 +1,13 @@
 package com.sowell.security.tool.context;
 
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.annotation.DataEncrypt;
-import com.sowell.security.arrays.UrlHashSet;
+import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpContextTheadLocal;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.base.SecurityException;
-import com.sowell.security.filter.config.IcpConfig;
 import com.sowell.security.fun.IcpFilterFunction;
+import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;
 import com.sowell.security.tool.wrapper.HttpServletRequestWrapper;
@@ -16,11 +15,12 @@ import com.sowell.security.tool.wrapper.HttpServletResponseWrapper;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -90,18 +90,24 @@ public class IcpContextManager {
 			request.setCharacterEncoding(StandardCharsets.UTF_8.name());
 			response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			// 当前访问的接口
 			final String requestPath = httpServletRequest.getServletPath();
 			// 获取当前接口访问方法
 			ControllerMethod controllerMethod = IcpCoreManager.getMethodByInterfaceUrl(requestPath);
 			// 校验当前请求接口返回数据是否要加密
 			final IcpConfig.EncryptConfig encryptConfig = IcpCoreManager.getIcpConfig().getEncryptConfig();
-			// 获取当前访问接口方法/类的加密注解
-			DataEncrypt dataEncrypt = controllerMethod == null ? null : controllerMethod.getMethodAndControllerAnnotation(DataEncrypt.class);
-			// 处理请求流和响应流信息
-			SwRequest swRequest = handlerRequest(encryptConfig, dataEncrypt, requestPath, httpServletRequest);
+			SwRequest swRequest = new SwRequest(httpServletRequest);
+			SwResponse swResponse = new SwResponse(httpServletResponse);
 			swRequest.setControllerMethod(controllerMethod);
-			SwResponse swResponse = handlerResponse(encryptConfig, dataEncrypt, requestPath, (HttpServletResponse) response);
+			// 处理请求流和响应流信息
+			if (encryptConfig.getEncrypt()) {
+				IcpContextManager.handlerRequest(swRequest);
+				IcpContextManager.handlerResponse(swRequest, swResponse);
+			} else {
+				swRequest = new SwRequest(httpServletRequest, false);
+				swResponse = new SwResponse(httpServletResponse, false);
+			}
 			// 设置上下文
 			IcpContextManager.setContext(swRequest, swResponse, startRequestTime);
 			if (function == null) {
@@ -109,7 +115,18 @@ public class IcpContextManager {
 			}
 			// 执行方法
 			function.run(swRequest, swResponse);
-		} catch (UnsupportedEncodingException ignored) {
+		} catch (Exception exception) {
+			IcpLoggerUtil.error(IcpContextManager.class, exception.getMessage(), exception);
+			final byte[] bytes = RCode.INTERNAL_SERVER_ERROR.toJson().getBytes(StandardCharsets.UTF_8);
+			final int length = bytes.length;
+			try (ServletOutputStream outputStream = response instanceof HttpServletResponseWrapper ?
+					((HttpServletResponseWrapper) response).getResponseOutputStream() : response.getOutputStream()) {
+				response.setContentLength(length);
+				outputStream.write(bytes, 0, length);
+				outputStream.flush();
+			} catch (IOException ioException) {
+				throw new SecurityException(RCode.UNKNOWN_MISTAKE.getCode(), RCode.UNKNOWN_MISTAKE.getMessage(), ioException);
+			}
 		} finally {
 			if (function != null) {
 				IcpContextManager.removeContext();
@@ -133,37 +150,17 @@ public class IcpContextManager {
 	 * 包装处理请求流
 	 * <p>根据是否请求加密来控制 响应流的包装类型</p>
 	 *
-	 * @param encryptConfig       加密配置信息
-	 * @param dataEncrypt 当前请求方法/类的加密注解
-	 * @param requestPath         当前访问接口地址
-	 * @param request             请求流
+	 * @param swRequest 请求流
 	 * @return 包装后的请求流
 	 */
-	private static SwRequest handlerRequest(
-			IcpConfig.EncryptConfig encryptConfig,
-			DataEncrypt dataEncrypt,
-			String requestPath,
-			HttpServletRequest request
-	) {
-		boolean isEncrypt = false;
-		if (encryptConfig.getEncrypt()) {
-			if (dataEncrypt == null) {
-				final UrlHashSet encryptUrlList = encryptConfig.getEncryptUrlList();
-				isEncrypt = encryptUrlList.containsPath(requestPath);
-			} else {
-				isEncrypt = dataEncrypt.requestEncrypt();
-			}
-		}
+	private static void handlerRequest(SwRequest swRequest) {
 		try {
-			// 设置响应流包装方式
-			SwRequest swRequest;
-			if (isEncrypt) {
-				swRequest = new SwRequest(new HttpServletRequestWrapper(request));
-			} else {
-				swRequest = new SwRequest(request);
+			final boolean isDecrypt = IcpCoreManager.getEncryptSwitchHandler().decrypt(swRequest);
+			swRequest.setDecrypt(isDecrypt);
+			if (isDecrypt) {
+				final HttpServletRequest request = swRequest.getRequest();
+				swRequest.setRequest(new HttpServletRequestWrapper(request));
 			}
-			swRequest.setEncrypt(isEncrypt);
-			return swRequest;
 		} catch (Exception exception) {
 			throw new SecurityException(RCode.REQUEST_ERROR.getCode(), RCode.REQUEST_ERROR.getMessage(), exception);
 		}
@@ -173,36 +170,17 @@ public class IcpContextManager {
 	 * 包装处理响应流
 	 * <p>根据是否请求加密来控制 响应流的包装类型</p>
 	 *
-	 * @param encryptConfig       加密配置信息
-	 * @param dataEncrypt 当前请求方法/类的加密注解
-	 * @param requestPath         当前访问接口地址
-	 * @param response            响应流
-	 * @return 包装后的响应流
+	 * @param swRequest  请求流
+	 * @param swResponse 响应流
 	 */
-	private static SwResponse handlerResponse(
-			IcpConfig.EncryptConfig encryptConfig,
-			DataEncrypt dataEncrypt,
-			String requestPath,
-			HttpServletResponse response
-	) {
-		boolean isEncrypt = false;
-		if (encryptConfig.getEncrypt()) {
-			if (dataEncrypt == null) {
-				final UrlHashSet encryptUrlList = encryptConfig.getEncryptUrlList();
-				isEncrypt = encryptUrlList.containsPath(requestPath);
-			} else {
-				isEncrypt = dataEncrypt.responseEncrypt();
-			}
-		}
+	private static void handlerResponse(SwRequest swRequest, SwResponse swResponse) {
 		try {
-			SwResponse swResponse;
-			if (isEncrypt) {
-				swResponse = new SwResponse(new HttpServletResponseWrapper(response));
-			} else {
-				swResponse = new SwResponse(response);
-			}
+			final boolean isEncrypt = IcpCoreManager.getEncryptSwitchHandler().encrypt(swRequest);
 			swResponse.setEncrypt(isEncrypt);
-			return swResponse;
+			if (isEncrypt) {
+				final HttpServletResponse response = swResponse.getResponse();
+				swResponse.setResponse(new HttpServletResponseWrapper(response));
+			}
 		} catch (Exception exception) {
 			throw new SecurityException(RCode.REQUEST_ERROR.getCode(), RCode.REQUEST_ERROR.getMessage(), exception);
 		}
@@ -214,6 +192,9 @@ public class IcpContextManager {
 	public static void removeContext() {
 		try {
 			BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
+			if (servletRequest == null) {
+				return;
+			}
 			servletRequest.removeAllAttribute();
 			servletRequest = null;
 		} finally {

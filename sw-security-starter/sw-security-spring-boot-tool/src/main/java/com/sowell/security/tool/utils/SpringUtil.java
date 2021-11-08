@@ -6,7 +6,6 @@ import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -180,22 +179,27 @@ public class SpringUtil implements BeanFactoryPostProcessor {
             final List<String> controllerPathList = getMappingPaths(restControllerBeanClass);
             ReflectionUtils.doWithMethods(restControllerBeanClass, method -> {
                 final List<String> methodPathList = getMappingPaths(method);
-                ControllerMethod controllerMethod = new ControllerMethod(restControllerBeanClass, method);
+                List<String> requestPaths = new LinkedList<>();
+                ControllerMethod controllerMethod = new ControllerMethod(requestPaths, restControllerBeanClass, method);
                 if (methodPathList == null) {
                     return;
                 }
                 // 拼接接口
                 if (controllerPathList == null) {
                     for (String methodPath : methodPathList) {
+                        requestPaths.add(methodPath);
                         interfacesMethodMap.put(methodPath, controllerMethod);
                     }
                     return;
                 }
                 for (String controllerPath : controllerPathList) {
                     for (String methodPath : methodPathList) {
-                        interfacesMethodMap.put(controllerPath + methodPath, controllerMethod);
+                        final String requestPath = controllerPath + methodPath;
+                        requestPaths.add(methodPath);
+                        interfacesMethodMap.put(requestPath, controllerMethod);
                     }
                 }
+
             }, ReflectionUtils.USER_DECLARED_METHODS);
         }
         return interfacesMethodMap;

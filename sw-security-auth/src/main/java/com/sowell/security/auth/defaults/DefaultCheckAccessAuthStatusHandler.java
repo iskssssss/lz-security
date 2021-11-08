@@ -2,7 +2,7 @@ package com.sowell.security.auth.defaults;
 
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.auth.handler.ICheckAccessAuthStatusHandler;
-import com.sowell.security.filter.config.IcpConfig;
+import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;

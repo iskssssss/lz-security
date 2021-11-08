@@ -1,7 +1,7 @@
 package com.sowell.security.log;
 
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.filter.config.IcpConfig;
+import com.sowell.security.config.IcpConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

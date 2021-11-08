@@ -1,5 +1,9 @@
 package com.sowell.tool.http.enums;
 
+import com.sowell.tool.core.string.StringUtil;
+
+import java.util.Locale;
+
 /**
  * @Author: sowell
  * @Date: 2021/08/19 20:03
@@ -55,5 +59,25 @@ public enum RequestMethodEnum {
 
 	public boolean not(String name) {
 		return !is(name);
+	}
+
+	public boolean is(RequestMethodEnum requestMethodEnum) {
+		return is(requestMethodEnum.name);
+	}
+
+	public boolean not(RequestMethodEnum requestMethodEnum) {
+		return not(requestMethodEnum.name);
+	}
+
+	public static RequestMethodEnum to(String name) {
+		if (StringUtil.isEmpty(name)) {
+			return null;
+		}
+		for (RequestMethodEnum value : RequestMethodEnum.values()) {
+			if (value.name.intern() == name.toUpperCase(Locale.ROOT).intern()) {
+				return value;
+			}
+		}
+		return null;
 	}
 }

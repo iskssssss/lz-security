@@ -1,4 +1,4 @@
-package com.sowell.security.filter.utils;
+package com.sowell.security.token;
 
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.exception.auth.AccountNotExistException;

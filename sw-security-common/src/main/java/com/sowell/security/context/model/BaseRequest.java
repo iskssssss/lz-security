@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class BaseRequest<T> {
 
 	protected T request;
-	protected boolean encrypt;
+	protected boolean decrypt;
 	private ControllerMethod controllerMethod;
 
 	public BaseRequest() {
@@ -49,21 +49,21 @@ public abstract class BaseRequest<T> {
 	}
 
 	/**
-	 * 设置是否加密
+	 * 设置是否解密
 	 *
-	 * @param encrypt 是否加密
+	 * @param decrypt 是否解密
 	 */
-	public void setEncrypt(boolean encrypt) {
-		this.encrypt = encrypt;
+	public void setDecrypt(boolean decrypt) {
+		this.decrypt = decrypt;
 	}
 
 	/**
-	 * 获取是否加密
+	 * 获取是否解密
 	 *
-	 * @return 是否加密
+	 * @return 是否解密
 	 */
-	public boolean isEncrypt() {
-		return this.encrypt;
+	public boolean isDecrypt() {
+		return this.decrypt;
 	}
 
 	/**

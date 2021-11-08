@@ -2,11 +2,12 @@ package com.sowell.security;
 
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.CoreConfigurer;
-import com.sowell.security.filter.config.IcpConfig;
-import com.sowell.security.filter.config.InterfacesMethodMap;
+import com.sowell.security.config.IcpConfig;
+import com.sowell.security.arrays.InterfacesMethodMap;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.IcpStorage;
 import com.sowell.security.defaults.*;
+import com.sowell.security.handler.EncryptSwitchHandler;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.reflect.model.ControllerMethod;
@@ -190,6 +191,24 @@ public class IcpCoreManager {
 			}
 		}
 		return IcpCoreManager.requestDataEncryptHandler;
+	}
+
+	//====================================================================================================================================
+	protected static EncryptSwitchHandler encryptSwitchHandler = null;
+
+	public static void setEncryptSwitchHandler(EncryptSwitchHandler encryptSwitchHandler) {
+		IcpCoreManager.encryptSwitchHandler = encryptSwitchHandler;
+	}
+
+	public static EncryptSwitchHandler getEncryptSwitchHandler() {
+		if (IcpCoreManager.encryptSwitchHandler == null) {
+			synchronized (IcpCoreManager.class) {
+				if (IcpCoreManager.encryptSwitchHandler == null) {
+					IcpCoreManager.encryptSwitchHandler = new DefaultEncryptSwitchHandler();
+				}
+			}
+		}
+		return IcpCoreManager.encryptSwitchHandler;
 	}
 
 	//====================================================================================================================================

@@ -2,8 +2,9 @@ package com.sowell.security.tool.spring;
 
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.filter.config.IcpConfig;
+import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpContextTheadLocal;
+import com.sowell.security.handler.EncryptSwitchHandler;
 import com.sowell.security.handler.RequestDataEncryptHandler;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.security.tool.utils.SpringUtil;
@@ -74,6 +75,18 @@ public class BeanInject extends IcpCoreManager {
 	}
 
 	/**
+	 * 自动注入<b>加解密开关处理器</b>
+	 */
+	@Autowired(required = false)
+	public void injectEncryptSwitchHandler(EncryptSwitchHandler encryptSwitchHandler) {
+		if (IcpCoreManager.encryptSwitchHandler != null) {
+			SpringUtil.destroyBean(encryptSwitchHandler);
+			return;
+		}
+		IcpCoreManager.setEncryptSwitchHandler(encryptSwitchHandler);
+	}
+
+	/**
 	 * 自动注入<b>缓存处理器</b>
 	 */
 	@Autowired(required = false)
@@ -84,6 +97,5 @@ public class BeanInject extends IcpCoreManager {
 		}
 		IcpCoreManager.setCacheManager(cacheManager);
 	}
-
 
 }

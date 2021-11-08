@@ -5,7 +5,7 @@ import com.sowell.security.IcpCoreManager;
 import com.sowell.security.annotation.DataEncrypt;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.log.IcpLoggerUtil;
-import com.sowell.security.filter.utils.AccessTokenUtil;
+import com.sowell.security.token.AccessTokenUtil;
 import com.sowell.tool.encrypt.EncryptUtil;
 import com.sowell.tool.encrypt.model.SwPublicKey;
 import io.swagger.annotations.Api;

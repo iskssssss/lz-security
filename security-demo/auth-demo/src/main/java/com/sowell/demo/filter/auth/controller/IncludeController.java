@@ -3,7 +3,7 @@ package com.sowell.demo.filter.auth.controller;
 import com.sowell.common.core.web.result.R;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.log.IcpLoggerUtil;
-import com.sowell.security.filter.utils.AccessTokenUtil;
+import com.sowell.security.token.AccessTokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
