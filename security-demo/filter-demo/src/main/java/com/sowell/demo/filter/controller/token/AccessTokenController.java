@@ -1,4 +1,4 @@
-package com.sowell.demo.filter.controller;
+package com.sowell.demo.filter.controller.token;
 
 import com.sowell.common.core.web.result.R;
 import com.sowell.demo.filter.model.AccessTokenVO;
@@ -65,10 +65,8 @@ public class AccessTokenController {
 		defaultAuthDetails.setId(appKey);
 		defaultAuthDetails.setIdentifier(appKey);
 		defaultAuthDetails.setCredential(appSecret);
-		final String token = AccessTokenUtil.generateAccessToken(defaultAuthDetails);
-		// 将token存放值cookie中
+		final String token = AccessTokenUtil.generateAccessToken(defaultAuthDetails, true);
 		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
-		IcpContextManager.getResponse().addCookie(tokenConfig.getName(), token, null, null, ((int) tokenConfig.getTimeout()));
 		return R.success(new AccessTokenVO() {{
 			setAccessToken(token);
 			setTtl(tokenConfig.getTimeoutForMillis());

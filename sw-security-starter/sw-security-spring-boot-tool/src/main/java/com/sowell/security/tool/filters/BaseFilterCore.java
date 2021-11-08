@@ -4,7 +4,7 @@ import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.IcpFilterManager;
-import com.sowell.security.handler.RequestDataEncryptHandler;
+import com.sowell.security.handler.DataEncoder;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.tool.context.IcpContextManager;
 import com.sowell.security.tool.mode.SwRequest;
@@ -46,15 +46,15 @@ public abstract class BaseFilterCore implements Filter {
 		IcpContextManager.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 			SecurityException securityException = null;
 			try {
-				final RequestDataEncryptHandler requestDataEncryptHandler = IcpCoreManager.getRequestDataEncryptHandler();
+				final DataEncoder dataEncoder = IcpCoreManager.getRequestDataEncryptHandler();
 				// 解密处理
-				this.decryptHandler(requestDataEncryptHandler, swRequest);
+				this.decryptHandler(dataEncoder, swRequest);
 				// 过滤处理
 				if (this.doFilter(swRequest, swResponse)) {
 					chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
 				}
 				// 加密处理
-				this.encryptHandler(requestDataEncryptHandler, swResponse);
+				this.encryptHandler(dataEncoder, swResponse);
 			} catch (Exception e) {
 				// 错误处理
 				securityException = exceptionHandler(e);
@@ -78,14 +78,14 @@ public abstract class BaseFilterCore implements Filter {
 	/**
 	 * 解密处理
 	 */
-	private void decryptHandler(RequestDataEncryptHandler requestDataEncryptHandler, SwRequest swRequest) {
+	private void decryptHandler(DataEncoder dataEncoder, SwRequest swRequest) {
 		if (!swRequest.isDecrypt()) {
 			return;
 		}
 		try {
 			final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) swRequest.getRequest();
 			final byte[] bodyBytes = httpServletRequestWrapper.getBody();
-			final Object decrypt = requestDataEncryptHandler.decrypt(bodyBytes);
+			final Object decrypt = dataEncoder.decrypt(bodyBytes);
 			httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
 		} catch (Exception e) {
 			throw new SecurityException(RCode.DATA_DECRYPT_FAILED);
@@ -95,7 +95,7 @@ public abstract class BaseFilterCore implements Filter {
 	/**
 	 * 加密处理
 	 */
-	public void encryptHandler(RequestDataEncryptHandler requestDataEncryptHandler, SwResponse swResponse) {
+	public void encryptHandler(DataEncoder dataEncoder, SwResponse swResponse) {
 		if (!swResponse.isEncrypt()) {
 			return;
 		}
@@ -104,11 +104,11 @@ public abstract class BaseFilterCore implements Filter {
 			final byte[] responseDataBytes = swResponse.getResponseDataBytes();
 			final RequestResult resultObject = ByteUtil.toObject(responseDataBytes, RequestResult.class);
 			if (resultObject != null) {
-				resultObject.setData(requestDataEncryptHandler.encrypt(ByteUtil.toBytes(resultObject.getData())));
+				resultObject.setData(dataEncoder.encrypt(ByteUtil.toBytes(resultObject.getData())));
 				encryptBytes = ByteUtil.toBytes(resultObject.toJson());
 			} else {
 				RequestResult requestResult = new RequestResult();
-				requestResult.setData(requestDataEncryptHandler.encrypt(responseDataBytes));
+				requestResult.setData(dataEncoder.encrypt(responseDataBytes));
 				encryptBytes = ByteUtil.toBytes(requestResult.toJson());
 			}
 			ServletUtil.printResponse(swResponse, ContentTypeEnum.JSON.name, encryptBytes);

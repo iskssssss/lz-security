@@ -23,4 +23,8 @@ public final class IcpConstant {
 	 * token类型 jwt
 	 */
 	public static final String TOKEN_TYPE_BY_JWT = "JWT";
+
+	public static final String PREFIX_TOKEN_SPLIT = " ";
+
+	public static final String PREFIX_TOKEN_SPLIT_FOR_COOKIE = "_";
 }

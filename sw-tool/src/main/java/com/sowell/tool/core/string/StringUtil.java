@@ -223,6 +223,13 @@ public class StringUtil {
         }
     }
 
+    /**
+     * 删除指定字符
+     *
+     * @param text 字符串
+     * @param c    字符
+     * @return 结果字符串
+     */
     public static String delChar(String text, char c) {
         if (StringUtil.isEmpty(text)) {
             return null;
@@ -239,7 +246,54 @@ public class StringUtil {
         return sb.toString();
     }
 
+    /**
+     * 删除所有空格
+     *
+     * @param text 字符串
+     * @return 结果字符串
+     */
     public static String delAllSpace(String text) {
         return StringUtil.delChar(text, ' ');
+    }
+
+    /**
+     * 判断字符串是否全是空格
+     *
+     * @param text 字符串
+     * @return 是否全是空格
+     */
+    public static boolean isAllSpace(String text) {
+        final int length = text.length();
+        for (int i = 0; i < length; i++) {
+            final char c = text.charAt(i);
+            if (c != ' ') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断字符串是否全是空格
+     *
+     * @param text 字符串
+     * @return 是否全是空格
+     */
+    public static boolean notAllSpace(String text) {
+        return !isAllSpace(text);
+    }
+
+    /**
+     * 删除指定字符串
+     *
+     * @param accessToken 源字符串
+     * @param delStr      删除字符串
+     * @return 结果字符串
+     */
+    public static String delString(String accessToken, String delStr) {
+        if (StringUtil.isEmpty(delStr)) {
+            return accessToken;
+        }
+        return accessToken.replaceAll(delStr, "");
     }
 }

@@ -7,7 +7,7 @@ package com.sowell.security.handler;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/10/26 17:13
  */
-public interface RequestDataEncryptHandler {
+public interface DataEncoder {
 
 	/**
 	 * 加密

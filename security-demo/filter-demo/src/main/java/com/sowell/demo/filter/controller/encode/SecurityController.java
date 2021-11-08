@@ -1,4 +1,4 @@
-package com.sowell.demo.filter.controller;
+package com.sowell.demo.filter.controller.encode;
 
 import com.sowell.common.core.web.result.R;
 import com.sowell.security.IcpCoreManager;

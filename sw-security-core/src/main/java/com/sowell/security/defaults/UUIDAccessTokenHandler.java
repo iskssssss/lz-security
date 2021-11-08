@@ -8,8 +8,6 @@ import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
 
-import java.util.HashMap;
-
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @ClassName:
@@ -30,10 +28,8 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 		}
 		cacheManager.remove(idValue);
 		String accessToken = SmUtil.sm3(authDetails.toJson() + System.currentTimeMillis());
-		cacheManager.putAll(new HashMap<String, Object>(4) {{
-			put(id, accessToken);
-			put(accessToken, authDetails);
-		}}, timeoutMillis);
+		cacheManager.put(id, accessToken, timeoutMillis);
+		cacheManager.put(accessToken, authDetails, timeoutMillis);
 		return accessToken;
 	}
 

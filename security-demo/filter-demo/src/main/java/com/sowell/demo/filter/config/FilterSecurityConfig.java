@@ -33,11 +33,10 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 		System.out.println(IcpCoreManager.getIcpConfig().toString());
 		filterConfigurer
 				.filterUrl()
-				// 拦截的接口
-				.addIncludeUrls("/**")
 				// [非必需] 排除的接口
 				.addExcludeUrls(
-						"/favicon.ico", "/webjars/**", "/doc.html", "/swagger-resources", "/v2/api-docs", "/v2/api-docs-ext"
+						"/favicon.ico"       , "/webjars/**"  , "/doc.html",
+						"/swagger-resources" , "/v2/api-docs" , "/v2/api-docs-ext"
 				)
 				.and()
 				.filterConfig()

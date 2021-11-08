@@ -1,10 +1,10 @@
-package com.sowell.security.annotation;
+package com.sowell.security.auth.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * 角色注解
- * <p>添加此注解后，后续访问接口都必须拥有相关角色才可访问。</p>
+ * 权限注解
+ * <p>添加此注解后，后续访问接口都必须拥有相关权限才可访问。</p>
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -13,14 +13,14 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RoleCheck {
+public @interface PermissionCheck {
 
 	/**
-	 * 角色列表
+	 * 权限列表
 	 *
-	 * @return 角色列表
+	 * @return 权限列表
 	 */
-	String[] roles() default {};
+	String[] permissions() default {};
 
 	/**
 	 * 是否启用

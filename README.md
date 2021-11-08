@@ -80,7 +80,7 @@ public class SecurityConfig
 				// [非必需] 设置AccessToken处理器
 				//.accessTokenHandler(null)
 				// [非必需] 设置请求加解密处理器(如有特殊需求可重写此处理器)
-				//.requestDataEncryptHandler(null)
+				//.dataEncoder(null)
 				// [非必需] 过滤前处理
 				.filterBeforeHandler(params -> {...})
 				// [非必需] 过滤后处理

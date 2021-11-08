@@ -1,7 +1,7 @@
 package com.sowell.demo.filter.config.security.handler;
 
 import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.handler.EncryptSwitchHandler;
+import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.tool.core.string.StringUtil;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
  * @date 2021/11/08 10:51
  */
 @Component
-public class TestEncryptSwitchHandler implements EncryptSwitchHandler {
+public class TestEncodeSwitchHandler implements EncodeSwitchHandler {
 	@Override
 	public boolean decrypt(
 			BaseRequest<?> request
 	) {
-		System.out.println("TestEncryptSwitchHandler.decrypt(...)");
+		//System.out.println("TestEncryptSwitchHandler.decrypt(...)");
 		final String decrypt = request.getHeader("decrypt");
 		if (StringUtil.isEmpty(decrypt)) {
 			return false;
@@ -30,7 +30,7 @@ public class TestEncryptSwitchHandler implements EncryptSwitchHandler {
 	public boolean encrypt(
 			BaseRequest<?> request
 	) {
-		System.out.println("TestEncryptSwitchHandler.encrypt(...)");
+		//System.out.println("TestEncryptSwitchHandler.encrypt(...)");
 		final String encrypt = request.getHeader("encrypt");
 		if (StringUtil.isEmpty(encrypt)) {
 			return false;

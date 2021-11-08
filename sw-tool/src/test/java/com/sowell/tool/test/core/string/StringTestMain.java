@@ -20,4 +20,11 @@ public class StringTestMain {
 		String text = "1 2 3 4";
 		System.out.println(StringUtil.delAllSpace(text));
 	}
+
+	@Test
+	public void delString() {
+		System.out.println(UUID.randomUUID());
+		String text = "1 2 3 4";
+		System.out.println(StringUtil.delString(text, " 2 3 "));
+	}
 }

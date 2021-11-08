@@ -1,7 +1,7 @@
 package com.sowell.security.defaults;
 
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.handler.RequestDataEncryptHandler;
+import com.sowell.security.handler.DataEncoder;
 import com.sowell.tool.encrypt.model.SwPrivateKey;
 
 /**
@@ -11,7 +11,7 @@ import com.sowell.tool.encrypt.model.SwPrivateKey;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/10/26 17:21
  */
-public class DefaultRequestDataEncryptHandler implements RequestDataEncryptHandler {
+public class DefaultDataEncoder implements DataEncoder {
 
 	@Override
 	public String encrypt(byte[] bytes) {

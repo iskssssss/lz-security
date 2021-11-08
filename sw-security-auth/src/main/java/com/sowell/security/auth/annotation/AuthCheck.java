@@ -1,4 +1,4 @@
-package com.sowell.security.annotation;
+package com.sowell.security.auth.annotation;
 
 import java.lang.annotation.*;
 

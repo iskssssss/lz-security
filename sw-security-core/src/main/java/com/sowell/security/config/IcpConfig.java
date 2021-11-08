@@ -142,6 +142,7 @@ public class IcpConfig {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("配置信息：");
+		sb.append("\n     ").append("• 是否打印日志").append("：").append(consoleLogPrint);
 		sb.append("\n     ").append("- Token配置信息").append("：").append(tokenConfig.toString());
 		sb.append("\n     ").append("- 加密配置信息").append("：").append(encryptConfig.toString());
 		sb.append("\n     ").append("• 扫描位置").append("：").append(this.getControllerMethodScanPathList());
@@ -153,6 +154,10 @@ public class IcpConfig {
 		 * Token 存放标识
 		 */
 		private String name = "Authorization";
+		/**
+		 * Token 前缀
+		 */
+		private String prefix = "";
 		/**
 		 * Token 默认过期时间(3600秒)
 		 */
@@ -166,6 +171,11 @@ public class IcpConfig {
 		 */
 		private Long timeout = 3600L;
 
+		/**
+		 * 获取Token存放标识
+		 *
+		 * @return Token存放标识
+		 */
 		public String getName() {
 			return this.name;
 		}
@@ -177,6 +187,24 @@ public class IcpConfig {
 		 */
 		public void setName(String name) {
 			this.name = name;
+		}
+
+		/**
+		 * 获取Token 前缀
+		 *
+		 * @return Token 前缀
+		 */
+		public String getPrefix() {
+			return prefix;
+		}
+
+		/**
+		 * 设置Token 前缀
+		 *
+		 * @param prefix Token 前缀
+		 */
+		public void setPrefix(String prefix) {
+			this.prefix = prefix;
 		}
 
 		/**
@@ -239,6 +267,7 @@ public class IcpConfig {
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			sb.append("\n          ").append("• Token 存放标识").append("：").append(name);
+			sb.append("\n          ").append("• Token 前缀").append("：").append(prefix);
 			sb.append("\n          ").append("• Token 类型").append("：").append(type);
 			sb.append("\n          ").append("• Token 过期时间（秒）").append("：").append(timeout);
 			return sb.toString();

@@ -1,7 +1,12 @@
 package com.sowell.security.token;
 
+import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpCoreManager;
+import com.sowell.security.config.IcpConfig;
+import com.sowell.security.context.IcpContext;
+import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
+import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
 
 /**
@@ -20,7 +25,30 @@ public final class AccessTokenUtil {
 	 * @return AccessToken
 	 */
 	public static String generateAccessToken(AuthDetails<?> t) {
-		return IcpCoreManager.getAccessTokenHandler().generateAccessToken(t);
+		return generateAccessToken(t, false);
+	}
+
+	/**
+	 * 生成AccessToken
+	 *
+	 * @param t           数据
+	 * @param writeCookie 是否写入Cookie
+	 * @return AccessToken
+	 */
+	public static String generateAccessToken(AuthDetails<?> t, boolean writeCookie) {
+		final String token = IcpCoreManager.getAccessTokenHandler().generateAccessToken(t);
+		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final String prefix = tokenConfig.getPrefix();
+		final boolean isOpenPrefix = StringUtil.isNotEmpty(prefix) && StringUtil.notAllSpace(prefix);
+		if (writeCookie) {
+			final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
+			final BaseResponse<?> response = icpContext.getResponse();
+			response.addCookie(tokenConfig.getName(), prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE + token, null, null, ((int) tokenConfig.getTimeout()));
+		}
+		if (isOpenPrefix) {
+			return prefix + IcpConstant.PREFIX_TOKEN_SPLIT + token;
+		}
+		return token;
 	}
 
 	/**

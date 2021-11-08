@@ -7,9 +7,11 @@ import com.sowell.security.arrays.InterfacesMethodMap;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.IcpStorage;
 import com.sowell.security.defaults.*;
-import com.sowell.security.handler.EncryptSwitchHandler;
-import com.sowell.security.handler.RequestDataEncryptHandler;
+import com.sowell.security.exception.base.SecurityException;
+import com.sowell.security.handler.DataEncoder;
+import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.security.token.IAccessTokenHandler;
+import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
 import java.util.Map;
@@ -68,10 +70,10 @@ public class IcpCoreManager {
 
 	//====================================================================================================================================
 
-	protected final static CoreConfigurer coreConfigurer = new CoreConfigurer();
+	protected final static CoreConfigurer CORE_CONFIGURER = new CoreConfigurer();
 
 	public static CoreConfigurer getCoreConfigurer() {
-		return coreConfigurer;
+		return CORE_CONFIGURER;
 	}
 
 	//====================================================================================================================================
@@ -153,10 +155,15 @@ public class IcpCoreManager {
 				if (IcpCoreManager.accessTokenHandler == null) {
 					final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
 					final IcpConfig.TokenConfig accessTokenConfig = icpConfig.getTokenConfig();
-					if (IcpConstant.TOKEN_TYPE_BY_UUID.equals(accessTokenConfig.getType())) {
-						IcpCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
-					} else {
-						IcpCoreManager.accessTokenHandler = new JwtAccessTokenHandler();
+					switch (accessTokenConfig.getType()) {
+						case IcpConstant.TOKEN_TYPE_BY_UUID:
+							IcpCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
+							break;
+						case IcpConstant.TOKEN_TYPE_BY_JWT:
+							IcpCoreManager.accessTokenHandler = new JwtAccessTokenHandler();
+							break;
+						default:
+							throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
 					}
 				}
 			}
@@ -166,15 +173,15 @@ public class IcpCoreManager {
 
 	//====================================================================================================================================
 
-	protected static RequestDataEncryptHandler requestDataEncryptHandler = null;
+	protected static DataEncoder dataEncoder = null;
 
 	/**
 	 * 设置请求加解密处理器
 	 *
-	 * @param requestDataEncryptHandler 请求加解密处理器
+	 * @param dataEncoder 请求加解密处理器
 	 */
-	public static void setRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
-		IcpCoreManager.requestDataEncryptHandler = requestDataEncryptHandler;
+	public static void setRequestDataEncryptHandler(DataEncoder dataEncoder) {
+		IcpCoreManager.dataEncoder = dataEncoder;
 	}
 
 	/**
@@ -182,33 +189,33 @@ public class IcpCoreManager {
 	 *
 	 * @return 请求加解密处理器
 	 */
-	public static RequestDataEncryptHandler getRequestDataEncryptHandler() {
-		if (IcpCoreManager.requestDataEncryptHandler == null) {
+	public static DataEncoder getRequestDataEncryptHandler() {
+		if (IcpCoreManager.dataEncoder == null) {
 			synchronized (IcpCoreManager.class) {
-				if (IcpCoreManager.requestDataEncryptHandler == null) {
-					IcpCoreManager.requestDataEncryptHandler = new DefaultRequestDataEncryptHandler();
+				if (IcpCoreManager.dataEncoder == null) {
+					IcpCoreManager.dataEncoder = new DefaultDataEncoder();
 				}
 			}
 		}
-		return IcpCoreManager.requestDataEncryptHandler;
+		return IcpCoreManager.dataEncoder;
 	}
 
 	//====================================================================================================================================
-	protected static EncryptSwitchHandler encryptSwitchHandler = null;
+	protected static EncodeSwitchHandler encodeSwitchHandler = null;
 
-	public static void setEncryptSwitchHandler(EncryptSwitchHandler encryptSwitchHandler) {
-		IcpCoreManager.encryptSwitchHandler = encryptSwitchHandler;
+	public static void setEncryptSwitchHandler(EncodeSwitchHandler encodeSwitchHandler) {
+		IcpCoreManager.encodeSwitchHandler = encodeSwitchHandler;
 	}
 
-	public static EncryptSwitchHandler getEncryptSwitchHandler() {
-		if (IcpCoreManager.encryptSwitchHandler == null) {
+	public static EncodeSwitchHandler getEncryptSwitchHandler() {
+		if (IcpCoreManager.encodeSwitchHandler == null) {
 			synchronized (IcpCoreManager.class) {
-				if (IcpCoreManager.encryptSwitchHandler == null) {
-					IcpCoreManager.encryptSwitchHandler = new DefaultEncryptSwitchHandler();
+				if (IcpCoreManager.encodeSwitchHandler == null) {
+					IcpCoreManager.encodeSwitchHandler = new DefaultEncodeSwitchHandler();
 				}
 			}
 		}
-		return IcpCoreManager.encryptSwitchHandler;
+		return IcpCoreManager.encodeSwitchHandler;
 	}
 
 	//====================================================================================================================================

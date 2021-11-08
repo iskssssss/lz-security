@@ -1,10 +1,13 @@
 package com.sowell.security.token;
 
+import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
+import com.sowell.security.exception.base.SecurityException;
+import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
 
@@ -24,8 +27,11 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 	 */
 	default String getAccessTokenInfo() {
 		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		final String saveName = icpConfig.getTokenConfig().getName();
+		if (servletRequest == null){
+			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
+		}
+		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final String saveName = tokenConfig.getName();
 		// 从请求头中获取Token
 		String accessToken = servletRequest.getHeader(saveName);
 		if (StringUtil.isEmpty(accessToken)) {
@@ -35,7 +41,18 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 		if (StringUtil.isEmpty(accessToken)) {
 			throw new HeaderNotAccessTokenException();
 		}
-		return accessToken;
+		final String prefix = tokenConfig.getPrefix();
+		// 是否开启前缀，开启的话进行截取。
+		if (StringUtil.isEmpty(prefix)) {
+			return accessToken;
+		}
+		if (accessToken.startsWith(prefix + IcpConstant.PREFIX_TOKEN_SPLIT)) {
+			return StringUtil.delString(accessToken, prefix + IcpConstant.PREFIX_TOKEN_SPLIT);
+		} else if (accessToken.startsWith(prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE)) {
+			return StringUtil.delString(accessToken, prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE);
+		} else {
+			throw new HeaderNotAccessTokenException();
+		}
 	}
 
 	/**

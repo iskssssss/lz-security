@@ -2,12 +2,11 @@ package com.sowell.demo.filter.controller;
 
 import com.sowell.common.core.web.result.R;
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.annotation.DataEncrypt;
+import com.sowell.security.annotation.DataEncodeSwitch;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.filter.anno.IncludeInterface;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.token.AccessTokenUtil;
-import com.sowell.tool.encrypt.EncryptUtil;
 import com.sowell.tool.encrypt.model.SwPublicKey;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2021/10/22 16:46
  */
 @RestController
-@DataEncrypt
+@DataEncodeSwitch
 @IncludeInterface
 @RequestMapping("/include")
 @Api(tags = "拦截相关接口")
@@ -80,7 +79,7 @@ public class IncludeController {
 	}
 
 	@GetMapping("/decrypt")
-	@DataEncrypt(responseEncrypt = false)
+	@DataEncodeSwitch(responseEncrypt = false)
 	@ApiOperation(value = "解密", notes = "解密")
 	@ApiImplicitParam(paramType = "query", dataType = "String", name = "encryptText", value = "encryptText", required = true)
 	public R<Object> decrypt(

@@ -4,8 +4,8 @@ import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.IcpContextTheadLocal;
-import com.sowell.security.handler.EncryptSwitchHandler;
-import com.sowell.security.handler.RequestDataEncryptHandler;
+import com.sowell.security.handler.EncodeSwitchHandler;
+import com.sowell.security.handler.DataEncoder;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.reflect.model.ControllerMethod;
@@ -66,24 +66,24 @@ public class BeanInject extends IcpCoreManager {
 	 * 自动注入<b>数据加解密处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectRequestDataEncryptHandler(RequestDataEncryptHandler requestDataEncryptHandler) {
-		if (IcpCoreManager.requestDataEncryptHandler != null) {
-			SpringUtil.destroyBean(requestDataEncryptHandler);
+	public void injectRequestDataEncryptHandler(DataEncoder dataEncoder) {
+		if (IcpCoreManager.dataEncoder != null) {
+			SpringUtil.destroyBean(dataEncoder);
 			return;
 		}
-		IcpCoreManager.setRequestDataEncryptHandler(requestDataEncryptHandler);
+		IcpCoreManager.setRequestDataEncryptHandler(dataEncoder);
 	}
 
 	/**
 	 * 自动注入<b>加解密开关处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectEncryptSwitchHandler(EncryptSwitchHandler encryptSwitchHandler) {
-		if (IcpCoreManager.encryptSwitchHandler != null) {
-			SpringUtil.destroyBean(encryptSwitchHandler);
+	public void injectEncryptSwitchHandler(EncodeSwitchHandler encodeSwitchHandler) {
+		if (IcpCoreManager.encodeSwitchHandler != null) {
+			SpringUtil.destroyBean(encodeSwitchHandler);
 			return;
 		}
-		IcpCoreManager.setEncryptSwitchHandler(encryptSwitchHandler);
+		IcpCoreManager.setEncryptSwitchHandler(encodeSwitchHandler);
 	}
 
 	/**

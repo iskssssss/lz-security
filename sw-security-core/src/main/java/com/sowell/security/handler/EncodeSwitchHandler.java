@@ -9,7 +9,7 @@ import com.sowell.security.context.model.BaseRequest;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/08 09:00
  */
-public interface EncryptSwitchHandler {
+public interface EncodeSwitchHandler {
 
 	/**
 	 * 请求数据是否解密
