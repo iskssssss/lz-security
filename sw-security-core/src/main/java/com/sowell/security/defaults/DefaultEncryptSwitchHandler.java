@@ -5,7 +5,6 @@ import com.sowell.security.annotation.DataEncrypt;
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.context.model.BaseRequest;
-import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.handler.EncryptSwitchHandler;
 import com.sowell.tool.http.enums.RequestMethodEnum;
 import com.sowell.tool.reflect.model.ControllerMethod;

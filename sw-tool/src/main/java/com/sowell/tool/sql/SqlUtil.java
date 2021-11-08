@@ -40,8 +40,8 @@ public class SqlUtil {
 	 * @param <K>   类型2
 	 * @return 下划线
 	 */
-	public static <T, K> String to_snake_cose(SFunction<T, K> func1) {
-		return to_snake_cose(func1, null);
+	public static <T, K> String to_snake_case(SFunction<T, K> func1) {
+		return to_snake_case(func1, null);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class SqlUtil {
 	 * @param <K>   类型2
 	 * @return 下划线
 	 */
-	public static <T, K> String to_snake_cose(SFunction<T, K> func1, String alias) {
+	public static <T, K> String to_snake_case(SFunction<T, K> func1, String alias) {
 		final SerializedLambda serializedLambda = toSerializedLambda(func1);
 		if (serializedLambda == null) {
 			return null;

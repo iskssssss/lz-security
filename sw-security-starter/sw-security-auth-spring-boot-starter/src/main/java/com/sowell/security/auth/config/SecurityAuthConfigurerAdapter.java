@@ -1,7 +1,7 @@
 package com.sowell.security.auth.config;
 
 import com.sowell.security.auth.IcpAuthManager;
-import com.sowell.security.auth.filters.IcpAuthFilter;
+import com.sowell.security.auth.filters.IcpAuthFilterCore;
 import com.sowell.security.filter.IcpFilterManager;
 import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
@@ -18,12 +18,12 @@ import org.springframework.context.annotation.Bean;
  */
 public abstract class SecurityAuthConfigurerAdapter extends SecurityConfigurerAdapter {
 
-	protected FilterRegistrationBean<IcpAuthFilter> registration;
-	private IcpAuthFilter icpAuthFilter;
+	protected FilterRegistrationBean<IcpAuthFilterCore> registration;
+	private IcpAuthFilterCore icpAuthFilter;
 
 	@Override
 	protected void init() {
-		this.icpAuthFilter = new IcpAuthFilter();
+		this.icpAuthFilter = new IcpAuthFilterCore();
 		this.auth(IcpAuthManager.getAuthConfigurer());
 		this.filter(IcpFilterManager.getFilterConfigurer());
 	}
@@ -43,7 +43,7 @@ public abstract class SecurityAuthConfigurerAdapter extends SecurityConfigurerAd
 	protected abstract void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer);
 
 	@Bean
-	protected FilterRegistrationBean<IcpAuthFilter> initFilterRegistrationBean() {
+	protected FilterRegistrationBean<IcpAuthFilterCore> initFilterRegistrationBean() {
 		if (this.registration == null) {
 			this.registration = new FilterRegistrationBean<>();
 			if (this.registration.getUrlPatterns().isEmpty()) {

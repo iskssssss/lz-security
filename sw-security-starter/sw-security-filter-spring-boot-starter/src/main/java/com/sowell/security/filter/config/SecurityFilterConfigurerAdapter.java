@@ -1,7 +1,7 @@
 package com.sowell.security.filter.config;
 
 import com.sowell.security.filter.IcpFilterManager;
-import com.sowell.security.filter.filters.IcpInterfaceFilter;
+import com.sowell.security.filter.filters.IcpInterfaceFilterCore;
 import com.sowell.security.tool.config.SecurityConfigurerAdapter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +15,15 @@ import org.springframework.context.annotation.Bean;
  */
 public abstract class SecurityFilterConfigurerAdapter extends SecurityConfigurerAdapter {
 
-	protected FilterRegistrationBean<IcpInterfaceFilter> registration;
-	private IcpInterfaceFilter filterContainer;
+	protected FilterRegistrationBean<IcpInterfaceFilterCore> registration;
+	private IcpInterfaceFilterCore filterContainer;
 
 	/**
 	 * 初始化
 	 */
 	@Override
 	protected void init() {
-		this.filterContainer = new IcpInterfaceFilter();
+		this.filterContainer = new IcpInterfaceFilterCore();
 		this.filter(IcpFilterManager.getFilterConfigurer());
 	}
 
@@ -44,7 +44,7 @@ public abstract class SecurityFilterConfigurerAdapter extends SecurityConfigurer
 	protected abstract void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer);
 
 	@Bean
-	protected FilterRegistrationBean<IcpInterfaceFilter> initFilterRegistrationBean() {
+	protected FilterRegistrationBean<IcpInterfaceFilterCore> initFilterRegistrationBean() {
 		if (this.registration == null) {
 			this.registration = new FilterRegistrationBean<>();
 			if (this.registration.getUrlPatterns().isEmpty()) {

@@ -3,12 +3,15 @@ package com.sowell.security.filter.filters;
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.filter.anno.ExcludeInterface;
+import com.sowell.security.filter.anno.IncludeInterface;
 import com.sowell.security.fun.IcpFilterAuthStrategy;
-import com.sowell.security.tool.filters.BaseFilter;
+import com.sowell.security.tool.filters.BaseFilterCore;
 import com.sowell.security.tool.mode.SwRequest;
 import com.sowell.security.tool.mode.SwResponse;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.core.enums.HttpStatus;
+import com.sowell.tool.reflect.model.ControllerMethod;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -20,7 +23,7 @@ import javax.servlet.ServletException;
  * @Author: 孔胜
  * @Date: 2021/09/10 15:25
  */
-public final class IcpInterfaceFilter extends BaseFilter {
+public final class IcpInterfaceFilterCore extends BaseFilterCore {
 
 	/**
 	 * 过滤前处理
@@ -44,14 +47,10 @@ public final class IcpInterfaceFilter extends BaseFilter {
 	@Override
 	public boolean doFilter(SwRequest swRequest, SwResponse swResponse) {
 		try {
+			final ControllerMethod controllerMethod = swRequest.getControllerMethod();
 			final String requestPath = swRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
-			final boolean isExcludeUrl = IcpFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath);
-			if (isExcludeUrl) {
-				return true;
-			}
-			final boolean isIncludeUrl = !IcpFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
-			if (isIncludeUrl) {
+			if (!includeHandler(controllerMethod, requestPath)) {
 				return true;
 			}
 			// 过滤前处理
@@ -70,6 +69,32 @@ public final class IcpInterfaceFilter extends BaseFilter {
 				throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
 			}
 		}
+	}
+
+	/**
+	 * 是否拦截接口
+	 *
+	 * @param controllerMethod 当前请求方法
+	 * @param requestPath      当前请求地址
+	 * @return true 拦截 false 不拦截
+	 */
+	public boolean includeHandler(ControllerMethod controllerMethod, String requestPath) {
+		ExcludeInterface excludeInterface = null;
+		IncludeInterface includeInterface = null;
+		if (controllerMethod != null) {
+			excludeInterface = controllerMethod.getMethodAndControllerAnnotation(ExcludeInterface.class);
+			includeInterface = controllerMethod.getMethodAndControllerAnnotation(IncludeInterface.class);
+		}
+		if (excludeInterface != null) {
+			return excludeInterface.open();
+		}
+		if (IcpFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
+			return false;
+		}
+		if (includeInterface != null) {
+			return includeInterface.open();
+		}
+		return !IcpFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
 	}
 
 	@Override

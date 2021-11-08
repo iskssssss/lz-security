@@ -37,9 +37,9 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 				.addIncludeUrls("/**")
 				// [非必需] 排除的接口
 				.addExcludeUrls(
-						"/favicon.ico", "/webjars/**", "/doc.html", "/swagger-resources",
-						"/v2/api-docs", "/v2/api-docs-ext", "/auth/**", "/exclude/**"
-				).and()
+						"/favicon.ico", "/webjars/**", "/doc.html", "/swagger-resources", "/v2/api-docs", "/v2/api-docs-ext"
+				)
+				.and()
 				.filterConfig()
 				// [非必需] 设置接口过滤执行链
 				.linkInterfacesFilter(
@@ -55,7 +55,7 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 							return urlHashSet;
 						})
 				)
-				.setLogBeforeFilter(FilterUtil.AccessTokenFilter.class)
+				//.setLogBeforeFilter(FilterUtil.AccessTokenFilter.class)
 				.and()
 				// [非必需] 过滤前处理
 				.setFilterBeforeHandler(params -> {

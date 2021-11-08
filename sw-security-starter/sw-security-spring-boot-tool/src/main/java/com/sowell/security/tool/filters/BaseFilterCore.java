@@ -23,13 +23,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- * TODO
+ * 基础过滤中心
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/03 11:16
  */
-public abstract class BaseFilter implements Filter {
+public abstract class BaseFilterCore implements Filter {
 
 	/**
 	 * 过滤
@@ -75,6 +75,9 @@ public abstract class BaseFilter implements Filter {
 		});
 	}
 
+	/**
+	 * 解密处理
+	 */
 	private void decryptHandler(RequestDataEncryptHandler requestDataEncryptHandler, SwRequest swRequest) {
 		if (!swRequest.isDecrypt()) {
 			return;
@@ -89,6 +92,9 @@ public abstract class BaseFilter implements Filter {
 		}
 	}
 
+	/**
+	 * 加密处理
+	 */
 	public void encryptHandler(RequestDataEncryptHandler requestDataEncryptHandler, SwResponse swResponse) {
 		if (!swResponse.isEncrypt()) {
 			return;
@@ -111,6 +117,9 @@ public abstract class BaseFilter implements Filter {
 		}
 	}
 
+	/**
+	 * 异常处理
+	 */
 	public SecurityException exceptionHandler(Exception filterException) {
 		SecurityException securityException;
 		if (filterException instanceof SecurityException) {

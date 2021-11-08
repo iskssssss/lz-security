@@ -1,6 +1,5 @@
 package com.sowell.security.arrays;
 
-
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.context.IcpContext;
 import com.sowell.tool.reflect.model.ControllerMethod;
