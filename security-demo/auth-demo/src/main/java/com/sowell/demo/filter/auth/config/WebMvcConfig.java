@@ -15,13 +15,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-	@Override
+	/*@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("login").setViewName("login");
 		registry.addViewController("").setViewName("index");
 		registry.addViewController("logout").setViewName("logout");
 		registry.addViewController("sdf").setViewName("logout");
-	}
+	}*/
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

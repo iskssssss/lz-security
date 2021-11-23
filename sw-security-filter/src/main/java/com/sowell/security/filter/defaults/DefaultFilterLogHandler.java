@@ -7,16 +7,16 @@ import com.sowell.security.log.BaseFilterLogHandler;
 import com.sowell.security.log.IcpLoggerUtil;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/16 15:00
+ * 默认过滤日志记录处理器
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/09/16 15:00
  */
 public class DefaultFilterLogHandler implements BaseFilterLogHandler {
 
 	@Override
-	public Object beforeHandler(
+	public Object before(
 			BaseRequest<?> request,
 			BaseResponse<?> response
 	) {
@@ -25,7 +25,7 @@ public class DefaultFilterLogHandler implements BaseFilterLogHandler {
 	}
 
 	@Override
-	public void afterHandler(
+	public void after(
 			BaseRequest<?> request,
 			BaseResponse<?> response,
 			Object logEntity,

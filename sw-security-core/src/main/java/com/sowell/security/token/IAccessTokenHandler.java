@@ -27,7 +27,7 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 	 */
 	default String getAccessTokenInfo() {
 		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		if (servletRequest == null){
+		if (servletRequest == null) {
 			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
 		}
 		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
@@ -64,12 +64,30 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 	String generateAccessToken(T authDetails);
 
 	/**
+	 * 无效Token
+	 */
+ 	default void invalid() {
+		invalid(this.getAccessTokenInfo());
+	}
+
+	/**
+	 * 无效指定Token
+	 *
+	 * @param token Token
+	 */
+	void invalid(String token);
+
+	/**
 	 * 校验AccessToken是否过期
 	 *
 	 * @return true：过期 反之未过期
 	 */
 	default boolean checkExpiration() {
-		return this.checkExpiration(this.getAccessTokenInfo());
+		try {
+			return this.checkExpiration(this.getAccessTokenInfo());
+		} catch (SecurityException securityException) {
+			return true;
+		}
 	}
 
 	/**

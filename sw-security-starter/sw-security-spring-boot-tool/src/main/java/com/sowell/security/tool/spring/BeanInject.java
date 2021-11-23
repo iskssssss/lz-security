@@ -3,18 +3,16 @@ package com.sowell.security.tool.spring;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.IcpConfig;
-import com.sowell.security.context.IcpContextTheadLocal;
-import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.security.handler.DataEncoder;
+import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.security.token.IAccessTokenHandler;
+import com.sowell.security.tool.context.SpringContextTheadLocal;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.PathMatcher;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -37,24 +35,10 @@ public class BeanInject extends IcpCoreManager {
 	}
 
 	/**
-	 * 自动注入<b>路径匹配器</b>
-	 */
-	@Autowired(required = false)
-	@Qualifier("mvcPathMatcher")
-	public void injectIcpContext(PathMatcher pathMatcher) {
-		IcpCoreManager.setIcpContext(new IcpContextTheadLocal<HttpServletRequest, HttpServletResponse>() {
-			@Override
-			public boolean matchUrl(String pattern, String path) {
-				return pathMatcher.match(pattern, path);
-			}
-		});
-	}
-
-	/**
 	 * 自动注入<b>AccessToken处理器</b>
 	 */
 	@Autowired(required = false)
-	public void injectAccessTokenHandler(IAccessTokenHandler accessTokenHandler) {
+	public void injectAccessTokenHandler(IAccessTokenHandler<?> accessTokenHandler) {
 		if (IcpCoreManager.accessTokenHandler != null) {
 			SpringUtil.destroyBean(accessTokenHandler);
 			return;
@@ -98,4 +82,12 @@ public class BeanInject extends IcpCoreManager {
 		IcpCoreManager.setCacheManager(cacheManager);
 	}
 
+	/**
+	 * 自动注入<b>路径匹配器</b>
+	 */
+	@Autowired(required = false)
+	@Qualifier("mvcPathMatcher")
+	public void injectIcpContext(PathMatcher pathMatcher) {
+		IcpCoreManager.setIcpContext(new SpringContextTheadLocal(pathMatcher));
+	}
 }

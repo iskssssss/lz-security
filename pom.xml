@@ -6,6 +6,7 @@
 
     <groupId>com.sowell.security</groupId>
     <artifactId>sw-security</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
 
     <modules>
@@ -19,14 +20,11 @@
         <module>sw-tool</module>
     </modules>
 
-    <packaging>pom</packaging>
-
     <properties>
         <project.build.sourceEncoding>utf8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <fastjson.version>1.2.75</fastjson.version>
         <lombok.version>1.18.20</lombok.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <jjwt.version>0.10.7</jjwt.version>
@@ -38,19 +36,19 @@
         <sw-tool.version>1.0.4</sw-tool.version>
 
         <!-- 通用模块 -->
-        <sw-security-common.version>1.2.1</sw-security-common.version>
+        <sw-security-common.version>1.2.2</sw-security-common.version>
         <!-- 核心模块 -->
-        <sw-security-core.version>1.2.2</sw-security-core.version>
+        <sw-security-core.version>1.2.4</sw-security-core.version>
         <!-- 认证模块 -->
-        <sw-security-auth.version>1.2.1</sw-security-auth.version>
+        <sw-security-auth.version>1.2.3</sw-security-auth.version>
         <!-- 过滤模块 -->
-        <sw-security-filter.version>1.2.1</sw-security-filter.version>
+        <sw-security-filter.version>1.2.3</sw-security-filter.version>
         <!-- 插件 -->
-        <sw-security-plugins-redis.version>1.2.1</sw-security-plugins-redis.version>
+        <sw-security-plugins-redis.version>1.2.3</sw-security-plugins-redis.version>
         <!-- 启动相关 -->
-        <sw-security-filter-spring-boot-starter.version>1.2.1</sw-security-filter-spring-boot-starter.version>
+        <sw-security-filter-spring-boot-starter.version>1.2.4</sw-security-filter-spring-boot-starter.version>
 
-        <sw-security-auth-spring-boot-starter.version>1.2.1</sw-security-auth-spring-boot-starter.version>
+        <sw-security-auth-spring-boot-starter.version>1.2.4</sw-security-auth-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -65,6 +63,23 @@
                 <groupId>com.sowell.common</groupId>
                 <artifactId>sw-common-core</artifactId>
                 <version>${sw-common-core.version}</version>
+
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sowell.common</groupId>
+                        <artifactId>sw-common-orm</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+
+                    <exclusion>
+                        <groupId>javax.annotation</groupId>
+                        <artifactId>jsr250-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -95,12 +110,6 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jjwt.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
             </dependency>
 
             <dependency>
@@ -195,30 +204,6 @@
     <build>
         <finalName>sw-security</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <debug>true</debug>
-                    <debuglevel>lines,vars,source</debuglevel>
-                    <compilerArgs>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <delimiters>
-                        <delimiter>@</delimiter>
-                    </delimiters>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

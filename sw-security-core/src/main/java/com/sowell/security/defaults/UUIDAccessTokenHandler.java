@@ -3,6 +3,10 @@ package com.sowell.security.defaults;
 import cn.hutool.crypto.SmUtil;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
+import com.sowell.security.config.IcpConfig;
+import com.sowell.security.context.IcpSecurityContextThreadLocal;
+import com.sowell.security.context.model.BaseRequest;
+import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.security.token.IAccessTokenHandler;
 import com.sowell.tool.core.string.StringUtil;
@@ -34,9 +38,29 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 	}
 
 	@Override
+	public void invalid(String token) {
+		if (this.checkExpiration(token)) {
+			return;
+		}
+		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
+		final Object o = cacheManager.get(token);
+		if (!(o instanceof AuthDetails)) {
+			return;
+		}
+		final AuthDetails<?> authDetails = (AuthDetails<?>) o;
+		String id = "UUID::" + authDetails.getId();
+		cacheManager.remove(id, token);
+
+		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final String saveName = tokenConfig.getName();
+		final BaseResponse<?> servletResponse = IcpSecurityContextThreadLocal.getServletResponse();
+		servletResponse.removeCookie(saveName);
+	}
+
+	@Override
 	public boolean checkExpiration(String accessToken) {
 		if (StringUtil.isEmpty(accessToken)) {
-			return false;
+			return true;
 		}
 		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
 		final Object authDetailsObj = cacheManager.get(accessToken);

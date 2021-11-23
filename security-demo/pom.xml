@@ -63,19 +63,19 @@
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-filter-spring-boot-starter</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.4</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-auth-spring-boot-starter</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.4</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
                 <artifactId>sw-security-plugins-redis</artifactId>
-                <version>1.2.1</version>
+                <version>1.2.3</version>
             </dependency>
 
             <dependency>

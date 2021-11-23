@@ -3,11 +3,12 @@ package com.sowell.demo.filter.controller.token;
 import com.sowell.common.core.web.result.R;
 import com.sowell.demo.filter.model.AccessTokenVO;
 import com.sowell.security.IcpCoreManager;
+import com.sowell.security.annotation.DataEncodeSwitch;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.config.IcpConfig;
+import com.sowell.security.annotation.ExcludeInterface;
 import com.sowell.security.token.AccessTokenUtil;
 import com.sowell.security.plugins.utils.RedisUtil;
-import com.sowell.security.tool.context.IcpContextManager;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.number.NumberUtil;
 import com.sowell.tool.core.string.StringUtil;
@@ -30,10 +31,12 @@ import java.util.Map;
  * @date 2021/10/22 16:36
  */
 @RestController
+@ExcludeInterface
 @RequestMapping("/auth")
 @Api(tags = "认证相关接口")
 public class AccessTokenController {
 
+	@DataEncodeSwitch(responseEncrypt = true)
 	@ApiOperation(value = "获取AccessToken", notes = "获取AccessToken1")
 	@ApiImplicitParams({
 			@ApiImplicitParam(paramType = "query", dataType = "String", name = "appKey", value = "appKey", required = true),

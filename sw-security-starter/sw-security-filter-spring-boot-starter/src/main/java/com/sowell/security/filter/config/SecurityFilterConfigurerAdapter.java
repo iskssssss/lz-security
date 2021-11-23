@@ -2,7 +2,7 @@ package com.sowell.security.filter.config;
 
 import com.sowell.security.filter.IcpFilterManager;
 import com.sowell.security.filter.filters.IcpInterfaceFilterCore;
-import com.sowell.security.tool.config.SecurityConfigurerAdapter;
+import com.sowell.security.tool.config.BaseSecurityConfigurerAdapter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/03 10:12
  */
-public abstract class SecurityFilterConfigurerAdapter extends SecurityConfigurerAdapter {
+public abstract class SecurityFilterConfigurerAdapter extends BaseSecurityConfigurerAdapter {
 
 	protected FilterRegistrationBean<IcpInterfaceFilterCore> registration;
 	private IcpInterfaceFilterCore filterContainer;

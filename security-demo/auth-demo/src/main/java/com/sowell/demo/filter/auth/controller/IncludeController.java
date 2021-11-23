@@ -1,6 +1,7 @@
 package com.sowell.demo.filter.auth.controller;
 
 import com.sowell.common.core.web.result.R;
+import com.sowell.security.auth.annotation.AuthCheck;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.token.AccessTokenUtil;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/include")
 @Api(tags = "拦截相关接口")
+@AuthCheck
 public class IncludeController {
 
 	@ApiOperation(value = "刷新AccessToken", notes = "刷新AccessToken")

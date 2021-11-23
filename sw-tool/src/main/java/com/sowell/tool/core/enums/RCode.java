@@ -1,10 +1,10 @@
 package com.sowell.tool.core.enums;
 
-import com.alibaba.fastjson.JSONObject;
 import com.sowell.common.core.web.result.ICode;
+import com.sowell.tool.json.JsonUtil;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 错误码
@@ -70,14 +70,6 @@ public enum RCode implements ICode {
      * 您的IP未添加至白名单中，请联系管理员。
      */
     NOT_WHITE_IP(6006, "您的IP未添加至白名单中，请联系管理员。"),
-    /**
-     * 访问该URL只可在匿名状态下。
-     */
-    ANONYMOUS(6007, "访问该URL只可在匿名状态下。"),
-    /**
-     * 访问该URL需认证。
-     */
-    AUTHORIZATION(6008, "访问该URL需认证。"),
 
     /**
      * 用户不存在
@@ -128,9 +120,9 @@ public enum RCode implements ICode {
     }
 
     public String toJson() {
-        JSONObject resultJson = new JSONObject();
+        Map<String, Object> resultJson = new LinkedHashMap<>();
         resultJson.put("code", this.code);
         resultJson.put("message", this.message);
-        return resultJson.toJSONString();
+        return JsonUtil.toJsonString(resultJson);
     }
 }

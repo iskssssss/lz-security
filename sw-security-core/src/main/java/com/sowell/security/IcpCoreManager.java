@@ -153,8 +153,7 @@ public class IcpCoreManager {
 		if (IcpCoreManager.accessTokenHandler == null) {
 			synchronized (IcpCoreManager.class) {
 				if (IcpCoreManager.accessTokenHandler == null) {
-					final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-					final IcpConfig.TokenConfig accessTokenConfig = icpConfig.getTokenConfig();
+					final IcpConfig.TokenConfig accessTokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
 					switch (accessTokenConfig.getType()) {
 						case IcpConstant.TOKEN_TYPE_BY_UUID:
 							IcpCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();

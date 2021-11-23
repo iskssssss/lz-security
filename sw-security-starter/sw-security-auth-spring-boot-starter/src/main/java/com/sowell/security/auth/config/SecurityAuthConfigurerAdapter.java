@@ -5,7 +5,7 @@ import com.sowell.security.auth.filters.IcpAuthFilterCore;
 import com.sowell.security.filter.IcpFilterManager;
 import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
-import com.sowell.security.tool.config.SecurityConfigurerAdapter;
+import com.sowell.security.tool.config.BaseSecurityConfigurerAdapter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/03 10:16
  */
-public abstract class SecurityAuthConfigurerAdapter extends SecurityConfigurerAdapter {
+public abstract class SecurityAuthConfigurerAdapter extends BaseSecurityConfigurerAdapter {
 
 	protected FilterRegistrationBean<IcpAuthFilterCore> registration;
 	private IcpAuthFilterCore icpAuthFilter;
@@ -25,7 +25,7 @@ public abstract class SecurityAuthConfigurerAdapter extends SecurityConfigurerAd
 	protected void init() {
 		this.icpAuthFilter = new IcpAuthFilterCore();
 		this.auth(IcpAuthManager.getAuthConfigurer());
-		this.filter(IcpFilterManager.getFilterConfigurer());
+		this.filter(IcpFilterManager.getFilterConfigurer().filterUrl());
 	}
 
 	/**
@@ -40,7 +40,7 @@ public abstract class SecurityAuthConfigurerAdapter extends SecurityConfigurerAd
 	 *
 	 * @param filterConfigurer 过滤信息
 	 */
-	protected abstract void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer);
+	protected abstract void filter(FilterConfigurerBuilder<FilterConfigurer>.FilterUrl filterConfigurer);
 
 	@Bean
 	protected FilterRegistrationBean<IcpAuthFilterCore> initFilterRegistrationBean() {

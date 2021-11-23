@@ -1,12 +1,14 @@
 package com.sowell.security.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.sowell.security.context.model.BaseResponse;
-import com.sowell.tool.core.enums.RCode;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.tool.core.bytes.ByteUtil;
+import com.sowell.tool.core.enums.RCode;
+import com.sowell.tool.json.JsonUtil;
 
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -25,11 +27,11 @@ public final class ServletUtil {
             String contentType,
             RCode rCode
     ) {
-        JSONObject resultJson = new JSONObject();
+        Map<String, Object> resultJson = new LinkedHashMap<>();
         resultJson.put("code", rCode.getCode());
         resultJson.put("data", null);
         resultJson.put("message", rCode.getMessage());
-        final String json = resultJson.toJSONString();
+        final String json = JsonUtil.toJsonString(resultJson);
         final byte[] jsonBytes = json.getBytes(StandardCharsets.UTF_8);
         printResponse(response, contentType, jsonBytes);
     }

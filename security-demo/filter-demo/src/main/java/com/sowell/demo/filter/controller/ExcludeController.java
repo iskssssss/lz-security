@@ -1,7 +1,7 @@
 package com.sowell.demo.filter.controller;
 
 import com.sowell.common.core.web.result.R;
-import com.sowell.security.filter.anno.ExcludeInterface;
+import com.sowell.security.annotation.ExcludeInterface;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;

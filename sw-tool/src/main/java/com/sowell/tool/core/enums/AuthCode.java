@@ -1,10 +1,12 @@
 package com.sowell.tool.core.enums;
 
-import com.alibaba.fastjson.JSONObject;
 import com.sowell.common.core.web.result.ICode;
+import com.sowell.tool.json.JsonUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * TODO
@@ -44,15 +46,24 @@ public enum AuthCode implements ICode {
 	INTERNAL_SERVER_ERROR(500, "内部服务器错误"),
 
 	BAD_CREDENTIAL(441, "您输入的账户名或密码不正确"),
-	ACCOUNT_NOT_EXISTS(442,"您输入的账户名或密码不正确."),
-	PASSWORD_NOT_MATCHES(443,"您输入的账户名或密码不正确."),
-	VERIFY_CODE_ERROR(445,"验证码错误，请重新输入."),
+	ACCOUNT_NOT_EXISTS(442, "您输入的账户名或密码不正确."),
+	PASSWORD_NOT_MATCHES(443, "您输入的账户名或密码不正确."),
+	VERIFY_CODE_ERROR(445, "验证码错误，请重新输入."),
 
-	ACCOUNT_NOT_VERIFICATION(801,"当前账号未验证，请验证后登录."),
-	ACCOUNT_LOCKED(802,"账号已锁定,请联系管理员."),
-	CREDENTIALS_EXPIRED(803,"证书已过期,请联系管理员."),
-	ACCOUNT_EXPIRED(804,"账号已过期,请联系管理员."),
-	ACCOUNT_DISABLE(805,"账号已封禁,请联系管理员.");
+	/**
+	 * 访问该URL只可在匿名状态下。
+	 */
+	ANONYMOUS(461, "访问该URL只可在匿名状态下。"),
+	/**
+	 * 访问该URL需认证。
+	 */
+	AUTHORIZATION(462, "访问该URL需认证。"),
+
+	ACCOUNT_NOT_VERIFICATION(801, "当前账号未验证，请验证后登录."),
+	ACCOUNT_LOCKED(802, "账号已锁定,请联系管理员."),
+	CREDENTIALS_EXPIRED(803, "证书已过期,请联系管理员."),
+	ACCOUNT_EXPIRED(804, "账号已过期,请联系管理员."),
+	ACCOUNT_DISABLE(805, "账号已封禁,请联系管理员.");
 
 	private Integer code;
 	private String message;
@@ -81,7 +92,7 @@ public enum AuthCode implements ICode {
 	}
 
 	public String toJson() throws IllegalAccessException {
-		JSONObject resultJson = new JSONObject();
+		Map<String, Object> resultJson = new LinkedHashMap<>();
 		final Field[] fields = RCode.class.getDeclaredFields();
 		for (Field declaredField : fields) {
 			declaredField.setAccessible(true);
@@ -92,6 +103,6 @@ public enum AuthCode implements ICode {
 			final Object value = declaredField.get(this);
 			resultJson.put(name, value);
 		}
-		return resultJson.toJSONString();
+		return JsonUtil.toJsonString(resultJson);
 	}
 }

@@ -21,6 +21,8 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * 基础过滤中心
@@ -69,7 +71,7 @@ public abstract class BaseFilterCore implements Filter {
 				}
 				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
 				if (logSwitch instanceof Boolean && ((Boolean) logSwitch)) {
-					IcpFilterManager.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
+					IcpFilterManager.getFilterLogHandler().after(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
 				}
 			}
 		});
@@ -85,7 +87,8 @@ public abstract class BaseFilterCore implements Filter {
 		try {
 			final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) swRequest.getRequest();
 			final byte[] bodyBytes = httpServletRequestWrapper.getBody();
-			final Object decrypt = dataEncoder.decrypt(bodyBytes);
+			final Map requestData = ByteUtil.toObject(bodyBytes, Map.class);
+			final Object decrypt = dataEncoder.decrypt(ByteUtil.toBytes(requestData.get("data")));
 			httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
 		} catch (Exception e) {
 			throw new SecurityException(RCode.DATA_DECRYPT_FAILED);

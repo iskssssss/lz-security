@@ -4,7 +4,7 @@ import com.sowell.common.core.web.result.R;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.annotation.DataEncodeSwitch;
 import com.sowell.security.defaults.DefaultAuthDetails;
-import com.sowell.security.filter.anno.IncludeInterface;
+import com.sowell.security.annotation.IncludeInterface;
 import com.sowell.security.log.IcpLoggerUtil;
 import com.sowell.security.token.AccessTokenUtil;
 import com.sowell.tool.encrypt.model.SwPublicKey;

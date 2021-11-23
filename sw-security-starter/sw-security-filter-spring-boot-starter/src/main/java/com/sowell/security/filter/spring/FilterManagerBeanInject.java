@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:16
  */
-
 public class FilterManagerBeanInject extends IcpFilterManager {
 
 	/**

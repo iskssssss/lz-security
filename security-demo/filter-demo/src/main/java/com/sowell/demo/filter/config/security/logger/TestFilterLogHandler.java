@@ -16,14 +16,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TestFilterLogHandler implements BaseFilterLogHandler {
+
 	@Override
-	public Object beforeHandler(BaseRequest<?> request, BaseResponse<?> response) {
+	public Object before(BaseRequest<?> request, BaseResponse<?> response) {
 		IcpLoggerUtil.info(getClass(), "自定义日志处理：beforeHandler(...)");
 		return null;
 	}
 
 	@Override
-	public void afterHandler(BaseRequest<?> request, BaseResponse<?> response, Object logEntity, Exception ex) {
+	public void after(BaseRequest<?> request, BaseResponse<?> response, Object logEntity, Exception ex) {
 		IcpLoggerUtil.info(getClass(), "本次请求总时间：" + IcpCoreManager.getStorage().getRequestTime().toString());
 		IcpLoggerUtil.info(getClass(), "自定义日志处理：afterHandler(...)");
 	}

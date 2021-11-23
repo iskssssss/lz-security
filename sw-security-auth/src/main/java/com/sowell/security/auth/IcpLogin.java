@@ -1,5 +1,9 @@
 package com.sowell.security.auth;
 
+import com.sowell.security.auth.service.UserDetailsService;
+import com.sowell.security.token.AccessTokenUtil;
+import com.sowell.tool.jwt.model.AuthDetails;
+
 /**
  * TODO
  *
@@ -9,11 +13,23 @@ package com.sowell.security.auth;
  */
 public class IcpLogin {
 
-	public static void login(String userId) {
-		// 登录
+	public static String login(String userId) {
+		// 获取用户信息
+		final UserDetailsService userDetailsService = IcpAuthManager.getUserDetailsService();
+		final AuthDetails<?> authDetails = userDetailsService.readUserByUsername(userId);
+
+		// 获取token
+		final String token = AccessTokenUtil.generateAccessToken(authDetails, true);
+
+		return token;
+	}
+
+	public static void logout() {
+		AccessTokenUtil.invalid();
+		// TODO 登出
 	}
 
 	public static void logout(String userId) {
-		// 登出
+		// TODO 登出
 	}
 }

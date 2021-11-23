@@ -68,10 +68,10 @@
                     <artifactId>sw-common-orm</artifactId>
                 </exclusion>
 
-                <exclusion>
+                <!--<exclusion>
                     <groupId>com.alibaba</groupId>
                     <artifactId>fastjson</artifactId>
-                </exclusion>
+                </exclusion>-->
 
                 <exclusion>
                     <groupId>javax.annotation</groupId>

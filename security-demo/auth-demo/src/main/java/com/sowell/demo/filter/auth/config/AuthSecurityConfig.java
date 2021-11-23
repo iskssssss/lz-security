@@ -1,5 +1,6 @@
 package com.sowell.demo.filter.auth.config;
 
+import com.sowell.demo.filter.auth.config.handler.TestEncodeSwitchHandler;
 import com.sowell.security.auth.config.AuthConfigurer;
 import com.sowell.security.auth.config.AuthConfigurerBuilder;
 import com.sowell.security.auth.config.SecurityAuthConfigurerAdapter;
@@ -9,6 +10,7 @@ import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
 import com.sowell.security.log.IcpLoggerUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -21,8 +23,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 
+	@Autowired
+	private TestEncodeSwitchHandler testEncodeSwitchHandler;
+
 	@Override
 	protected void config(CoreConfigurerBuilder<CoreConfigurer> coreConfigurer) {
+		coreConfigurer
+				.setEncryptSwitchHandler(testEncodeSwitchHandler);
 		IcpLoggerUtil.info(AuthSecurityConfig.class, "基础信息配置");
 	}
 
@@ -45,8 +52,6 @@ public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 				.accessStatusHandler(authDetails -> {
 
 				})
-				.setAuthBeforeHandler(params -> System.out.println("认证前"))
-				.setAuthAfterHandler(params -> System.out.println("认证后"))
 				.login()
 				.loginUrl("/api/login/login.do")
 				.identifierKey("username")
@@ -58,8 +63,13 @@ public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 	}
 
 	@Override
-	protected void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer) {
+	protected void filter(FilterConfigurerBuilder<FilterConfigurer>.FilterUrl filterConfigurer) {
 		IcpLoggerUtil.info(AuthSecurityConfig.class, "过滤信息配置");
-		filterConfigurer.filterUrl().addIncludeUrls("/**");
+		filterConfigurer
+				.addExcludeUrls(
+						"/favicon.ico", "/webjars/**", "/doc.html",
+						"/swagger-resources", "/v2/api-docs", "/v2/api-docs-ext"
+				)
+				.addIncludeUrls("/**");
 	}
 }

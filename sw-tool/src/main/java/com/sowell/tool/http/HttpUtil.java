@@ -85,15 +85,14 @@ public class HttpUtil {
 		return httpRequest;
 	}
 	// json
-	public static HttpRequest postForJsonReHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, Object data) {
-		return postReHttpRequest(requestUrl, headersInfoModel, ContentTypeEnum.JSON, data);
+	public static HttpRequest postForJsonReHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, Object body) {
+		return postReHttpRequest(requestUrl, headersInfoModel, ContentTypeEnum.JSON, body);
 	}
-	public static String postForJsonReString(String requestUrl, String body) {
+	public static String postForJsonReString(String requestUrl, Object body) {
 		return postForJsonReString(requestUrl, null, body);
 	}
-	public static String postForJsonReString(String requestUrl, HeadersInfoModel headersInfoModel, String body) {
-		final HttpRequest httpRequest = postForJsonReHttpRequest(requestUrl, headersInfoModel, body);
-		return httpRequest.execute().body();
+	public static String postForJsonReString(String requestUrl, HeadersInfoModel headersInfoModel, Object body) {
+		return postForJson(requestUrl, headersInfoModel, body, String.class);
 	}
 	public static <T> T postForJson(String requestUrl, Object body, Class<T> tClass) {
 		return postForJson(requestUrl, null, body, tClass);
@@ -103,15 +102,14 @@ public class HttpUtil {
 		return httpRequest.execute().body(tClass);
 	}
 	// form
-	public static HttpRequest postForFormReHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, Object data) {
-		return postReHttpRequest(requestUrl, headersInfoModel, ContentTypeEnum.FORM, data);
+	public static HttpRequest postForFormReHttpRequest(String requestUrl, HeadersInfoModel headersInfoModel, Map<String, Object> form) {
+		return postReHttpRequest(requestUrl, headersInfoModel, ContentTypeEnum.FORM, form);
 	}
 	public static String postForFormReString(String requestUrl, Map<String, Object> form) {
 		return postForFormReString(requestUrl, null, form);
 	}
 	public static String postForFormReString(String requestUrl, HeadersInfoModel headersInfoModel, Map<String, Object> form) {
-		final HttpRequest httpRequest = postForFormReHttpRequest(requestUrl, headersInfoModel, form);
-		return httpRequest.execute().body();
+		return postForForm(requestUrl, headersInfoModel, form, String.class);
 	}
 	public static <T> T postForForm(String requestUrl, Map<String, Object> form, Class<T> tClass) {
 		return postForForm(requestUrl, null, form, tClass);

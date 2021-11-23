@@ -49,15 +49,11 @@ public class ByteUtil {
 	}
 
 	public static Object toObject(byte[] bytes) {
-		try {
-			final Object o = bytes2Object(bytes);
-			if (o != null) {
-				return o;
-			}
-			return new String(bytes, StandardCharsets.UTF_8);
-		} catch (Exception eofException) {
-			return new String(bytes, StandardCharsets.UTF_8);
+		final Object o = bytes2Object(bytes);
+		if (o != null) {
+			return o;
 		}
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 
 	public static <T> T toObject(byte[] bytes, Class<T> tClass) {

@@ -1,6 +1,5 @@
 package com.sowell.security.filter.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.base.SecurityException;
@@ -8,6 +7,7 @@ import com.sowell.security.filter.IcpFilterManager;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.string.StringUtil;
+import com.sowell.tool.json.JsonUtil;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +46,7 @@ public final class FilterDataHandler {
 		}
 		// 处理map类型
 		if (errorHandler instanceof Map) {
-			return JSONObject.toJSONString(errorHandler).getBytes(StandardCharsets.UTF_8);
+			return JsonUtil.toJsonString(errorHandler).getBytes(StandardCharsets.UTF_8);
 		}
 		// 处理可序列化数据
 		if (errorHandler instanceof Serializable) {
@@ -55,7 +55,7 @@ public final class FilterDataHandler {
 				return ((String) errorHandler).getBytes(StandardCharsets.UTF_8);
 			}
 			// 处理其它数据
-			return JSONObject.toJSONString(errorHandler).getBytes(StandardCharsets.UTF_8);
+			return JsonUtil.toJsonString(errorHandler).getBytes(StandardCharsets.UTF_8);
 		}
 		// 处理其它数据
 		return ByteUtil.toBytes(errorHandler);

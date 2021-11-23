@@ -43,7 +43,11 @@ public final class AccessTokenUtil {
 		if (writeCookie) {
 			final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
 			final BaseResponse<?> response = icpContext.getResponse();
-			response.addCookie(tokenConfig.getName(), prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE + token, null, null, ((int) tokenConfig.getTimeout()));
+			if (isOpenPrefix) {
+				response.addCookie(tokenConfig.getName(), prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE + token, null, null, ((int) tokenConfig.getTimeout()));
+			} else {
+				response.addCookie(tokenConfig.getName(), token, null, null, ((int) tokenConfig.getTimeout()));
+			}
 		}
 		if (isOpenPrefix) {
 			return prefix + IcpConstant.PREFIX_TOKEN_SPLIT + token;
@@ -59,6 +63,15 @@ public final class AccessTokenUtil {
 	 */
 	public static String getAccessToken() {
 		return IcpCoreManager.getAccessTokenHandler().getAccessTokenInfo();
+	}
+
+	/**
+	 * 校验AccessToken是否过期
+	 *
+	 * @return true：过期 反之未过期
+	 */
+	public static boolean checkExpiration() {
+		return IcpCoreManager.getAccessTokenHandler().checkExpiration();
 	}
 
 	/**
@@ -171,6 +184,14 @@ public final class AccessTokenUtil {
 
 	public static String refreshAccessToken(String accessToken) {
 		return IcpCoreManager.getAccessTokenHandler().refreshAccessToken(accessToken);
+	}
+
+	public static void invalid() {
+		IcpCoreManager.getAccessTokenHandler().invalid();
+	}
+
+	public static void invalid(String accessToken) {
+		IcpCoreManager.getAccessTokenHandler().invalid(accessToken);
 	}
 }
 

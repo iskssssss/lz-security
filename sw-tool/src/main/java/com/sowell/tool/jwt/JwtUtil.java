@@ -1,10 +1,9 @@
 package com.sowell.tool.jwt;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.sowell.tool.core.DateUtil;
 import com.sowell.tool.core.string.StringUtil;
 import com.sowell.tool.fun.SFunction;
+import com.sowell.tool.json.JsonUtil;
 import com.sowell.tool.jwt.model.AuthDetails;
 import com.sowell.tool.reflect.BeanUtil;
 import com.sowell.tool.reflect.ReflectUtil;
@@ -41,8 +40,8 @@ public final class JwtUtil {
 	 * @return Token
 	 */
 	public static <T extends AuthDetails<T>> String generateToken(AuthDetails<T> t, int expiration) {
-		final String jsonStr = JSONObject.toJSONString(t);
-		final Map<String, Object> map = JSONObject.parseObject(jsonStr, Map.class);
+		final String jsonStr = JsonUtil.toJsonString(t);
+		final Map<String, Object> map = JsonUtil.parseObject(jsonStr, Map.class);
 		Date createdTime = new Date();
 		SecretKey key = Keys.hmacShaKeyFor(KEY_BYTE_LIST);
 		final JwtBuilder jwtBuilder = Jwts.builder().setClaims(map).setIssuedAt(createdTime).signWith(key);
@@ -165,8 +164,8 @@ public final class JwtUtil {
 		}
 		final Claims claims = claimsOptional.get();
 
-		final String jsonStr = JSONObject.toJSONString(claims);
-		final Map<String, Object> map = JSONObject.parseObject(jsonStr, Map.class);
+		final String jsonStr = JsonUtil.toJsonString(claims);
+		final Map<String, Object> map = JsonUtil.parseObject(jsonStr, Map.class);
 
 		final Optional<Object> valueOptional = Optional.ofNullable(map.get(implMethodName));
 		if (!valueOptional.isPresent()) {
@@ -207,10 +206,10 @@ public final class JwtUtil {
 		if (StringUtil.isEmpty(data)) {
 			return null;
 		}
-		if (data instanceof String || data instanceof Boolean || data instanceof Number || data instanceof JSONArray) {
+		if (data instanceof String || data instanceof Boolean || data instanceof Number || data instanceof List) {
 			return (T) data;
 		}
-		final JSONObject dataJson = ((JSONObject) data);
-		return JSONObject.parseObject(JSONObject.toJSONString(dataJson), tClass);
+		final Map<String, Object> dataJson = ((Map<String, Object>) data);
+		return JsonUtil.parseObject(JsonUtil.toJsonString(dataJson), tClass);
 	}
 }

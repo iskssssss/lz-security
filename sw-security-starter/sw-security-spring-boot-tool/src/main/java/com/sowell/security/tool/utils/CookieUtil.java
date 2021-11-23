@@ -23,7 +23,7 @@ public class CookieUtil {
      * @return 值
      */
     public static String getValue(HttpServletRequest request, String name) {
-        final Cookie cookie = get(request, name);
+        final Cookie cookie = CookieUtil.get(request, name);
         if (cookie == null) {
             return null;
         }
@@ -82,6 +82,6 @@ public class CookieUtil {
      * @param name     键名
      */
     public static void remove(HttpServletResponse response, String name) {
-        set(response, null, null, null, null, 0);
+        CookieUtil.set(response, name, null, null, null, 0);
     }
 }

@@ -18,11 +18,12 @@ import com.sowell.tool.http.enums.ContentTypeEnum;
 import java.io.IOException;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/10/22 15:50
+ * 过滤器抽象类
+ * <p>通过此类来实现自定义接口过滤</p>
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @date 2021/10/22 15:50
  */
 public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 	protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(AbsInterfacesFilterBuilder.class);
@@ -80,7 +81,7 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 		if (logBeforeFilter != null) {
 			final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
 			final BaseFilterLogHandler filterLogHandler = IcpFilterManager.getFilterLogHandler();
-			final Object logEntity = filterLogHandler.beforeHandler(request, response);
+			final Object logEntity = filterLogHandler.before(request, response);
 			// 暂缓
 			icpContext.setAttribute(IcpConstant.LOG_SWITCH, true);
 			icpContext.setAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY, logEntity);

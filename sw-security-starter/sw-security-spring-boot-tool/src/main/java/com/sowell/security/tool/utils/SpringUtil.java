@@ -6,6 +6,7 @@ import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -172,7 +173,7 @@ public class SpringUtil implements BeanFactoryPostProcessor {
         // 接口对应方法
         final Map<String, ControllerMethod> interfacesMethodMap = new HashMap<>(16);
         // 获取所有控制器
-        final Map<String, Object> restControllerBeanMap = SpringUtil.getBeansWithAnnotationByPackage(RestController.class, packagePaths);
+        final Map<String, Object> restControllerBeanMap = SpringUtil.getBeansWithAnnotationByPackage(Controller.class, packagePaths);
         // 获取控制器中的方法
         for (Object restControllerBean : restControllerBeanMap.values()) {
             final Class<?> restControllerBeanClass = restControllerBean.getClass();
@@ -187,15 +188,29 @@ public class SpringUtil implements BeanFactoryPostProcessor {
                 // 拼接接口
                 if (controllerPathList == null) {
                     for (String methodPath : methodPathList) {
-                        requestPaths.add(methodPath);
+                        String requestPath;
+                        if (methodPath.startsWith("/")) {
+                            requestPath = methodPath;
+                        } else {
+                            requestPath = "/" + methodPath;
+                        }
+                        requestPaths.add(requestPath);
                         interfacesMethodMap.put(methodPath, controllerMethod);
                     }
                     return;
                 }
                 for (String controllerPath : controllerPathList) {
+                    if (!controllerPath.startsWith("/")) {
+                        controllerPath = "/" + controllerPath;
+                    }
                     for (String methodPath : methodPathList) {
-                        final String requestPath = controllerPath + methodPath;
-                        requestPaths.add(methodPath);
+                        String requestPath;
+                        if (methodPath.startsWith("/")) {
+                            requestPath = controllerPath + methodPath;
+                        } else {
+                            requestPath = controllerPath + "/" + methodPath;
+                        }
+                        requestPaths.add(requestPath);
                         interfacesMethodMap.put(requestPath, controllerMethod);
                     }
                 }

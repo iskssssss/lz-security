@@ -25,7 +25,7 @@
         <spring-web.version>5.2.13.RELEASE</spring-web.version>
         <spring-boot-configuration-processor.version>2.3.9.RELEASE</spring-boot-configuration-processor.version>
 
-        <sw-security-spring-boot-tool.version>1.0.0</sw-security-spring-boot-tool.version>
+        <sw-security-spring-boot-tool.version>1.0.1</sw-security-spring-boot-tool.version>
     </properties>
 
     <dependencyManagement>

@@ -15,7 +15,7 @@ import org.springframework.core.env.Environment;
  * @Author: 孔胜
  * @Date: 2021/6/21 9:08
  */
-public abstract class SecurityConfigurerAdapter implements EnvironmentAware {
+public abstract class BaseSecurityConfigurerAdapter implements EnvironmentAware {
 
     /**
      * 初始化

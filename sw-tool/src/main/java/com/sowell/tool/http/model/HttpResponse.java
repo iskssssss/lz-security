@@ -40,6 +40,9 @@ public class HttpResponse {
 	public <T> T body(Class<T> tClass) {
 		final String body = this.body();
 		try {
+			if (tClass == String.class) {
+				return ((T) body);
+			}
 			return JsonUtil.parseObject(body, tClass);
 		} catch (Exception e) {
 			return (T) body;

@@ -1,4 +1,4 @@
-package com.sowell.demo.filter.config.security.handler;
+package com.sowell.demo.filter.auth.config.handler;
 
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.handler.EncodeSwitchHandler;
@@ -12,8 +12,9 @@ import org.springframework.stereotype.Component;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/08 10:51
  */
-//@Component
+@Component
 public class TestEncodeSwitchHandler implements EncodeSwitchHandler {
+
 	@Override
 	public boolean decrypt(
 			BaseRequest<?> request

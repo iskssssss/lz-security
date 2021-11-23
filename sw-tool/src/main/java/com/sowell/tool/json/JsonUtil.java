@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import java.io.IOException;
 import java.util.List;
-
 /**
  * @Author: sowell
  * @Date: 2021/08/21 11:48
@@ -45,7 +44,7 @@ public class JsonUtil {
 		try {
 			return OBJECT_MAPPER.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
-			return null;
+			return "";
 		}
 	}
 

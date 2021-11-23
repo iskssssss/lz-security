@@ -3,8 +3,8 @@ package com.sowell.security.filter.filters;
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.IcpFilterManager;
-import com.sowell.security.filter.anno.ExcludeInterface;
-import com.sowell.security.filter.anno.IncludeInterface;
+import com.sowell.security.annotation.ExcludeInterface;
+import com.sowell.security.annotation.IncludeInterface;
 import com.sowell.security.fun.IcpFilterAuthStrategy;
 import com.sowell.security.tool.filters.BaseFilterCore;
 import com.sowell.security.tool.mode.SwRequest;
@@ -47,19 +47,16 @@ public final class IcpInterfaceFilterCore extends BaseFilterCore {
 	@Override
 	public boolean doFilter(SwRequest swRequest, SwResponse swResponse) {
 		try {
+			// 过滤前处理
+			this.filterBeforeHandler.run();
 			final ControllerMethod controllerMethod = swRequest.getControllerMethod();
 			final String requestPath = swRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
 			if (!includeHandler(controllerMethod, requestPath)) {
 				return true;
 			}
-			// 过滤前处理
-			this.filterBeforeHandler.run();
 			// 过滤
-			boolean filterResult = IcpFilterManager.filter();
-			// 过滤后处理
-			this.filterAfterHandler.run();
-			return filterResult;
+			return IcpFilterManager.filter();
 		} catch (Exception e) {
 			if (e instanceof SecurityException) {
 				throw e;
@@ -68,6 +65,9 @@ public final class IcpInterfaceFilterCore extends BaseFilterCore {
 			} else {
 				throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
 			}
+		} finally {
+			// 过滤后处理
+			this.filterAfterHandler.run();
 		}
 	}
 
@@ -85,16 +85,14 @@ public final class IcpInterfaceFilterCore extends BaseFilterCore {
 			excludeInterface = controllerMethod.getMethodAndControllerAnnotation(ExcludeInterface.class);
 			includeInterface = controllerMethod.getMethodAndControllerAnnotation(IncludeInterface.class);
 		}
-		if (excludeInterface != null) {
-			return excludeInterface.open();
-		}
-		if (IcpFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
+		if ((excludeInterface != null && excludeInterface.open()) ||
+				IcpFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
 			return false;
 		}
 		if (includeInterface != null) {
 			return includeInterface.open();
 		}
-		return !IcpFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
+		return IcpFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
 	}
 
 	@Override

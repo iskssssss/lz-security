@@ -3,7 +3,7 @@ package com.sowell.demo.filter.controller.encode;
 import com.sowell.common.core.web.result.R;
 import com.sowell.demo.filter.model.AccessTokenVO;
 import com.sowell.security.annotation.DataEncodeSwitch;
-import com.sowell.security.filter.anno.IncludeInterface;
+import com.sowell.security.annotation.IncludeInterface;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
