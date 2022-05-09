@@ -3,7 +3,6 @@ package com.sowell.tool.cache;
 import com.sowell.tool.cache.model.CacheModel;
 import com.sowell.tool.cache.utils.GlobalScheduled;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;

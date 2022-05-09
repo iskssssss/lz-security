@@ -1,6 +1,6 @@
 package com.sowell.security.exception.base;
 
-import com.sowell.common.core.web.result.ICode;
+import com.sowell.tool.core.enums.ICode;
 import com.sowell.tool.json.JsonUtil;
 
 import java.util.HashMap;

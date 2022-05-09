@@ -14,7 +14,6 @@
         <module>sw-security-core</module>
         <module>sw-security-starter</module>
         <module>sw-security-plugins</module>
-        <module>security-demo</module>
         <module>sw-security-auth</module>
         <module>sw-security-filter</module>
         <module>sw-tool</module>
@@ -31,7 +30,6 @@
         <hutool.version>5.7.11</hutool.version>
         <bcprov-jdk15to18.version>1.66</bcprov-jdk15to18.version>
 
-        <sw-common-core.version>0.0.10</sw-common-core.version>
         <!-- 通用工具模块 -->
         <sw-tool.version>1.0.4</sw-tool.version>
 
@@ -57,29 +55,6 @@
                 <groupId>com.sowell.tool</groupId>
                 <artifactId>sw-tool</artifactId>
                 <version>${sw-tool.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.sowell.common</groupId>
-                <artifactId>sw-common-core</artifactId>
-                <version>${sw-common-core.version}</version>
-
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.sowell.common</groupId>
-                        <artifactId>sw-common-orm</artifactId>
-                    </exclusion>
-
-                    <exclusion>
-                        <groupId>com.alibaba</groupId>
-                        <artifactId>fastjson</artifactId>
-                    </exclusion>
-
-                    <exclusion>
-                        <groupId>javax.annotation</groupId>
-                        <artifactId>jsr250-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -184,12 +159,12 @@
         <repository>
             <id>releases</id>
             <name>releases</name>
-            <url>http://47.97.248.6:8081/repository/maven-public/</url>
+            <url>http://192.168.1.14:8081/nexus/content/repositories/releases/</url>
         </repository>
         <repository>
-            <id>java-repos</id>
-            <name>Java Repository</name>
-            <url>http://192.168.1.8:8081/nexus/content/groups/public/</url>
+            <id>aliyun</id>
+            <name>aliyun</name>
+            <url>https://maven.aliyun.com/repository/public</url>
         </repository>
     </repositories>
 
@@ -197,7 +172,7 @@
         <repository>
             <id>releases</id>
             <name>releases</name>
-            <url>http://47.97.248.6:8081/repository/maven-releases/</url>
+            <url>http://192.168.1.14:8081/nexus/content/repositories/releases/</url>
         </repository>
     </distributionManagement>
 

@@ -1,6 +1,5 @@
 package com.sowell.tool.core.enums;
 
-import com.sowell.common.core.web.result.ICode;
 import com.sowell.tool.json.JsonUtil;
 
 import java.lang.reflect.Field;
@@ -73,7 +72,6 @@ public enum AuthCode implements ICode {
 		this.message = message;
 	}
 
-	@Override
 	public Integer getCode() {
 		return code;
 	}
@@ -82,7 +80,6 @@ public enum AuthCode implements ICode {
 		this.code = code;
 	}
 
-	@Override
 	public String getMessage() {
 		return message;
 	}

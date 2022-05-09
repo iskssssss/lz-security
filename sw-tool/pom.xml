@@ -65,12 +65,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sowell.common</groupId>
-            <artifactId>sw-common-core</artifactId>
-            <optional>false</optional>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
