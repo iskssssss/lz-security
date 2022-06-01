@@ -1,9 +1,9 @@
 package com.sowell.security.auth.defaults;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.auth.handler.ICheckAccessAuthStatusHandler;
-import com.sowell.security.config.IcpConfig;
-import com.sowell.security.context.IcpSecurityContextThreadLocal;
+import com.sowell.security.config.LzConfig;
+import com.sowell.security.context.LzSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.tool.core.string.StringUtil;
@@ -22,9 +22,9 @@ public class DefaultCheckAccessAuthStatusHandler implements ICheckAccessAuthStat
 			BaseRequest<?> request,
 			BaseResponse<?> response
 	) {
-		final BaseRequest servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		final String saveName = icpConfig.getTokenConfig().getName();
+		final BaseRequest servletRequest = LzSecurityContextThreadLocal.getServletRequest();
+		final LzConfig lzConfig = LzCoreManager.getLzConfig();
+		final String saveName = lzConfig.getTokenConfig().getName();
 		final String authorizationToken = servletRequest.getHeader(saveName);
 		return StringUtil.isNotEmpty(authorizationToken);
 	}

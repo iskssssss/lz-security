@@ -2,13 +2,13 @@ package com.sowell.security.filter.filters;
 
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.exception.base.SecurityException;
-import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.filter.LzFilterManager;
 import com.sowell.security.annotation.ExcludeInterface;
 import com.sowell.security.annotation.IncludeInterface;
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.fun.LzFilterAuthStrategy;
 import com.sowell.security.tool.filters.BaseFilterCore;
-import com.sowell.security.tool.mode.SwRequest;
-import com.sowell.security.tool.mode.SwResponse;
+import com.sowell.security.tool.mode.LzRequest;
+import com.sowell.security.tool.mode.LzResponse;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.core.enums.HttpStatus;
 import com.sowell.tool.reflect.model.ControllerMethod;
@@ -23,40 +23,40 @@ import javax.servlet.ServletException;
  * @Author: 孔胜
  * @Date: 2021/09/10 15:25
  */
-public final class IcpInterfaceFilterCore extends BaseFilterCore {
+public final class LzInterfaceFilterCore extends BaseFilterCore {
 
 	/**
 	 * 过滤前处理
 	 */
-	private IcpFilterAuthStrategy filterBeforeHandler;
+	private LzFilterAuthStrategy filterBeforeHandler;
 	/**
 	 * 过滤后处理
 	 */
-	private IcpFilterAuthStrategy filterAfterHandler;
+	private LzFilterAuthStrategy filterAfterHandler;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		if (SpringUtil.getBeansWithAnnotationCount(LogBeforeFilter.class) > 1) {
 			throw new RuntimeException("注解(LogBeforeFilter)全局只可存在一个。");
 		}
-		this.filterBeforeHandler = IcpFilterManager.getFilterConfigurer().getFilterBeforeHandler();
-		this.filterAfterHandler = IcpFilterManager.getFilterConfigurer().getFilterAfterHandler();
-		IcpFilterManager.init();
+		this.filterBeforeHandler = LzFilterManager.getFilterConfigurer().getFilterBeforeHandler();
+		this.filterAfterHandler = LzFilterManager.getFilterConfigurer().getFilterAfterHandler();
+		LzFilterManager.init();
 	}
 
 	@Override
-	public boolean doFilter(SwRequest swRequest, SwResponse swResponse) {
+	public boolean doFilter(LzRequest lzRequest, LzResponse lzResponse) {
 		try {
 			// 过滤前处理
 			this.filterBeforeHandler.run();
-			final ControllerMethod controllerMethod = swRequest.getControllerMethod();
-			final String requestPath = swRequest.getRequestPath();
+			final ControllerMethod controllerMethod = lzRequest.getControllerMethod();
+			final String requestPath = lzRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
 			if (!includeHandler(controllerMethod, requestPath)) {
 				return true;
 			}
 			// 过滤
-			return IcpFilterManager.filter();
+			return LzFilterManager.filter();
 		} catch (Exception e) {
 			if (e instanceof SecurityException) {
 				throw e;
@@ -86,19 +86,19 @@ public final class IcpInterfaceFilterCore extends BaseFilterCore {
 			includeInterface = controllerMethod.getMethodAndControllerAnnotation(IncludeInterface.class);
 		}
 		if ((excludeInterface != null && excludeInterface.open()) ||
-				IcpFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
+				LzFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
 			return false;
 		}
 		if (includeInterface != null) {
 			return includeInterface.open();
 		}
-		return IcpFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
+		return LzFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
 	}
 
 	@Override
 	public void destroy() {
 		try {
-			IcpFilterManager.destroy();
+			LzFilterManager.destroy();
 			super.destroy();
 		} finally {
 			// TODO

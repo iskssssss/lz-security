@@ -1,7 +1,7 @@
 package com.sowell.security.log;
 
-import com.sowell.security.IcpCoreManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.LzCoreManager;
+import com.sowell.security.config.LzConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +15,10 @@ import java.io.IOException;
  * @Author: 孔胜
  * @Date: 2021/09/18 14:20
  */
-public class IcpLogger implements Closeable {
+public class LzLogger implements Closeable {
 	private Logger logger;
 
-	public IcpLogger(Class<?> clazz) {
+	public LzLogger(Class<?> clazz) {
 		logger = LoggerFactory.getLogger(clazz);
 	}
 	// 普通信息
@@ -57,11 +57,11 @@ public class IcpLogger implements Closeable {
 	}
 
 	private boolean consoleLogPrint() {
-		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		if (icpConfig == null) {
+		final LzConfig lzConfig = LzCoreManager.getLzConfig();
+		if (lzConfig == null) {
 			return false;
 		}
-		return !icpConfig.getConsoleLogPrint();
+		return !lzConfig.getConsoleLogPrint();
 	}
 
 	public static String analysisLoggerInfo(

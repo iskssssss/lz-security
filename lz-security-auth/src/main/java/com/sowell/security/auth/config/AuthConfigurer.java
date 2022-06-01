@@ -1,6 +1,6 @@
 package com.sowell.security.auth.config;
 
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.fun.LzFilterAuthStrategy;
 
 /**
  * TODO
@@ -16,7 +16,7 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 *
 	 * @return 认证前处理方法
 	 */
-	public IcpFilterAuthStrategy getAuthBeforeHandler() {
+	public LzFilterAuthStrategy getAuthBeforeHandler() {
 		return super.authBeforeHandler;
 	}
 
@@ -25,7 +25,7 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 *
 	 * @return 认证后处理方法
 	 */
-	public IcpFilterAuthStrategy getAuthAfterHandler() {
+	public LzFilterAuthStrategy getAuthAfterHandler() {
 		return super.authAfterHandler;
 	}
 

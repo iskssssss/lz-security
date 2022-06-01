@@ -5,13 +5,13 @@ package com.sowell.security.fun;
  * @ClassName:
  * @Descripton:
  * @Author: 孔胜
- * @Date: 2021/09/17 14:00
+ * @Date: 2021/09/10 16:28
  */
 @FunctionalInterface
-public interface IcpFilterFunction<RequestType, ResponseType> {
+public interface LzFunction {
 
 	/**
 	 * 执行的方法
 	 */
-	void run(RequestType request, ResponseType response);
+	void run();
 }

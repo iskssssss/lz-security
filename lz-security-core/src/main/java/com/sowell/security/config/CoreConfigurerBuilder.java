@@ -1,6 +1,6 @@
 package com.sowell.security.config;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.security.handler.DataEncoder;
@@ -22,7 +22,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @return this
 	 */
 	public CoreConfigurerBuilder<T> setCacheManager(BaseCacheManager cacheManager) {
-		IcpCoreManager.setCacheManager(cacheManager);
+		LzCoreManager.setCacheManager(cacheManager);
 		return this;
 	}
 
@@ -32,7 +32,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @param accessTokenHandler accessToken处理器
 	 */
 	public CoreConfigurerBuilder<T> setAccessTokenHandler(IAccessTokenHandler<?> accessTokenHandler) {
-		IcpCoreManager.setAccessTokenHandler(accessTokenHandler);
+		LzCoreManager.setAccessTokenHandler(accessTokenHandler);
 		return this;
 	}
 
@@ -42,7 +42,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @param dataEncoder 请求加解密处理器
 	 */
 	public CoreConfigurerBuilder<T> setRequestDataEncryptHandler(DataEncoder dataEncoder) {
-		IcpCoreManager.setRequestDataEncryptHandler(dataEncoder);
+		LzCoreManager.setRequestDataEncryptHandler(dataEncoder);
 		return this;
 	}
 
@@ -52,7 +52,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @param encryptHandler 加解密开关处理器
 	 */
 	public CoreConfigurerBuilder<T> setEncryptSwitchHandler(EncodeSwitchHandler encryptHandler) {
-		IcpCoreManager.setEncryptSwitchHandler(encryptHandler);
+		LzCoreManager.setEncryptSwitchHandler(encryptHandler);
 		return this;
 	}
 }

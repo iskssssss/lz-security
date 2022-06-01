@@ -1,6 +1,6 @@
 package com.sowell.demo.filter.config;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.config.CoreConfigurer;
 import com.sowell.security.config.CoreConfigurerBuilder;
@@ -8,8 +8,8 @@ import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
 import com.sowell.security.filter.config.SecurityFilterConfigurerAdapter;
 import com.sowell.security.filter.utils.FilterUtil;
-import com.sowell.security.log.IcpLoggerUtil;
-import com.sowell.security.tool.context.IcpContextManager;
+import com.sowell.security.log.LzLoggerUtil;
+import com.sowell.security.tool.context.LzContextManager;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedList;
@@ -30,7 +30,7 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 
 	@Override
 	protected void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer) {
-		System.out.println(IcpCoreManager.getIcpConfig().toString());
+		System.out.println(LzCoreManager.getLzConfig().toString());
 		filterConfigurer
 				.filterUrl()
 				// [非必需] 排除的接口
@@ -58,20 +58,20 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 				.and()
 				// [非必需] 过滤前处理
 				.setFilterBeforeHandler(params -> {
-					IcpLoggerUtil.info(getClass(), "--------------------------------------------------------------");
-					if (IcpContextManager.getRequest().isDecrypt()) {
-						IcpLoggerUtil.info(getClass(), "请求数据已加密。");
+					LzLoggerUtil.info(getClass(), "--------------------------------------------------------------");
+					if (LzContextManager.getRequest().isDecrypt()) {
+						LzLoggerUtil.info(getClass(), "请求数据已加密。");
 						return;
 					}
-					IcpLoggerUtil.info(getClass(), "请求数据未加密。");
+					LzLoggerUtil.info(getClass(), "请求数据未加密。");
 				})
 				// [非必需] 过滤后处理
 				.setFilterAfterHandler(params -> {
-					if (IcpContextManager.getResponse().isEncrypt()) {
-						IcpLoggerUtil.info(getClass(), "响应数据需加密。");
+					if (LzContextManager.getResponse().isEncrypt()) {
+						LzLoggerUtil.info(getClass(), "响应数据需加密。");
 						return;
 					}
-					IcpLoggerUtil.info(getClass(), "响应数据无需加密。");
+					LzLoggerUtil.info(getClass(), "响应数据无需加密。");
 				}).end();
 	}
 }

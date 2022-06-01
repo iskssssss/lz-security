@@ -1,9 +1,9 @@
 package com.sowell.security.defaults;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.TokenConfig;
-import com.sowell.security.context.IcpSecurityContextThreadLocal;
+import com.sowell.security.context.LzSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.security.token.IAccessTokenHandler;
@@ -22,8 +22,8 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 
 	@Override
 	public String generateAccessToken(AuthDetails authDetails) {
-		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
-		long timeoutMillis = IcpCoreManager.getIcpConfig().getTokenConfig().getTimeoutForMillis();
+		final BaseCacheManager cacheManager = LzCoreManager.getCacheManager();
+		long timeoutMillis = LzCoreManager.getLzConfig().getTokenConfig().getTimeoutForMillis();
 		String id = "JWT::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isNotEmpty(idValue)) {
@@ -39,7 +39,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 		if (this.checkExpiration(token)) {
 			return;
 		}
-		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
+		final BaseCacheManager cacheManager = LzCoreManager.getCacheManager();
 		final AuthDetails<?> authDetails = JwtUtil.toBean(token);
 		if (authDetails == null) {
 			return;
@@ -47,9 +47,9 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 		String id = "JWT::" + authDetails.getId();
 		cacheManager.remove(id);
 
-		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
 		final String saveName = tokenConfig.getName();
-		final BaseResponse<?> servletResponse = IcpSecurityContextThreadLocal.getServletResponse();
+		final BaseResponse<?> servletResponse = LzSecurityContextThreadLocal.getServletResponse();
 		servletResponse.removeCookie(saveName);
 	}
 
@@ -62,7 +62,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 		if (authDetails == null) {
 			return true;
 		}
-		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
+		final BaseCacheManager cacheManager = LzCoreManager.getCacheManager();
 		String id = "JWT::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isEmpty(idValue)) {
@@ -92,7 +92,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 
 	@Override
 	public String refreshAccessToken(String accessToken) {
-		final BaseCacheManager cacheManager = IcpCoreManager.getCacheManager();
+		final BaseCacheManager cacheManager = LzCoreManager.getCacheManager();
 		final AuthDetails<?> authDetails = this.getAuthDetails(accessToken);
 		String id = "JWT::" + authDetails.getId();
 		cacheManager.remove(id);

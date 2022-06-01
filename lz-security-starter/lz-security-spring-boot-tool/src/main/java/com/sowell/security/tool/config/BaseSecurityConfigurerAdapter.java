@@ -1,9 +1,9 @@
 package com.sowell.security.tool.config;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.config.CoreConfigurer;
 import com.sowell.security.config.CoreConfigurerBuilder;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.LzConfig;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
@@ -31,9 +31,9 @@ public abstract class BaseSecurityConfigurerAdapter implements EnvironmentAware 
 
     @Override
     public void setEnvironment(Environment environment) {
-        IcpConfig icpConfig = Binder.get(environment).bind("lz.security", IcpConfig.class).get();
-        IcpCoreManager.setIcpConfig(icpConfig);
-        this.config(IcpCoreManager.getCoreConfigurer());
+        LzConfig lzConfig = Binder.get(environment).bind("lz.security", LzConfig.class).get();
+        LzCoreManager.setLzConfig(lzConfig);
+        this.config(LzCoreManager.getCoreConfigurer());
         this.init();
     }
 }

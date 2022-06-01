@@ -1,6 +1,6 @@
 package com.sowell.security.defaults;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.annotation.DataEncodeSwitch;
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.config.EncryptConfig;
@@ -21,7 +21,7 @@ public class DefaultEncodeSwitchHandler implements EncodeSwitchHandler {
 	private final EncryptConfig encryptConfig;
 
 	public DefaultEncodeSwitchHandler() {
-		encryptConfig = IcpCoreManager.getIcpConfig().getEncryptConfig();
+		encryptConfig = LzCoreManager.getLzConfig().getEncryptConfig();
 	}
 
 	@Override

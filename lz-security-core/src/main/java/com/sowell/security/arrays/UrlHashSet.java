@@ -1,7 +1,7 @@
 package com.sowell.security.arrays;
 
-import com.sowell.security.IcpCoreManager;
-import com.sowell.security.context.IcpContext;
+import com.sowell.security.LzCoreManager;
+import com.sowell.security.context.LzContext;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,10 +40,10 @@ public class UrlHashSet extends HashSet<String> {
 		if (isContains) {
 			return true;
 		}
-		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
+		final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
 		for (String value : this) {
 			final String pattern = value.replace(" ", "");
-			if (icpContext.matchUrl(pattern, url)) {
+			if (lzContext.matchUrl(pattern, url)) {
 				return true;
 			}
 		}

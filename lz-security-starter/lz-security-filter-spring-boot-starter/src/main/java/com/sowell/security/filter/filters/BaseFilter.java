@@ -1,13 +1,13 @@
 //package com.sowell.security.filter.filters;
 //
-//import com.sowell.security.IcpConstant;
-//import com.sowell.security.IcpManager;
-//import com.sowell.security.tool.context.IcpSpringContextHolder;
+//import com.sowell.security.LzConstant;
+//import com.sowell.security.LzManager;
+//import com.sowell.security.tool.context.LzSpringContextHolder;
 //import com.sowell.security.exception.base.SecurityException;
-//import com.sowell.security.filter.IcpFilter;
-//import com.sowell.security.fun.IcpFilterAuthStrategy;
+//import com.sowell.security.filter.LzFilter;
+//import com.sowell.security.fun.LzFilterAuthStrategy;
 //import com.sowell.security.handler.RequestDataEncryptHandler;
-//import com.sowell.security.log.IcpLoggerUtil;
+//import com.sowell.security.log.LzLoggerUtil;
 //import com.sowell.security.tool.mode.SwRequest;
 //import com.sowell.security.tool.mode.SwResponse;
 //import com.sowell.security.utils.ServletUtil;
@@ -34,11 +34,11 @@
 //	/**
 //	 * 过滤前处理
 //	 */
-//	protected IcpFilterAuthStrategy filterBeforeHandler;
+//	protected LzFilterAuthStrategy filterBeforeHandler;
 //	/**
 //	 * 过滤后处理
 //	 */
-//	protected IcpFilterAuthStrategy filterAfterHandler;
+//	protected LzFilterAuthStrategy filterAfterHandler;
 //
 //	/**
 //	 * 过滤
@@ -52,7 +52,7 @@
 //
 //	@Override
 //	public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
-//		IcpSpringContextHolder.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
+//		LzSpringContextHolder.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 //			SecurityException securityException = null;
 //			try {
 //				// TODO 解密处理
@@ -64,7 +64,7 @@
 //				if (swResponse.isEncrypt()) {
 //					try {
 //						byte[] encryptBytes;
-//						final RequestDataEncryptHandler requestDataEncryptHandler = IcpManager.getRequestDataEncryptHandler();
+//						final RequestDataEncryptHandler requestDataEncryptHandler = LzManager.getRequestDataEncryptHandler();
 //						final byte[] responseDataBytes = swResponse.getResponseDataBytes();
 //						final RequestResult resultObject = ByteUtil.toObject(responseDataBytes, RequestResult.class);
 //						if (resultObject != null) {
@@ -91,23 +91,23 @@
 //					securityException = new SecurityException(RCode.INTERNAL_SERVER_ERROR, e);
 //				}
 //				if (securityException.getCause() != null){
-//					IcpLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
+//					LzLoggerUtil.error(getClass(), securityException.getMessage(), securityException);
 //				} else {
-//					IcpLoggerUtil.error(getClass(), e.getMessage(), e);
+//					LzLoggerUtil.error(getClass(), e.getMessage(), e);
 //				}
 //			}
 //			finally {
-//				final Object handlerData = IcpFilter.getFilterDataHandler().handler(swRequest, swResponse, securityException);
+//				final Object handlerData = LzFilter.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 //				if (securityException != null && handlerData != null) {
 //					if (handlerData instanceof RCode) {
-//						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
+//						ServletUtil.printResponse(LzSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (RCode) handlerData);
 //					} else {
-//						ServletUtil.printResponse(IcpSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
+//						ServletUtil.printResponse(LzSpringContextHolder.getResponse(), ContentTypeEnum.JSON.name, (byte[]) handlerData);
 //					}
 //				}
-//				final Object logSwitch = swRequest.getAttribute(IcpConstant.LOG_SWITCH);
+//				final Object logSwitch = swRequest.getAttribute(LzConstant.LOG_SWITCH);
 //				if (logSwitch != null) {
-//					IcpFilter.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(IcpConstant.LOG_ENTITY_CACHE_KEY), securityException);
+//					LzFilter.getFilterLogHandler().afterHandler(swRequest, swResponse, swRequest.getAttribute(LzConstant.LOG_ENTITY_CACHE_KEY), securityException);
 //				}
 //			}
 //		});
@@ -124,8 +124,8 @@
 //		try {
 //			final String requestPath = swRequest.getRequestPath();
 //			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
-//			final boolean isIncludeUrl = !IcpFilter.getFilterConfigurer().getIncludeUrls().containsUrl(requestPath);
-//			final boolean isExcludeUrl = IcpFilter.getFilterConfigurer().getExcludeUrls().containsUrl(requestPath);
+//			final boolean isIncludeUrl = !LzFilter.getFilterConfigurer().getIncludeUrls().containsUrl(requestPath);
+//			final boolean isExcludeUrl = LzFilter.getFilterConfigurer().getExcludeUrls().containsUrl(requestPath);
 //			if (isIncludeUrl || isExcludeUrl) {
 //				return true;
 //			}

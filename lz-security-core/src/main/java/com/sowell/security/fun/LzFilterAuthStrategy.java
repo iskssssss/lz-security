@@ -7,7 +7,7 @@ package com.sowell.security.fun;
  * @Author: 孔胜
  * @Date: 2021/09/12 22:41
  */
-public interface IcpFilterAuthStrategy {
+public interface LzFilterAuthStrategy {
 
 	/**
 	 * 执行方法

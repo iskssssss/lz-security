@@ -13,7 +13,7 @@ import java.util.List;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/08/26 11:27
  */
-public class IcpConfig {
+public class LzConfig {
 
 	/**
 	 * 是否在控制台打印日志信息(默认打印)
@@ -34,7 +34,7 @@ public class IcpConfig {
 	/**
 	 * 功能类型:AUTH/FILTER（暂时无用）
 	 */
-	private String icpType = "FILTER";
+	private String type = "FILTER";
 
 	/**
 	 * 获取是否打印日志
@@ -120,17 +120,17 @@ public class IcpConfig {
 	 *
 	 * @return 启用类型
 	 */
-	public String getIcpType() {
-		return icpType;
+	public String getType() {
+		return type;
 	}
 
 	/**
 	 * 设置类型
 	 *
-	 * @param icpType 类型
+	 * @param type 类型
 	 */
-	public void setIcpType(String icpType) {
-		this.icpType = icpType;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@Override

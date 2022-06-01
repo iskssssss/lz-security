@@ -1,6 +1,6 @@
 package com.sowell.security.auth.handler.impl;
 
-import com.sowell.security.auth.IcpAuthManager;
+import com.sowell.security.auth.LzAuthManager;
 import com.sowell.security.auth.config.AuthConfigurer;
 import com.sowell.security.auth.handler.AbstractAuthorizationHandler;
 import com.sowell.security.auth.handler.AccessStatusHandler;
@@ -34,7 +34,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
     private final String codeKey;
 
     public AuthorizationHandler() {
-        AuthConfigurer authConfigurer = IcpAuthManager.getAuthConfigurer();
+        AuthConfigurer authConfigurer = LzAuthManager.getAuthConfigurer();
         identifierName = authConfigurer.getIdentifierKey();
         credentialName = authConfigurer.getCredentialKey();
         codeKey = authConfigurer.getCodeKey();
@@ -59,7 +59,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
                 throw new ParamsException();
             }
             // 验证验证码
-            final CaptchaHandler captchaHandler = IcpAuthManager.getCaptchaHandler();
+            final CaptchaHandler captchaHandler = LzAuthManager.getCaptchaHandler();
             if (captchaHandler != null) {
                 final Object codeValue = loginData.get(codeKey);
                 if (StringUtil.isEmpty(codeValue)) {
@@ -68,19 +68,19 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
                 captchaHandler.handler(codeValue);
             }
             // 获取用户信息
-            final UserDetailsService userDetailsService = IcpAuthManager.getUserDetailsService();
+            final UserDetailsService userDetailsService = LzAuthManager.getUserDetailsService();
             final AuthDetails<?> authDetails = userDetailsService.readUserByUsername((String) usernameValue);
             // 验证用户密码
             final String password = authDetails.getCredential();
-            final PasswordEncoder passwordEncoder = IcpAuthManager.getPasswordEncoder();
+            final PasswordEncoder passwordEncoder = LzAuthManager.getPasswordEncoder();
             if (!passwordEncoder.matches((String) passwordValue, password)) {
                 throw new BadCredentialsException(authDetails.getIdentifier());
             }
             // 验证账号信息
-            final AccessStatusHandler accessStatusHandler = IcpAuthManager.getAccessStatusHandler();
+            final AccessStatusHandler accessStatusHandler = LzAuthManager.getAccessStatusHandler();
             accessStatusHandler.verification(authDetails);
             // 验证成功
-            final AuthSuccessHandler authSuccessHandler = IcpAuthManager.getLoginSuccessHandler();
+            final AuthSuccessHandler authSuccessHandler = LzAuthManager.getLoginSuccessHandler();
             authSuccessHandler.success(swRequest, swResponse, authDetails);
             return true;
         } catch (SecurityException securityException) {
@@ -88,7 +88,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
             if (StringUtil.isEmpty(securityException.getResponseData())) {
                 securityException.setResponseData(usernameValue);
             }
-            final AuthErrorHandler authErrorHandler = IcpAuthManager.getLoginErrorHandler();
+            final AuthErrorHandler authErrorHandler = LzAuthManager.getLoginErrorHandler();
             authErrorHandler.error(swRequest, swResponse, securityException);
             return false;
         }

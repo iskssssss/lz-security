@@ -15,13 +15,13 @@ import java.io.Closeable;
  * @Author: 孔胜
  * @Date: 2021/09/10 17:29
  */
-public abstract class IcpStorage<T> implements Closeable {
+public abstract class LzStorage<T> implements Closeable {
 
 	protected final long startRequestTime;
 	protected BaseRequest<T> request;
 	protected UserAgentInfo userAgentInfo = null;
 
-	protected IcpStorage(
+	protected LzStorage(
 			BaseRequest<T> request,
 			long startRequestTime
 	) {

@@ -1,6 +1,6 @@
 package com.sowell.security.defaults;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.handler.DataEncoder;
 import com.sowell.tool.encrypt.model.SwPrivateKey;
 
@@ -15,14 +15,14 @@ public class DefaultDataEncoder implements DataEncoder {
 
 	@Override
 	public String encrypt(byte[] bytes) {
-		final SwPrivateKey priKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKeyStr();
+		final SwPrivateKey priKey = LzCoreManager.getLzConfig().getEncryptConfig().getPrivateKeyStr();
 		final String encryptResult = priKey.encrypt(bytes);
 		return encryptResult;
 	}
 
 	@Override
 	public Object decrypt(byte[] bytes) {
-		final SwPrivateKey privateKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPrivateKeyStr();
+		final SwPrivateKey privateKey = LzCoreManager.getLzConfig().getEncryptConfig().getPrivateKeyStr();
 		final Object decryptResult = privateKey.decrypt(bytes);
 		return decryptResult;
 	}

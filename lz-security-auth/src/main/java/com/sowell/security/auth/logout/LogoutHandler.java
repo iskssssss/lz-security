@@ -1,6 +1,6 @@
 package com.sowell.security.auth.logout;
 
-import com.sowell.security.auth.IcpAuthManager;
+import com.sowell.security.auth.LzAuthManager;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 
@@ -18,7 +18,7 @@ public class LogoutHandler extends AbstractLogoutHandler {
             BaseRequest<?> request,
             BaseResponse<?> response
     ) {
-        final LogoutService logoutService = IcpAuthManager.getLogoutService();
+        final LogoutService logoutService = LzAuthManager.getLogoutService();
         return logoutService.logout(request, response);
     }
 }

@@ -23,13 +23,13 @@ import java.nio.charset.StandardCharsets;
  * @Author: 孔胜
  * @Date: 2021/09/17 11:41
  */
-public class SwResponse extends BaseResponse<HttpServletResponse> {
+public class LzResponse extends BaseResponse<HttpServletResponse> {
 
-	public SwResponse(HttpServletResponse response) {
+	public LzResponse(HttpServletResponse response) {
 		super(response);
 	}
 
-	public SwResponse(HttpServletResponse response, boolean encrypt) {
+	public LzResponse(HttpServletResponse response, boolean encrypt) {
 		super(response);
 		super.encrypt = encrypt;
 	}

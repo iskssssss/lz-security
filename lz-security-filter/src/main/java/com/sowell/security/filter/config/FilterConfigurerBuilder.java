@@ -1,9 +1,9 @@
 package com.sowell.security.filter.config;
 
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.filter.LzFilterManager;
 import com.sowell.security.filter.filters.AbsInterfacesFilterBuilder;
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.fun.LzFilterAuthStrategy;
 import com.sowell.security.handler.BaseFilterErrorHandler;
 import com.sowell.security.log.BaseFilterLogHandler;
 
@@ -20,8 +20,8 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 
 	protected final FilterUrl filterUrl = new FilterUrl();
 	protected final FilterConfig filterConfig = new FilterConfig();
-	protected IcpFilterAuthStrategy filterAfterHandler = params -> { };
-	protected IcpFilterAuthStrategy filterBeforeHandler = params -> { };
+	protected LzFilterAuthStrategy filterAfterHandler = params -> { };
+	protected LzFilterAuthStrategy filterBeforeHandler = params -> { };
 
 	/**
 	 * 获取接口过滤设置器
@@ -43,7 +43,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @return this
 	 */
 	public FilterConfigurerBuilder<T> setFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
-		IcpFilterManager.setFilterLogHandler(filterLogHandler);
+		LzFilterManager.setFilterLogHandler(filterLogHandler);
 		return this;
 	}
 
@@ -54,7 +54,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @return this
 	 */
 	public FilterConfigurerBuilder<T> setFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
-		IcpFilterManager.setFilterErrorHandler(filterErrorHandler);
+		LzFilterManager.setFilterErrorHandler(filterErrorHandler);
 		return this;
 	}
 
@@ -64,7 +64,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @param filterBeforeHandler 过滤后处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> setFilterBeforeHandler(IcpFilterAuthStrategy filterBeforeHandler) {
+	public FilterConfigurerBuilder<T> setFilterBeforeHandler(LzFilterAuthStrategy filterBeforeHandler) {
 		this.filterBeforeHandler = filterBeforeHandler;
 		return this;
 	}
@@ -75,7 +75,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 * @param filterAfterHandler 过滤后处理器
 	 * @return this
 	 */
-	public FilterConfigurerBuilder<T> setFilterAfterHandler(IcpFilterAuthStrategy filterAfterHandler) {
+	public FilterConfigurerBuilder<T> setFilterAfterHandler(LzFilterAuthStrategy filterAfterHandler) {
 		this.filterAfterHandler = filterAfterHandler;
 		return this;
 	}
@@ -101,7 +101,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		 * @return this
 		 */
 		public FilterConfig linkInterfacesFilter(AbsInterfacesFilterBuilder... interfacesFilterList) {
-			IcpFilterManager.linkInterfacesFilter(interfacesFilterList);
+			LzFilterManager.linkInterfacesFilter(interfacesFilterList);
 			return this;
 		}
 

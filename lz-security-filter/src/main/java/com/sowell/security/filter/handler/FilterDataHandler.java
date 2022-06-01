@@ -3,7 +3,7 @@ package com.sowell.security.filter.handler;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.base.SecurityException;
-import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.filter.LzFilterManager;
 import com.sowell.tool.core.bytes.ByteUtil;
 import com.sowell.tool.core.enums.RCode;
 import com.sowell.tool.core.string.StringUtil;
@@ -36,7 +36,7 @@ public final class FilterDataHandler {
 
 	private byte[] errorHandler(BaseRequest<?> request, BaseResponse<?> response, SecurityException securityException) {
 		// 异常数据处理
-		Object errorHandler = IcpFilterManager.getFilterErrorHandler().errorHandler(request, response, securityException);
+		Object errorHandler = LzFilterManager.getFilterErrorHandler().errorHandler(request, response, securityException);
 		if (StringUtil.isEmpty(errorHandler)) {
 			return null;
 		}

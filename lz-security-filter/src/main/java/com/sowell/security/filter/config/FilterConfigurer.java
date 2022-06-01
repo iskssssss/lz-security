@@ -1,7 +1,7 @@
 package com.sowell.security.filter.config;
 
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.fun.LzFilterAuthStrategy;
 
 
 /**
@@ -18,7 +18,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      *
      * @return 过滤前处理方法
      */
-    public IcpFilterAuthStrategy getFilterBeforeHandler() {
+    public LzFilterAuthStrategy getFilterBeforeHandler() {
         return super.filterBeforeHandler;
     }
 
@@ -27,7 +27,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      *
      * @return 过滤后处理方法
      */
-    public IcpFilterAuthStrategy getFilterAfterHandler() {
+    public LzFilterAuthStrategy getFilterAfterHandler() {
         return super.filterAfterHandler;
     }
 

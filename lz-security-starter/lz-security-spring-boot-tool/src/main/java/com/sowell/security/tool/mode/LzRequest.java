@@ -1,8 +1,8 @@
 package com.sowell.security.tool.mode;
 
 import cn.hutool.core.io.FastByteArrayOutputStream;
-import com.sowell.security.IcpCoreManager;
-import com.sowell.security.context.IcpContext;
+import com.sowell.security.LzCoreManager;
+import com.sowell.security.context.LzContext;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.tool.utils.CookieUtil;
@@ -23,13 +23,13 @@ import java.util.List;
  * @Author: 孔胜
  * @Date: 2021/09/17 11:41
  */
-public class SwRequest extends BaseRequest<HttpServletRequest> {
+public class LzRequest extends BaseRequest<HttpServletRequest> {
 
-	public SwRequest(HttpServletRequest request) {
+	public LzRequest(HttpServletRequest request) {
 		super(request);
 	}
 
-	public SwRequest(HttpServletRequest request, boolean decrypt) {
+	public LzRequest(HttpServletRequest request, boolean decrypt) {
 		super(request);
 		super.decrypt = decrypt;
 	}
@@ -46,8 +46,8 @@ public class SwRequest extends BaseRequest<HttpServletRequest> {
 
 	@Override
 	public boolean matchUrl(String path) {
-		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
-		return icpContext.matchUrl(path, this.getRequestPath());
+		final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
+		return lzContext.matchUrl(path, this.getRequestPath());
 	}
 
 	@Override

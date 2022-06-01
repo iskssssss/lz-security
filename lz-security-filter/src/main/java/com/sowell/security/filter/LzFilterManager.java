@@ -1,10 +1,10 @@
 package com.sowell.security.filter;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.annotation.LogBeforeFilter;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.filter.config.FilterConfigurer;
-import com.sowell.security.context.IcpContext;
+import com.sowell.security.context.LzContext;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.filter.defaults.DefaultFilterErrorHandler;
@@ -24,7 +24,7 @@ import com.sowell.tool.core.enums.RCode;
  * @Author: 孔胜
  * @Date: 2021/09/10 16:22
  */
-public class IcpFilterManager extends IcpCoreManager {
+public class LzFilterManager extends LzCoreManager {
 
 	//====================================================================================================================================
 
@@ -55,7 +55,7 @@ public class IcpFilterManager extends IcpCoreManager {
 		if (interfacesFilterList == null || interfacesFilterList.length < 1) {
 			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR.getCode(), "接口过滤执行链不可为空!");
 		}
-		AbsInterfacesFilterBuilder ai = IcpFilterManager.INTERFACES_FILTER;
+		AbsInterfacesFilterBuilder ai = LzFilterManager.INTERFACES_FILTER;
 		boolean existLogBeforeFilter = false;
 		for (final AbsInterfacesFilterBuilder interfacesFilter : interfacesFilterList) {
 			if (interfacesFilter.getClass().getAnnotation(LogBeforeFilter.class) != null) {
@@ -75,7 +75,7 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @return 接口过滤执行链
 	 */
 	public static AbsInterfacesFilterBuilder getInterfacesFilter() {
-		return IcpFilterManager.INTERFACES_FILTER;
+		return LzFilterManager.INTERFACES_FILTER;
 	}
 
 	//====================================================================================================================================
@@ -88,7 +88,7 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @param filterLogHandler 过滤日志处理器
 	 */
 	public static void setFilterLogHandler(BaseFilterLogHandler filterLogHandler) {
-		IcpFilterManager.filterLogHandler = filterLogHandler;
+		LzFilterManager.filterLogHandler = filterLogHandler;
 	}
 
 	/**
@@ -97,14 +97,14 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @return 日志处理器
 	 */
 	public static BaseFilterLogHandler getFilterLogHandler() {
-		if (IcpFilterManager.filterLogHandler == null) {
-			synchronized (IcpFilterManager.class) {
-				if (IcpFilterManager.filterLogHandler == null) {
-					IcpFilterManager.filterLogHandler = new DefaultFilterLogHandler();
+		if (LzFilterManager.filterLogHandler == null) {
+			synchronized (LzFilterManager.class) {
+				if (LzFilterManager.filterLogHandler == null) {
+					LzFilterManager.filterLogHandler = new DefaultFilterLogHandler();
 				}
 			}
 		}
-		return IcpFilterManager.filterLogHandler;
+		return LzFilterManager.filterLogHandler;
 	}
 
 	//====================================================================================================================================
@@ -117,7 +117,7 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @param filterErrorHandler 过滤错误处理器
 	 */
 	public static void setFilterErrorHandler(BaseFilterErrorHandler<?> filterErrorHandler) {
-		IcpFilterManager.filterErrorHandler = filterErrorHandler;
+		LzFilterManager.filterErrorHandler = filterErrorHandler;
 	}
 
 	/**
@@ -126,14 +126,14 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @return 过滤错误处理器
 	 */
 	public static BaseFilterErrorHandler<?> getFilterErrorHandler() {
-		if (IcpFilterManager.filterErrorHandler == null) {
-			synchronized (IcpFilterManager.class) {
-				if (IcpFilterManager.filterErrorHandler == null) {
-					IcpFilterManager.filterErrorHandler = new DefaultFilterErrorHandler();
+		if (LzFilterManager.filterErrorHandler == null) {
+			synchronized (LzFilterManager.class) {
+				if (LzFilterManager.filterErrorHandler == null) {
+					LzFilterManager.filterErrorHandler = new DefaultFilterErrorHandler();
 				}
 			}
 		}
-		return IcpFilterManager.filterErrorHandler;
+		return LzFilterManager.filterErrorHandler;
 	}
 
 	//====================================================================================================================================
@@ -146,7 +146,7 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @return 数据处理器
 	 */
 	public static FilterDataHandler getFilterDataHandler() {
-		return IcpFilterManager.FILTER_DATA_HANDLER;
+		return LzFilterManager.FILTER_DATA_HANDLER;
 	}
 
 	//====================================================================================================================================
@@ -159,10 +159,10 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * @throws SecurityException 过滤错误
 	 */
 	public static boolean filter(Object... params) throws SecurityException {
-		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
-		BaseRequest<?> request = icpContext.getRequest();
-		BaseResponse<?> response = icpContext.getResponse();
-		IInterfacesFilter interfacesFilter = IcpFilterManager.getInterfacesFilter();
+		final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
+		BaseRequest<?> request = lzContext.getRequest();
+		BaseResponse<?> response = lzContext.getResponse();
+		IInterfacesFilter interfacesFilter = LzFilterManager.getInterfacesFilter();
 		return interfacesFilter.doFilter(request, response, params);
 	}
 
@@ -170,7 +170,7 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * 过滤器初始化
 	 */
 	public static void init() {
-		AbsInterfacesFilterBuilder interfacesFilter = IcpFilterManager.getInterfacesFilter();
+		AbsInterfacesFilterBuilder interfacesFilter = LzFilterManager.getInterfacesFilter();
 		while (interfacesFilter != null) {
 			interfacesFilter.init();
 			interfacesFilter = ((AbsInterfacesFilterBuilder) interfacesFilter.getNextFilter());
@@ -181,7 +181,7 @@ public class IcpFilterManager extends IcpCoreManager {
 	 * 过滤器销毁
 	 */
 	public static void destroy() {
-		AbsInterfacesFilterBuilder interfacesFilter = IcpFilterManager.getInterfacesFilter();
+		AbsInterfacesFilterBuilder interfacesFilter = LzFilterManager.getInterfacesFilter();
 		while (interfacesFilter != null) {
 			interfacesFilter.destroy();
 			interfacesFilter = ((AbsInterfacesFilterBuilder) interfacesFilter.getNextFilter());

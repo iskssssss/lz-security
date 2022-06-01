@@ -3,10 +3,9 @@ package com.sowell.security.context;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.context.model.Box;
-import com.sowell.security.context.model.IcpStorage;
+import com.sowell.security.context.model.LzStorage;
 
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
@@ -15,16 +14,16 @@ import java.util.Optional;
  * @Author: 孔胜
  * @Date: 2021/08/20 15:49
  */
-public class IcpSecurityContextThreadLocal {
+public class LzSecurityContextThreadLocal {
 
 	private static final ThreadLocal<Box> BOX_THREAD_LOCAL = new InheritableThreadLocal<>();
 
 	public static void setBox(
 			BaseRequest<?> request,
 			BaseResponse<?> response,
-			IcpStorage<?> icpStorage
+			LzStorage<?> lzStorage
 	) {
-		BOX_THREAD_LOCAL.set(new Box(request, response, icpStorage));
+		BOX_THREAD_LOCAL.set(new Box(request, response, lzStorage));
 	}
 
 	public static void remove() {
@@ -61,11 +60,11 @@ public class IcpSecurityContextThreadLocal {
 		return box.getResponse();
 	}
 
-	public static IcpStorage getIcpStorage() {
+	public static LzStorage getLzStorage() {
 		final Box box = getBox();
 		if (box == null) {
 			return null;
 		}
-		return box.getIcpStorage();
+		return box.getLzStorage();
 	}
 }

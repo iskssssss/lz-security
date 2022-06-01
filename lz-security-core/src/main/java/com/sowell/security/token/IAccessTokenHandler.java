@@ -1,9 +1,9 @@
 package com.sowell.security.token;
 
-import com.sowell.security.IcpConstant;
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzConstant;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.config.TokenConfig;
-import com.sowell.security.context.IcpSecurityContextThreadLocal;
+import com.sowell.security.context.LzSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
 import com.sowell.security.exception.base.SecurityException;
@@ -26,11 +26,11 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 	 * @return AccessToken
 	 */
 	default String getAccessTokenInfo() {
-		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
+		final BaseRequest<?> servletRequest = LzSecurityContextThreadLocal.getServletRequest();
 		if (servletRequest == null) {
 			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
 		}
-		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		// 从请求头中获取Token
 		String accessToken = servletRequest.getHeader(saveName);
@@ -46,10 +46,10 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 		if (StringUtil.isEmpty(prefix)) {
 			return accessToken;
 		}
-		if (accessToken.startsWith(prefix + IcpConstant.PREFIX_TOKEN_SPLIT)) {
-			return StringUtil.delString(accessToken, prefix + IcpConstant.PREFIX_TOKEN_SPLIT);
-		} else if (accessToken.startsWith(prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE)) {
-			return StringUtil.delString(accessToken, prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE);
+		if (accessToken.startsWith(prefix + LzConstant.PREFIX_TOKEN_SPLIT)) {
+			return StringUtil.delString(accessToken, prefix + LzConstant.PREFIX_TOKEN_SPLIT);
+		} else if (accessToken.startsWith(prefix + LzConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE)) {
+			return StringUtil.delString(accessToken, prefix + LzConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE);
 		} else {
 			throw new HeaderNotAccessTokenException();
 		}

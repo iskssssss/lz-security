@@ -2,10 +2,10 @@
 //
 //import com.sowell.common.core.web.result.R;
 //import com.sowell.demo.filter.model.AccessTokenVO;
-//import com.sowell.security.IcpCoreManager;
+//import com.sowell.security.LzCoreManager;
 //import com.sowell.security.annotation.DataEncodeSwitch;
 //import com.sowell.security.defaults.DefaultAuthDetails;
-//import com.sowell.security.config.IcpConfig;
+//import com.sowell.security.config.LzConfig;
 //import com.sowell.security.annotation.ExcludeInterface;
 //import com.sowell.security.token.AccessTokenUtil;
 //import com.sowell.security.plugins.utils.RedisUtil;
@@ -69,7 +69,7 @@
 //		defaultAuthDetails.setIdentifier(appKey);
 //		defaultAuthDetails.setCredential(appSecret);
 //		final String token = AccessTokenUtil.generateAccessToken(defaultAuthDetails, true);
-//		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+//		final LzConfig.TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
 //		return (new AccessTokenVO() {{
 //			setAccessToken(token);
 //			setTtl(tokenConfig.getTimeoutForMillis());

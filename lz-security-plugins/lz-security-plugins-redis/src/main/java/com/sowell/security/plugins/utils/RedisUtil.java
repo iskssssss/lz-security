@@ -1,7 +1,7 @@
 package com.sowell.security.plugins.utils;
 
-import com.sowell.security.log.IcpLogger;
-import com.sowell.security.log.IcpLoggerUtil;
+import com.sowell.security.log.LzLogger;
+import com.sowell.security.log.LzLoggerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @SuppressWarnings("unchecked")
 public final class RedisUtil {
-    private static final IcpLogger log = IcpLoggerUtil.getIcpLogger(RedisUtil.class);
+    private static final LzLogger log = LzLoggerUtil.getLzLogger(RedisUtil.class);
 
     private static final String ILLEGAL_ARGUMENT_MESSAGE = "参数列表不可有空值.";
     private static final String TIMEOUT_MESSAGE = "过期时间不可为零.";

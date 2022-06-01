@@ -3,8 +3,8 @@ package com.sowell.security.filter.filters;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.base.SecurityException;
-import com.sowell.security.log.IcpLogger;
-import com.sowell.security.log.IcpLoggerUtil;
+import com.sowell.security.log.LzLogger;
+import com.sowell.security.log.LzLoggerUtil;
 
 /**
  * @Version 版权 Copyright(c)2021 浙江设维信息技术有限公司
@@ -14,14 +14,14 @@ import com.sowell.security.log.IcpLoggerUtil;
  * @Date: 2021/6/25 12:23
  */
 public class StartFilter extends AbsInterfacesFilterBuilder {
-    protected final IcpLogger icpLogger = IcpLoggerUtil.getIcpLogger(StartFilter.class);
+    protected final LzLogger lzLogger = LzLoggerUtil.getLzLogger(StartFilter.class);
 
     @Override
     public void init() { }
 
     @Override
     public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
-        icpLogger.info("过滤接口：" + request.getRequestPath());
+        lzLogger.info("过滤接口：" + request.getRequestPath());
         return super.next(request, response, params);
     }
 

@@ -1,17 +1,17 @@
 package com.sowell.security.auth.filters;
 
-import com.sowell.security.auth.IcpAuthManager;
+import com.sowell.security.auth.LzAuthManager;
 import com.sowell.security.auth.annotation.AnonymousCheck;
 import com.sowell.security.auth.annotation.AuthCheck;
 import com.sowell.security.exception.base.SecurityException;
-import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.filter.LzFilterManager;
 import com.sowell.security.annotation.ExcludeInterface;
 import com.sowell.security.annotation.IncludeInterface;
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.fun.LzFilterAuthStrategy;
 import com.sowell.security.token.AccessTokenUtil;
 import com.sowell.security.tool.filters.BaseFilterCore;
-import com.sowell.security.tool.mode.SwRequest;
-import com.sowell.security.tool.mode.SwResponse;
+import com.sowell.security.tool.mode.LzRequest;
+import com.sowell.security.tool.mode.LzResponse;
 import com.sowell.tool.core.enums.AuthCode;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
@@ -25,29 +25,29 @@ import javax.servlet.ServletException;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/03 11:22
  */
-public class IcpAuthFilterCore extends BaseFilterCore {
+public class LzAuthFilterCore extends BaseFilterCore {
 
 	/**
 	 * 过滤前处理
 	 */
-	private IcpFilterAuthStrategy authBeforeHandler;
+	private LzFilterAuthStrategy authBeforeHandler;
 	/**
 	 * 过滤后处理
 	 */
-	private IcpFilterAuthStrategy authAfterHandler;
+	private LzFilterAuthStrategy authAfterHandler;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		this.authBeforeHandler = IcpAuthManager.getAuthConfigurer().getAuthBeforeHandler();
-		this.authAfterHandler = IcpAuthManager.getAuthConfigurer().getAuthAfterHandler();
+		this.authBeforeHandler = LzAuthManager.getAuthConfigurer().getAuthBeforeHandler();
+		this.authAfterHandler = LzAuthManager.getAuthConfigurer().getAuthAfterHandler();
 	}
 
 	@Override
-	public boolean doFilter(SwRequest swRequest, SwResponse swResponse) {
+	public boolean doFilter(LzRequest lzRequest, LzResponse lzResponse) {
 		try {
 			this.authBeforeHandler.run();
-			final ControllerMethod controllerMethod = swRequest.getControllerMethod();
-			final String requestPath = swRequest.getRequestPath();
+			final ControllerMethod controllerMethod = lzRequest.getControllerMethod();
+			final String requestPath = lzRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
 			if (!includeHandler(controllerMethod, requestPath)) {
 				return true;
@@ -95,13 +95,13 @@ public class IcpAuthFilterCore extends BaseFilterCore {
 		if (excludeInterface != null) {
 			return excludeInterface.open();
 		}
-		if (IcpFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
+		if (LzFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
 			return false;
 		}
 		if (includeInterface != null) {
 			return includeInterface.open();
 		}
-		return IcpFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
+		return LzFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
 	}
 
 	@Override

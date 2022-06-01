@@ -3,7 +3,7 @@
 //import com.sowell.security.annotation.LogBeforeFilter;
 //import com.sowell.security.exception.base.SecurityException;
 //import com.sowell.security.filter.SwInterfacesFilter;
-//import com.sowell.security.log.IcpLoggerUtil;
+//import com.sowell.security.log.LzLoggerUtil;
 //import com.sowell.security.filter.mode.SwRequest;
 //import com.sowell.security.filter.mode.SwResponse;
 //
@@ -18,7 +18,7 @@
 //
 //	@Override
 //	public void init() {
-//		IcpLoggerUtil.info(this.getClass(), "TestInterfacesFilter-init");
+//		LzLoggerUtil.info(this.getClass(), "TestInterfacesFilter-init");
 //	}
 //
 //	@Override
@@ -27,12 +27,12 @@
 //			SwResponse swResponse,
 //			Object... params
 //	) throws SecurityException {
-//		IcpLoggerUtil.info(this.getClass(), "TestInterfacesFilter-filter");
+//		LzLoggerUtil.info(this.getClass(), "TestInterfacesFilter-filter");
 //		return super.next(swRequest, swResponse, params);
 //	}
 //
 //	@Override
 //	public void destroy() {
-//		IcpLoggerUtil.info(this.getClass(), "TestInterfacesFilter-destroy");
+//		LzLoggerUtil.info(this.getClass(), "TestInterfacesFilter-destroy");
 //	}
 //}

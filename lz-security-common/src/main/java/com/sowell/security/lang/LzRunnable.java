@@ -9,6 +9,6 @@ import java.io.Closeable;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:08
  */
-public abstract class IcpRunnable implements Runnable, Closeable {
+public abstract class LzRunnable implements Runnable, Closeable {
 
 }

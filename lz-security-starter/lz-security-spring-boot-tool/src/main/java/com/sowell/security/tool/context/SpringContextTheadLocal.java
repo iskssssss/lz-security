@@ -1,6 +1,6 @@
 package com.sowell.security.tool.context;
 
-import com.sowell.security.context.IcpContextTheadLocal;
+import com.sowell.security.context.LzContextTheadLocal;
 import org.springframework.util.PathMatcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/09 14:02
  */
-public class SpringContextTheadLocal extends IcpContextTheadLocal<HttpServletRequest, HttpServletResponse> {
+public class SpringContextTheadLocal extends LzContextTheadLocal<HttpServletRequest, HttpServletResponse> {
 	private final PathMatcher pathMatcher;
 
 	public SpringContextTheadLocal(PathMatcher pathMatcher) {

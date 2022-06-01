@@ -1,7 +1,7 @@
 package com.sowell.security.tool.spring;
 
-import com.sowell.security.IcpCoreManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.LzCoreManager;
+import com.sowell.security.config.LzConfig;
 import com.sowell.security.tool.utils.SpringUtil;
 import com.sowell.tool.reflect.model.ControllerMethod;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -22,8 +22,8 @@ public class BeanRegister {
 
 	@Bean
 	@ConfigurationProperties("lz.security")
-	public IcpConfig registerIcpConfig() {
-		return new IcpConfig();
+	public LzConfig registerLzConfig() {
+		return new LzConfig();
 	}
 
 	@Bean
@@ -32,10 +32,10 @@ public class BeanRegister {
 	}
 
 	@Bean
-	@DependsOn({"registerIcpConfig", "registerSpringUtil"})
+	@DependsOn({"registerLzConfig", "registerSpringUtil"})
 	public Map<String, ControllerMethod> registerInterfacesMethodMap() {
-		final IcpConfig icpConfig = IcpCoreManager.getIcpConfig();
-		final List<String> methodScanPath = icpConfig.getControllerMethodScanPathList();
+		final LzConfig lzConfig = LzCoreManager.getLzConfig();
+		final List<String> methodScanPath = lzConfig.getControllerMethodScanPathList();
 		return SpringUtil.getControllerMethodMap(methodScanPath);
 	}
 }

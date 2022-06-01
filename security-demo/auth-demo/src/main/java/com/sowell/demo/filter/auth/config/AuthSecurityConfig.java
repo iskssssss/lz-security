@@ -9,8 +9,7 @@ import com.sowell.security.config.CoreConfigurerBuilder;
 import com.sowell.security.defaults.DefaultAuthDetails;
 import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
-import com.sowell.security.log.IcpLoggerUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sowell.security.log.LzLoggerUtil;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -35,7 +34,7 @@ public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 	protected void config(CoreConfigurerBuilder<CoreConfigurer> coreConfigurer) {
 		coreConfigurer
 				.setEncryptSwitchHandler(testEncodeSwitchHandler);
-		IcpLoggerUtil.info(AuthSecurityConfig.class, "基础信息配置");
+		LzLoggerUtil.info(AuthSecurityConfig.class, "基础信息配置");
 	}
 
 	@Override
@@ -64,12 +63,12 @@ public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 				.and()
 				// 登出信息配置
 				.logout().logoutUrl("/api/logout/logout.do");
-		IcpLoggerUtil.info(AuthSecurityConfig.class, "认证信息配置");
+		LzLoggerUtil.info(AuthSecurityConfig.class, "认证信息配置");
 	}
 
 	@Override
 	protected void filter(FilterConfigurerBuilder<FilterConfigurer>.FilterUrl filterConfigurer) {
-		IcpLoggerUtil.info(AuthSecurityConfig.class, "过滤信息配置");
+		LzLoggerUtil.info(AuthSecurityConfig.class, "过滤信息配置");
 		filterConfigurer
 				.addExcludeUrls(
 						"/favicon.ico", "/webjars/**", "/doc.html",

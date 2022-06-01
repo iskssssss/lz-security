@@ -1,7 +1,7 @@
 //package com.sowell.demo.filter.auth.config.security.handler;
 //
 //import com.sowell.security.cache.BaseCacheManager;
-//import com.sowell.security.log.IcpLoggerUtil;
+//import com.sowell.security.log.LzLoggerUtil;
 //
 //import java.util.HashMap;
 //import java.util.Map;
@@ -19,34 +19,34 @@
 //
 //	@Override
 //	public boolean put(Object key, Object value) {
-//		IcpLoggerUtil.info(getClass(), "MapCacheManager.put(...)");
+//		LzLoggerUtil.info(getClass(), "MapCacheManager.put(...)");
 //		cachaMap.put(key, value);
 //		return false;
 //	}
 //
 //	@Override
 //	public boolean put(Object key, Object value, long timeout) {
-//		IcpLoggerUtil.info(getClass(), "MapCacheManager.put(...)");
+//		LzLoggerUtil.info(getClass(), "MapCacheManager.put(...)");
 //		cachaMap.put(key, value);
 //		return false;
 //	}
 //
 //	@Override
 //	public boolean remove(Object key) {
-//		IcpLoggerUtil.info(getClass(), "MapCacheManager.remove(...)");
+//		LzLoggerUtil.info(getClass(), "MapCacheManager.remove(...)");
 //		cachaMap.remove(key);
 //		return false;
 //	}
 //
 //	@Override
 //	public Object get(Object key) {
-//		IcpLoggerUtil.info(getClass(), "MapCacheManager.get(...)");
+//		LzLoggerUtil.info(getClass(), "MapCacheManager.get(...)");
 //		return cachaMap.get(key);
 //	}
 //
 //	@Override
 //	public Boolean existKey(Object key) {
-//		IcpLoggerUtil.info(getClass(), "MapCacheManager.existKey(...)");
+//		LzLoggerUtil.info(getClass(), "MapCacheManager.existKey(...)");
 //		return cachaMap.containsKey(key);
 //	}
 //

@@ -7,7 +7,7 @@ package com.sowell.security;
  * @Author: 孔胜
  * @Date: 2021/09/13 11:03
  */
-public final class IcpConstant {
+public final class LzConstant {
 
 	//public static final String START_REQUEST_TIME_CACHE_KEY = "START_REQUEST_TIME_CACHE_KEY";
 

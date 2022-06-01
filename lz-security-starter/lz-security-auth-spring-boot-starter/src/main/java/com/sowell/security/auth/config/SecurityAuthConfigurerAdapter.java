@@ -1,8 +1,8 @@
 package com.sowell.security.auth.config;
 
-import com.sowell.security.auth.IcpAuthManager;
-import com.sowell.security.auth.filters.IcpAuthFilterCore;
-import com.sowell.security.filter.IcpFilterManager;
+import com.sowell.security.auth.LzAuthManager;
+import com.sowell.security.auth.filters.LzAuthFilterCore;
+import com.sowell.security.filter.LzFilterManager;
 import com.sowell.security.filter.config.FilterConfigurer;
 import com.sowell.security.filter.config.FilterConfigurerBuilder;
 import com.sowell.security.tool.config.BaseSecurityConfigurerAdapter;
@@ -18,14 +18,14 @@ import org.springframework.context.annotation.Bean;
  */
 public abstract class SecurityAuthConfigurerAdapter extends BaseSecurityConfigurerAdapter {
 
-	protected FilterRegistrationBean<IcpAuthFilterCore> registration;
-	private IcpAuthFilterCore icpAuthFilter;
+	protected FilterRegistrationBean<LzAuthFilterCore> registration;
+	private LzAuthFilterCore lzAuthFilter;
 
 	@Override
 	protected void init() {
-		this.icpAuthFilter = new IcpAuthFilterCore();
-		this.auth(IcpAuthManager.getAuthConfigurer());
-		this.filter(IcpFilterManager.getFilterConfigurer().filterUrl());
+		this.lzAuthFilter = new LzAuthFilterCore();
+		this.auth(LzAuthManager.getAuthConfigurer());
+		this.filter(LzFilterManager.getFilterConfigurer().filterUrl());
 	}
 
 	/**
@@ -43,13 +43,13 @@ public abstract class SecurityAuthConfigurerAdapter extends BaseSecurityConfigur
 	protected abstract void filter(FilterConfigurerBuilder<FilterConfigurer>.FilterUrl filterConfigurer);
 
 	@Bean
-	protected FilterRegistrationBean<IcpAuthFilterCore> initFilterRegistrationBean() {
+	protected FilterRegistrationBean<LzAuthFilterCore> initFilterRegistrationBean() {
 		if (this.registration == null) {
 			this.registration = new FilterRegistrationBean<>();
 			if (this.registration.getUrlPatterns().isEmpty()) {
 				this.registration.addUrlPatterns("/*");
 			}
-			this.registration.setFilter(this.icpAuthFilter);
+			this.registration.setFilter(this.lzAuthFilter);
 			this.registration.setOrder(Integer.MIN_VALUE);
 			this.registration.setName("authFilter");
 		}

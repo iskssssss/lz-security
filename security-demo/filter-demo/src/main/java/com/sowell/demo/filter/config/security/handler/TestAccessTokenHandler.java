@@ -1,7 +1,7 @@
 //package com.sowell.demo.filter.auth.config.security.handler;
 //
 //import cn.hutool.crypto.SmUtil;
-//import com.sowell.security.IcpManager;
+//import com.sowell.security.LzManager;
 //import com.sowell.security.cache.BaseCacheManager;
 //import com.sowell.security.defaults.DefaultAuthDetails;
 //import com.sowell.security.token.IAccessTokenHandler;
@@ -24,8 +24,8 @@
 //
 //	@Override
 //	public Object generateAccessToken(DefaultAuthDetails authDetails) {
-//		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
-//		long timeoutMillis = IcpManager.getIcpConfig().getAccessTokenConfig().getTimeoutForMillis();
+//		final BaseCacheManager cacheManager = LzManager.getCacheManager();
+//		long timeoutMillis = LzManager.getLzConfig().getAccessTokenConfig().getTimeoutForMillis();
 //
 //		final String id = "Test::" + authDetails.getId();
 //		if (cacheManager.existKey(id)) {
@@ -54,7 +54,7 @@
 //
 //	@Override
 //	public DefaultAuthDetails getAuthDetails(Object accessTokenInfo) {
-//		final BaseCacheManager cacheManager = IcpManager.getCacheManager();
+//		final BaseCacheManager cacheManager = LzManager.getCacheManager();
 //		final Object authDetailsObj = cacheManager.get(accessTokenInfo+ "::AUTH_DETAILS");
 //		if (authDetailsObj instanceof AuthDetails) {
 //			return ((DefaultAuthDetails) authDetailsObj);

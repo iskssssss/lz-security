@@ -15,7 +15,7 @@ public class Box implements Closeable {
 	private BaseRequest<?> request;
 	private BaseResponse<?> response;
 
-	private IcpStorage<?> icpStorage;
+	private LzStorage<?> lzStorage;
 
 	public Box() {
 	}
@@ -23,11 +23,11 @@ public class Box implements Closeable {
 	public Box(
 			BaseRequest<?> request,
 			BaseResponse<?> response,
-			IcpStorage<?> icpStorage
+			LzStorage<?> lzStorage
 	) {
 		this.request = request;
 		this.response = response;
-		this.icpStorage = icpStorage;
+		this.lzStorage = lzStorage;
 	}
 
 	public BaseRequest<?> getRequest() {
@@ -38,14 +38,14 @@ public class Box implements Closeable {
 		return response;
 	}
 
-	public IcpStorage<?> getIcpStorage() {
-		return icpStorage;
+	public LzStorage<?> getLzStorage() {
+		return lzStorage;
 	}
 
 	@Override
 	public void close() throws IOException {
 		this.request = null;
 		this.response = null;
-		this.icpStorage.close();
+		this.lzStorage.close();
 	}
 }

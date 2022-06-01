@@ -1,6 +1,6 @@
 package com.sowell.security.config;
 
-import com.sowell.security.IcpConstant;
+import com.sowell.security.LzConstant;
 import com.sowell.tool.core.string.StringUtil;
 
 import java.util.Locale;
@@ -78,7 +78,7 @@ public class TokenConfig {
      */
     public String getType() {
         if (StringUtil.isEmpty(this.type)) {
-            return IcpConstant.TOKEN_TYPE_BY_UUID;
+            return LzConstant.TOKEN_TYPE_BY_UUID;
         }
         return this.type.toUpperCase(Locale.ROOT);
     }

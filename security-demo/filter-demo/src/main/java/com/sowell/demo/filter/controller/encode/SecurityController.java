@@ -1,7 +1,7 @@
 //package com.sowell.demo.filter.controller.encode;
 //
 //import com.sowell.common.core.web.result.R;
-//import com.sowell.security.IcpCoreManager;
+//import com.sowell.security.LzCoreManager;
 //import com.sowell.tool.encrypt.model.SwPublicKey;
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiImplicitParam;
@@ -29,7 +29,7 @@
 //	public R<Object> pubEncrypt(
 //			@RequestParam("text") String text
 //	) {
-//		final SwPublicKey publicKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPublicKeyStr();
+//		final SwPublicKey publicKey = LzCoreManager.getLzConfig().getEncryptConfig().getPublicKeyStr();
 //		return R.success(publicKey.encrypt(text));
 //	}
 //}

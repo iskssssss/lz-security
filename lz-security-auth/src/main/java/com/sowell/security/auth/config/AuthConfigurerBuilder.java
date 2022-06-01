@@ -1,13 +1,13 @@
 package com.sowell.security.auth.config;
 
-import com.sowell.security.auth.IcpAuthManager;
+import com.sowell.security.auth.LzAuthManager;
 import com.sowell.security.auth.handler.*;
 import com.sowell.security.auth.login.AuthErrorHandler;
 import com.sowell.security.auth.login.AuthSuccessHandler;
 import com.sowell.security.auth.logout.LogoutService;
 import com.sowell.security.auth.service.PasswordEncoder;
 import com.sowell.security.auth.service.UserDetailsService;
-import com.sowell.security.fun.IcpFilterAuthStrategy;
+import com.sowell.security.fun.LzFilterAuthStrategy;
 
 /**
  * TODO
@@ -20,8 +20,8 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 
 	protected final LoginHandlerInfo loginHandlerInfo;
 	protected final LogoutHandlerInfo logoutHandlerInfo;
-	protected IcpFilterAuthStrategy authAfterHandler = params -> { };
-	protected IcpFilterAuthStrategy authBeforeHandler = params -> { };
+	protected LzFilterAuthStrategy authAfterHandler = params -> { };
+	protected LzFilterAuthStrategy authBeforeHandler = params -> { };
 
 	public AuthConfigurerBuilder() {
 		this.loginHandlerInfo = new LoginHandlerInfo();
@@ -29,27 +29,27 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	}
 
 	public AuthConfigurerBuilder<T> userDetailsService(UserDetailsService userDetailsService) {
-		IcpAuthManager.setUserDetailsService(userDetailsService);
+		LzAuthManager.setUserDetailsService(userDetailsService);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> captchaHandler(CaptchaHandler captchaHandler) {
-		IcpAuthManager.setCaptchaHandler(captchaHandler);
+		LzAuthManager.setCaptchaHandler(captchaHandler);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> passwordEncoder(PasswordEncoder passwordEncoder) {
-		IcpAuthManager.setPasswordEncoder(passwordEncoder);
+		LzAuthManager.setPasswordEncoder(passwordEncoder);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> accessStatusHandler(AccessStatusHandler accessStatusHandler) {
-		IcpAuthManager.setAccessStatusHandler(accessStatusHandler);
+		LzAuthManager.setAccessStatusHandler(accessStatusHandler);
 		return this;
 	}
 
 	public AuthConfigurerBuilder<T> checkAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
-		IcpAuthManager.setCheckAccessAuthStatusHandler(checkAccessAuthStatusHandler);
+		LzAuthManager.setCheckAccessAuthStatusHandler(checkAccessAuthStatusHandler);
 		return this;
 	}
 
@@ -77,7 +77,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	 * @param authBeforeHandler 认证后处理器
 	 * @return this
 	 */
-	public AuthConfigurerBuilder<T> setAuthBeforeHandler(IcpFilterAuthStrategy authBeforeHandler) {
+	public AuthConfigurerBuilder<T> setAuthBeforeHandler(LzFilterAuthStrategy authBeforeHandler) {
 		this.authBeforeHandler = authBeforeHandler;
 		return this;
 	}
@@ -88,7 +88,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	 * @param authAfterHandler 认证后处理器
 	 * @return this
 	 */
-	public AuthConfigurerBuilder<T> setAuthAfterHandler(IcpFilterAuthStrategy authAfterHandler) {
+	public AuthConfigurerBuilder<T> setAuthAfterHandler(LzFilterAuthStrategy authAfterHandler) {
 		this.authAfterHandler = authAfterHandler;
 		return this;
 	}
@@ -103,12 +103,12 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		protected String rememberMeKey = "rememberMe";
 
 		public LoginHandlerInfo loginErrorHandler(AuthErrorHandler authErrorHandler) {
-			IcpAuthManager.setLoginErrorHandler(authErrorHandler);
+			LzAuthManager.setLoginErrorHandler(authErrorHandler);
 			return LoginHandlerInfo.this;
 		}
 
 		public LoginHandlerInfo loginSuccessHandler(AuthSuccessHandler authSuccessHandler) {
-			IcpAuthManager.setLoginSuccessHandler(authSuccessHandler);
+			LzAuthManager.setLoginSuccessHandler(authSuccessHandler);
 			return LoginHandlerInfo.this;
 		}
 
@@ -161,7 +161,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		}
 
 		public LogoutHandlerInfo logoutService(LogoutService logoutService) {
-			IcpAuthManager.setLogoutService(logoutService);
+			LzAuthManager.setLogoutService(logoutService);
 			return this;
 		}
 

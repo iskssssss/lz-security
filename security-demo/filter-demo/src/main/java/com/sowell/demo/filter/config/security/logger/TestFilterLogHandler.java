@@ -1,10 +1,10 @@
 package com.sowell.demo.filter.config.security.logger;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.log.BaseFilterLogHandler;
-import com.sowell.security.log.IcpLoggerUtil;
+import com.sowell.security.log.LzLoggerUtil;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,13 +19,13 @@ public class TestFilterLogHandler implements BaseFilterLogHandler {
 
 	@Override
 	public Object before(BaseRequest<?> request, BaseResponse<?> response) {
-		IcpLoggerUtil.info(getClass(), "自定义日志处理：beforeHandler(...)");
+		LzLoggerUtil.info(getClass(), "自定义日志处理：beforeHandler(...)");
 		return null;
 	}
 
 	@Override
 	public void after(BaseRequest<?> request, BaseResponse<?> response, Object logEntity, Exception ex) {
-		IcpLoggerUtil.info(getClass(), "本次请求总时间：" + IcpCoreManager.getStorage().getRequestTime().toString());
-		IcpLoggerUtil.info(getClass(), "自定义日志处理：afterHandler(...)");
+		LzLoggerUtil.info(getClass(), "本次请求总时间：" + LzCoreManager.getStorage().getRequestTime().toString());
+		LzLoggerUtil.info(getClass(), "自定义日志处理：afterHandler(...)");
 	}
 }

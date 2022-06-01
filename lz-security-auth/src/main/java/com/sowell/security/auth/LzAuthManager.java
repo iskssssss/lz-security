@@ -25,7 +25,7 @@ import com.sowell.security.auth.service.UserDetailsService;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/11/02 14:49
  */
-public class IcpAuthManager {
+public class LzAuthManager {
 
 	//====================================================================================================================================
 
@@ -40,18 +40,18 @@ public class IcpAuthManager {
 	protected static AbstractAuthorizationHandler authorizationHandler;
 
 	public static AbstractAuthorizationHandler getAuthorizationHandler() {
-		if (IcpAuthManager.authorizationHandler == null) {
-			synchronized (IcpAuthManager.class) {
-				if (IcpAuthManager.authorizationHandler == null) {
-					IcpAuthManager.authorizationHandler = new AuthorizationHandler();
+		if (LzAuthManager.authorizationHandler == null) {
+			synchronized (LzAuthManager.class) {
+				if (LzAuthManager.authorizationHandler == null) {
+					LzAuthManager.authorizationHandler = new AuthorizationHandler();
 				}
 			}
 		}
-		return IcpAuthManager.authorizationHandler;
+		return LzAuthManager.authorizationHandler;
 	}
 
 	public static void setAuthorizationHandler(AbstractAuthorizationHandler authorizationHandler) {
-		IcpAuthManager.authorizationHandler = authorizationHandler;
+		LzAuthManager.authorizationHandler = authorizationHandler;
 	}
 
 	//====================================================================================================================================
@@ -59,18 +59,18 @@ public class IcpAuthManager {
 	protected static AbstractLogoutHandler logoutHandler;
 
 	public static AbstractLogoutHandler getLogoutHandler() {
-		if (IcpAuthManager.logoutHandler == null) {
-			synchronized (IcpAuthManager.class) {
-				if (IcpAuthManager.logoutHandler == null) {
-					IcpAuthManager.logoutHandler = new LogoutHandler();
+		if (LzAuthManager.logoutHandler == null) {
+			synchronized (LzAuthManager.class) {
+				if (LzAuthManager.logoutHandler == null) {
+					LzAuthManager.logoutHandler = new LogoutHandler();
 				}
 			}
 		}
-		return IcpAuthManager.logoutHandler;
+		return LzAuthManager.logoutHandler;
 	}
 
 	public static void setLogoutHandler(AbstractLogoutHandler logoutHandler) {
-		IcpAuthManager.logoutHandler = logoutHandler;
+		LzAuthManager.logoutHandler = logoutHandler;
 	}
 
 	//====================================================================================================================================
@@ -81,18 +81,18 @@ public class IcpAuthManager {
 	protected static volatile PasswordEncoder passwordEncoder;
 
 	public static PasswordEncoder getPasswordEncoder() {
-		if (IcpAuthManager.passwordEncoder == null) {
-			synchronized (IcpAuthManager.class) {
-				if (IcpAuthManager.passwordEncoder == null) {
-					IcpAuthManager.passwordEncoder = new DefaultPasswordEncoder();
+		if (LzAuthManager.passwordEncoder == null) {
+			synchronized (LzAuthManager.class) {
+				if (LzAuthManager.passwordEncoder == null) {
+					LzAuthManager.passwordEncoder = new DefaultPasswordEncoder();
 				}
 			}
 		}
-		return IcpAuthManager.passwordEncoder;
+		return LzAuthManager.passwordEncoder;
 	}
 
 	public static void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		IcpAuthManager.passwordEncoder = passwordEncoder;
+		LzAuthManager.passwordEncoder = passwordEncoder;
 	}
 
 	//====================================================================================================================================
@@ -107,7 +107,7 @@ public class IcpAuthManager {
 	}
 
 	public static void setUserDetailsService(UserDetailsService userDetailsService) {
-		IcpAuthManager.userDetailsService = userDetailsService;
+		LzAuthManager.userDetailsService = userDetailsService;
 	}
 
 	//====================================================================================================================================
@@ -122,7 +122,7 @@ public class IcpAuthManager {
 	}
 
 	public static void setCaptchaHandler(CaptchaHandler captchaHandler) {
-		IcpAuthManager.captchaHandler = captchaHandler;
+		LzAuthManager.captchaHandler = captchaHandler;
 	}
 
 	//====================================================================================================================================
@@ -137,7 +137,7 @@ public class IcpAuthManager {
 	}
 
 	public static void setAccessStatusHandler(AccessStatusHandler accessStatusHandler) {
-		IcpAuthManager.accessStatusHandler = accessStatusHandler;
+		LzAuthManager.accessStatusHandler = accessStatusHandler;
 	}
 
 	//====================================================================================================================================
@@ -148,18 +148,18 @@ public class IcpAuthManager {
 	protected static volatile AuthSuccessHandler authSuccessHandler;
 
 	public static AuthSuccessHandler getLoginSuccessHandler() {
-		if (IcpAuthManager.authSuccessHandler == null) {
-			synchronized (IcpAuthManager.class) {
-				if (IcpAuthManager.authSuccessHandler == null) {
-					IcpAuthManager.authSuccessHandler = new AuthSuccessHandlerDefaultImpl();
+		if (LzAuthManager.authSuccessHandler == null) {
+			synchronized (LzAuthManager.class) {
+				if (LzAuthManager.authSuccessHandler == null) {
+					LzAuthManager.authSuccessHandler = new AuthSuccessHandlerDefaultImpl();
 				}
 			}
 		}
-		return IcpAuthManager.authSuccessHandler;
+		return LzAuthManager.authSuccessHandler;
 	}
 
 	public static void setLoginSuccessHandler(AuthSuccessHandler authSuccessHandler) {
-		IcpAuthManager.authSuccessHandler = authSuccessHandler;
+		LzAuthManager.authSuccessHandler = authSuccessHandler;
 	}
 
 	//====================================================================================================================================
@@ -170,10 +170,10 @@ public class IcpAuthManager {
 	protected static volatile AuthErrorHandler authErrorHandler;
 
 	public static AuthErrorHandler getLoginErrorHandler() {
-		if (IcpAuthManager.authErrorHandler == null) {
-			synchronized (IcpAuthManager.class) {
-				if (IcpAuthManager.authErrorHandler == null) {
-					IcpAuthManager.authErrorHandler = new AuthErrorHandlerDefaultImpl();
+		if (LzAuthManager.authErrorHandler == null) {
+			synchronized (LzAuthManager.class) {
+				if (LzAuthManager.authErrorHandler == null) {
+					LzAuthManager.authErrorHandler = new AuthErrorHandlerDefaultImpl();
 				}
 			}
 		}
@@ -181,7 +181,7 @@ public class IcpAuthManager {
 	}
 
 	public static void setLoginErrorHandler(AuthErrorHandler authErrorHandler) {
-		IcpAuthManager.authErrorHandler = authErrorHandler;
+		LzAuthManager.authErrorHandler = authErrorHandler;
 	}
 	//====================================================================================================================================
 
@@ -191,18 +191,18 @@ public class IcpAuthManager {
 	protected static volatile ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler;
 
 	public static ICheckAccessAuthStatusHandler getCheckAccessAuthStatusHandler() {
-		if (IcpAuthManager.checkAccessAuthStatusHandler == null) {
-			synchronized (IcpAuthManager.class) {
-				if (IcpAuthManager.checkAccessAuthStatusHandler == null) {
-					IcpAuthManager.checkAccessAuthStatusHandler = new DefaultCheckAccessAuthStatusHandler();
+		if (LzAuthManager.checkAccessAuthStatusHandler == null) {
+			synchronized (LzAuthManager.class) {
+				if (LzAuthManager.checkAccessAuthStatusHandler == null) {
+					LzAuthManager.checkAccessAuthStatusHandler = new DefaultCheckAccessAuthStatusHandler();
 				}
 			}
 		}
-		return IcpAuthManager.checkAccessAuthStatusHandler;
+		return LzAuthManager.checkAccessAuthStatusHandler;
 	}
 
 	public static void setCheckAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
-		IcpAuthManager.checkAccessAuthStatusHandler = checkAccessAuthStatusHandler;
+		LzAuthManager.checkAccessAuthStatusHandler = checkAccessAuthStatusHandler;
 	}
 
 	//====================================================================================================================================
@@ -214,6 +214,6 @@ public class IcpAuthManager {
 	}
 
 	public static void setLogoutService(LogoutService logoutService) {
-		IcpAuthManager.logoutService = logoutService;
+		LzAuthManager.logoutService = logoutService;
 	}
 }

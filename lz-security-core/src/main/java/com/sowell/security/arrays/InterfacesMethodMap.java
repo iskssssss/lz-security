@@ -1,7 +1,7 @@
 package com.sowell.security.arrays;
 
-import com.sowell.security.IcpCoreManager;
-import com.sowell.security.context.IcpContext;
+import com.sowell.security.LzCoreManager;
+import com.sowell.security.context.LzContext;
 import com.sowell.tool.reflect.model.ControllerMethod;
 
 import java.util.HashMap;
@@ -41,11 +41,11 @@ public final class InterfacesMethodMap extends HashMap<String, ControllerMethod>
 		if (method != null) {
 			return method;
 		}
-		final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
+		final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
 		final Set<Entry<String, ControllerMethod>> entrySet = this.entrySet();
 		for (Entry<String, ControllerMethod> stringMethodEntry : entrySet) {
 			final String key = stringMethodEntry.getKey();
-			if (icpContext.matchUrl(key, url)) {
+			if (lzContext.matchUrl(key, url)) {
 				return stringMethodEntry.getValue();
 			}
 		}

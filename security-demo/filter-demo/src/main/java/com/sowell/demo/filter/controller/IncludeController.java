@@ -1,11 +1,11 @@
 //package com.sowell.demo.filter.controller;
 //
 //import com.sowell.common.core.web.result.R;
-//import com.sowell.security.IcpCoreManager;
+//import com.sowell.security.LzCoreManager;
 //import com.sowell.security.annotation.DataEncodeSwitch;
 //import com.sowell.security.defaults.DefaultAuthDetails;
 //import com.sowell.security.annotation.IncludeInterface;
-//import com.sowell.security.log.IcpLoggerUtil;
+//import com.sowell.security.log.LzLoggerUtil;
 //import com.sowell.security.token.AccessTokenUtil;
 //import com.sowell.tool.encrypt.model.SwPublicKey;
 //import io.swagger.annotations.Api;
@@ -48,7 +48,7 @@
 //	@ApiOperation(value = "1", notes = "1")
 //	@GetMapping("/1")
 //	public R<DefaultAuthDetails> interface1() {
-//		IcpLoggerUtil.info(getClass(), "用户1请求");
+//		LzLoggerUtil.info(getClass(), "用户1请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		return R.success(authDetails);
 //	}
@@ -56,7 +56,7 @@
 //	@ApiOperation(value = "2", notes = "2")
 //	@GetMapping("/2")
 //	public R<DefaultAuthDetails> interface2() {
-//		IcpLoggerUtil.info(getClass(), "用户2请求");
+//		LzLoggerUtil.info(getClass(), "用户2请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		return R.success(authDetails);
 //	}
@@ -64,7 +64,7 @@
 //	@ApiOperation(value = "3", notes = "3")
 //	@GetMapping("/3")
 //	public R<DefaultAuthDetails> interface3() {
-//		IcpLoggerUtil.info(getClass(), "用户3请求");
+//		LzLoggerUtil.info(getClass(), "用户3请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		return R.success(authDetails);
 //	}
@@ -72,7 +72,7 @@
 //	@ApiOperation(value = "error", notes = "error")
 //	@GetMapping("/error")
 //	public R<DefaultAuthDetails> error() {
-//		IcpLoggerUtil.info(getClass(), "用户3请求");
+//		LzLoggerUtil.info(getClass(), "用户3请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		final int i = 1 / 0;
 //		return R.success(authDetails);
@@ -85,7 +85,7 @@
 //	public R<Object> decrypt(
 //			@RequestParam("encryptText") String encryptText
 //	) {
-//		final SwPublicKey publicKey = IcpCoreManager.getIcpConfig().getEncryptConfig().getPublicKeyStr();
+//		final SwPublicKey publicKey = LzCoreManager.getLzConfig().getEncryptConfig().getPublicKeyStr();
 //		final Object decrypt = publicKey.decrypt(encryptText);
 //		return R.success(decrypt);
 //	}

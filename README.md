@@ -169,9 +169,9 @@ public interface IAccessTokenHandler {
 	 * @return AccessToken
 	 */
 	default String getAccessToken() {
-		final BaseRequest<?> servletRequest = IcpSecurityContextThreadLocal.getServletRequest();
-		final IcpConfig icpConfig = IcpManager.getIcpConfig();
-		final String headerName = icpConfig.getHeaderName();
+		final BaseRequest<?> servletRequest = LzSecurityContextThreadLocal.getServletRequest();
+		final LzConfig lzConfig = LzManager.getLzConfig();
+		final String headerName = lzConfig.getHeaderName();
 		final String accessToken = servletRequest.getHeader(headerName);
 		if (StringUtil.isEmpty(accessToken)) {
 			throw new HeaderNotAccessTokenException();
@@ -361,15 +361,15 @@ public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
 	/**
 	 * 进行过滤
 	 *
-	 * @param swRequest  请求流
-	 * @param swResponse 响应流
+	 * @param lzRequest  请求流
+	 * @param lzResponse 响应流
 	 * @param params     过滤参数
 	 * @return 过滤结果
 	 * @throws SecurityException 过滤错误
 	 */
 	public abstract boolean doFilter(
-			SwRequest swRequest,
-			SwResponse swResponse,
+			SwRequest lzRequest,
+			SwResponse lzResponse,
 			Object... params
 	) throws SecurityException;
 }
@@ -387,19 +387,19 @@ public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
  */
 public class TestInterfacesFilter extends SwInterfacesFilter {
 	@Override
-	public boolean doFilter(SwRequest swRequest, SwResponse swResponse, Object... params) {
-		IcpLoggerUtil.info(this.getClass(), "自定义过滤器 - 过滤");
-		return super.next(swRequest, swResponse, params);
+	public boolean doFilter(SwRequest lzRequest, SwResponse lzResponse, Object... params) {
+		LzLoggerUtil.info(this.getClass(), "自定义过滤器 - 过滤");
+		return super.next(lzRequest, lzResponse, params);
 	}
 
 	@Override
 	public void init() {
-		IcpLoggerUtil.info(this.getClass(), "自定义过滤器 - 初始化");
+		LzLoggerUtil.info(this.getClass(), "自定义过滤器 - 初始化");
 	}
 
 	@Override
 	public void destroy() {
-		IcpLoggerUtil.info(this.getClass(), "自定义过滤器 - 销毁");
+		LzLoggerUtil.info(this.getClass(), "自定义过滤器 - 销毁");
 	}
 }
 ```

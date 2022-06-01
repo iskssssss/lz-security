@@ -1,9 +1,9 @@
 package com.sowell.security.token;
 
-import com.sowell.security.IcpConstant;
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzConstant;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.config.TokenConfig;
-import com.sowell.security.context.IcpContext;
+import com.sowell.security.context.LzContext;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.tool.core.string.StringUtil;
@@ -36,21 +36,21 @@ public final class AccessTokenUtil {
 	 * @return AccessToken
 	 */
 	public static String generateAccessToken(AuthDetails<?> t, boolean writeCookie) {
-		final String token = IcpCoreManager.getAccessTokenHandler().generateAccessToken(t);
-		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final String token = LzCoreManager.getAccessTokenHandler().generateAccessToken(t);
+		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
 		final String prefix = tokenConfig.getPrefix();
 		final boolean isOpenPrefix = StringUtil.isNotEmpty(prefix) && StringUtil.notAllSpace(prefix);
 		if (writeCookie) {
-			final IcpContext<?, ?> icpContext = IcpCoreManager.getIcpContext();
-			final BaseResponse<?> response = icpContext.getResponse();
+			final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
+			final BaseResponse<?> response = lzContext.getResponse();
 			if (isOpenPrefix) {
-				response.addCookie(tokenConfig.getName(), prefix + IcpConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE + token, null, null, ((int) tokenConfig.getTimeout()));
+				response.addCookie(tokenConfig.getName(), prefix + LzConstant.PREFIX_TOKEN_SPLIT_FOR_COOKIE + token, null, null, ((int) tokenConfig.getTimeout()));
 			} else {
 				response.addCookie(tokenConfig.getName(), token, null, null, ((int) tokenConfig.getTimeout()));
 			}
 		}
 		if (isOpenPrefix) {
-			return prefix + IcpConstant.PREFIX_TOKEN_SPLIT + token;
+			return prefix + LzConstant.PREFIX_TOKEN_SPLIT + token;
 		}
 		return token;
 	}
@@ -62,7 +62,7 @@ public final class AccessTokenUtil {
 	 * @return AccessToken
 	 */
 	public static String getAccessToken() {
-		return IcpCoreManager.getAccessTokenHandler().getAccessTokenInfo();
+		return LzCoreManager.getAccessTokenHandler().getAccessTokenInfo();
 	}
 
 	/**
@@ -71,7 +71,7 @@ public final class AccessTokenUtil {
 	 * @return true：过期 反之未过期
 	 */
 	public static boolean checkExpiration() {
-		return IcpCoreManager.getAccessTokenHandler().checkExpiration();
+		return LzCoreManager.getAccessTokenHandler().checkExpiration();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public final class AccessTokenUtil {
 	 */
 	public static AuthDetails<?> getAuthDetails(boolean throwException) {
 		try {
-			final AuthDetails<?> authDetails = IcpCoreManager.getAccessTokenHandler().getAuthDetails();
+			final AuthDetails<?> authDetails = LzCoreManager.getAccessTokenHandler().getAuthDetails();
 			if (authDetails == null) {
 				throw new AccountNotExistException();
 			}
@@ -125,7 +125,7 @@ public final class AccessTokenUtil {
 	 */
 	public static <T extends AuthDetails<T>> T getAuthDetails(Class<T> authDetailsClass, boolean throwException) {
 		try {
-			final AuthDetails<?> authDetails = IcpCoreManager.getAccessTokenHandler().getAuthDetails();
+			final AuthDetails<?> authDetails = LzCoreManager.getAccessTokenHandler().getAuthDetails();
 			if (authDetails == null) {
 				throw new AccountNotExistException();
 			}
@@ -161,7 +161,7 @@ public final class AccessTokenUtil {
 	 */
 	public static AuthDetails<?> getAuthDetails(String accessToken, boolean throwException) {
 		try {
-			final AuthDetails<?> authDetails = IcpCoreManager.getAccessTokenHandler().getAuthDetails(accessToken);
+			final AuthDetails<?> authDetails = LzCoreManager.getAccessTokenHandler().getAuthDetails(accessToken);
 			if (authDetails == null) {
 				throw new AccountNotExistException();
 			}
@@ -175,23 +175,23 @@ public final class AccessTokenUtil {
 	}
 
 	private static <T extends AuthDetails<?>> void setAuthDetails(T authDetails) {
-		IcpCoreManager.getAccessTokenHandler().setAuthDetails(authDetails);
+		LzCoreManager.getAccessTokenHandler().setAuthDetails(authDetails);
 	}
 
 	public static Object refreshAccessToken() {
-		return IcpCoreManager.getAccessTokenHandler().refreshAccessToken();
+		return LzCoreManager.getAccessTokenHandler().refreshAccessToken();
 	}
 
 	public static String refreshAccessToken(String accessToken) {
-		return IcpCoreManager.getAccessTokenHandler().refreshAccessToken(accessToken);
+		return LzCoreManager.getAccessTokenHandler().refreshAccessToken(accessToken);
 	}
 
 	public static void invalid() {
-		IcpCoreManager.getAccessTokenHandler().invalid();
+		LzCoreManager.getAccessTokenHandler().invalid();
 	}
 
 	public static void invalid(String accessToken) {
-		IcpCoreManager.getAccessTokenHandler().invalid(accessToken);
+		LzCoreManager.getAccessTokenHandler().invalid(accessToken);
 	}
 }
 

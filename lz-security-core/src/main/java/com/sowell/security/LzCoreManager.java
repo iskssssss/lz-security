@@ -2,11 +2,11 @@ package com.sowell.security;
 
 import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.CoreConfigurer;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.LzConfig;
 import com.sowell.security.arrays.InterfacesMethodMap;
 import com.sowell.security.config.TokenConfig;
-import com.sowell.security.context.IcpContext;
-import com.sowell.security.context.model.IcpStorage;
+import com.sowell.security.context.LzContext;
+import com.sowell.security.context.model.LzStorage;
 import com.sowell.security.defaults.*;
 import com.sowell.security.exception.base.SecurityException;
 import com.sowell.security.handler.DataEncoder;
@@ -24,18 +24,18 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/10 15:21
  */
-public class IcpCoreManager {
+public class LzCoreManager {
 	//====================================================================================================================================
 
-	protected static IcpConfig icpConfig = null;
+	protected static LzConfig lzConfig = null;
 
 	/**
 	 * 设置配置文件
 	 *
-	 * @param icpConfig 配置文件
+	 * @param lzConfig 配置文件
 	 */
-	public static void setIcpConfig(IcpConfig icpConfig) {
-		IcpCoreManager.icpConfig = icpConfig;
+	public static void setLzConfig(LzConfig lzConfig) {
+		LzCoreManager.lzConfig = lzConfig;
 	}
 
 	/**
@@ -43,21 +43,21 @@ public class IcpCoreManager {
 	 *
 	 * @return 配置文件
 	 */
-	public static IcpConfig getIcpConfig() {
-		return icpConfig;
+	public static LzConfig getLzConfig() {
+		return lzConfig;
 	}
 
 	//====================================================================================================================================
 
-	protected static IcpContext<?, ?> icpContext = null;
+	protected static LzContext<?, ?> lzContext = null;
 
 	/**
 	 * 设置上下文
 	 *
-	 * @param icpContext 上下文
+	 * @param lzContext 上下文
 	 */
-	public static void setIcpContext(IcpContext<?, ?> icpContext) {
-		IcpCoreManager.icpContext = icpContext;
+	public static void setLzContext(LzContext<?, ?> lzContext) {
+		LzCoreManager.lzContext = lzContext;
 	}
 
 	/**
@@ -65,8 +65,8 @@ public class IcpCoreManager {
 	 *
 	 * @return 上下文
 	 */
-	public static IcpContext<?, ?> getIcpContext() {
-		return icpContext;
+	public static LzContext<?, ?> getLzContext() {
+		return lzContext;
 	}
 
 	//====================================================================================================================================
@@ -87,10 +87,10 @@ public class IcpCoreManager {
 	 * @param cacheManager 设置缓存管理器
 	 */
 	public static void setCacheManager(BaseCacheManager cacheManager) {
-		if (IcpCoreManager.cacheManager instanceof DefaultCacheManager) {
+		if (LzCoreManager.cacheManager instanceof DefaultCacheManager) {
 			((DefaultCacheManager) cacheManager).destroy();
 		}
-		IcpCoreManager.cacheManager = cacheManager;
+		LzCoreManager.cacheManager = cacheManager;
 	}
 
 	/**
@@ -99,14 +99,14 @@ public class IcpCoreManager {
 	 * @return 缓存管理器
 	 */
 	public static BaseCacheManager getCacheManager() {
-		if (IcpCoreManager.cacheManager == null) {
-			synchronized (IcpCoreManager.class) {
-				if (IcpCoreManager.cacheManager == null) {
-					IcpCoreManager.cacheManager = new DefaultCacheManager();
+		if (LzCoreManager.cacheManager == null) {
+			synchronized (LzCoreManager.class) {
+				if (LzCoreManager.cacheManager == null) {
+					LzCoreManager.cacheManager = new DefaultCacheManager();
 				}
 			}
 		}
-		return IcpCoreManager.cacheManager;
+		return LzCoreManager.cacheManager;
 	}
 
 	//====================================================================================================================================
@@ -142,7 +142,7 @@ public class IcpCoreManager {
 	 * @param accessTokenHandler accessToken处理器
 	 */
 	public static void setAccessTokenHandler(IAccessTokenHandler<?> accessTokenHandler) {
-		IcpCoreManager.accessTokenHandler = accessTokenHandler;
+		LzCoreManager.accessTokenHandler = accessTokenHandler;
 	}
 
 	/**
@@ -151,16 +151,16 @@ public class IcpCoreManager {
 	 * @return 方法
 	 */
 	public static IAccessTokenHandler getAccessTokenHandler() {
-		if (IcpCoreManager.accessTokenHandler == null) {
-			synchronized (IcpCoreManager.class) {
-				if (IcpCoreManager.accessTokenHandler == null) {
-					final TokenConfig accessTokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		if (LzCoreManager.accessTokenHandler == null) {
+			synchronized (LzCoreManager.class) {
+				if (LzCoreManager.accessTokenHandler == null) {
+					final TokenConfig accessTokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
 					switch (accessTokenConfig.getType()) {
-						case IcpConstant.TOKEN_TYPE_BY_UUID:
-							IcpCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
+						case LzConstant.TOKEN_TYPE_BY_UUID:
+							LzCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
 							break;
-						case IcpConstant.TOKEN_TYPE_BY_JWT:
-							IcpCoreManager.accessTokenHandler = new JwtAccessTokenHandler();
+						case LzConstant.TOKEN_TYPE_BY_JWT:
+							LzCoreManager.accessTokenHandler = new JwtAccessTokenHandler();
 							break;
 						default:
 							throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
@@ -168,7 +168,7 @@ public class IcpCoreManager {
 				}
 			}
 		}
-		return IcpCoreManager.accessTokenHandler;
+		return LzCoreManager.accessTokenHandler;
 	}
 
 	//====================================================================================================================================
@@ -181,7 +181,7 @@ public class IcpCoreManager {
 	 * @param dataEncoder 请求加解密处理器
 	 */
 	public static void setRequestDataEncryptHandler(DataEncoder dataEncoder) {
-		IcpCoreManager.dataEncoder = dataEncoder;
+		LzCoreManager.dataEncoder = dataEncoder;
 	}
 
 	/**
@@ -190,42 +190,42 @@ public class IcpCoreManager {
 	 * @return 请求加解密处理器
 	 */
 	public static DataEncoder getRequestDataEncryptHandler() {
-		if (IcpCoreManager.dataEncoder == null) {
-			synchronized (IcpCoreManager.class) {
-				if (IcpCoreManager.dataEncoder == null) {
-					IcpCoreManager.dataEncoder = new DefaultDataEncoder();
+		if (LzCoreManager.dataEncoder == null) {
+			synchronized (LzCoreManager.class) {
+				if (LzCoreManager.dataEncoder == null) {
+					LzCoreManager.dataEncoder = new DefaultDataEncoder();
 				}
 			}
 		}
-		return IcpCoreManager.dataEncoder;
+		return LzCoreManager.dataEncoder;
 	}
 
 	//====================================================================================================================================
 	protected static EncodeSwitchHandler encodeSwitchHandler = null;
 
 	public static void setEncryptSwitchHandler(EncodeSwitchHandler encodeSwitchHandler) {
-		IcpCoreManager.encodeSwitchHandler = encodeSwitchHandler;
+		LzCoreManager.encodeSwitchHandler = encodeSwitchHandler;
 	}
 
 	public static EncodeSwitchHandler getEncryptSwitchHandler() {
-		if (IcpCoreManager.encodeSwitchHandler == null) {
-			synchronized (IcpCoreManager.class) {
-				if (IcpCoreManager.encodeSwitchHandler == null) {
-					IcpCoreManager.encodeSwitchHandler = new DefaultEncodeSwitchHandler();
+		if (LzCoreManager.encodeSwitchHandler == null) {
+			synchronized (LzCoreManager.class) {
+				if (LzCoreManager.encodeSwitchHandler == null) {
+					LzCoreManager.encodeSwitchHandler = new DefaultEncodeSwitchHandler();
 				}
 			}
 		}
-		return IcpCoreManager.encodeSwitchHandler;
+		return LzCoreManager.encodeSwitchHandler;
 	}
 
 	//====================================================================================================================================
 
 	/**
-	 * 从{@link IcpCoreManager#getIcpContext()}中获取存储信息
+	 * 从{@link LzCoreManager#getLzContext()}中获取存储信息
 	 *
 	 * @return 存储信息
 	 */
-	public static IcpStorage<?> getStorage() {
-		return IcpCoreManager.getIcpContext().getStorage();
+	public static LzStorage<?> getStorage() {
+		return LzCoreManager.getLzContext().getStorage();
 	}
 }

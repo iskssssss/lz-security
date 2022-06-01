@@ -1,7 +1,7 @@
 package com.sowell.security.filter.config;
 
-import com.sowell.security.filter.IcpFilterManager;
-import com.sowell.security.filter.filters.IcpInterfaceFilterCore;
+import com.sowell.security.filter.LzFilterManager;
+import com.sowell.security.filter.filters.LzInterfaceFilterCore;
 import com.sowell.security.tool.config.BaseSecurityConfigurerAdapter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -15,16 +15,16 @@ import org.springframework.context.annotation.Bean;
  */
 public abstract class SecurityFilterConfigurerAdapter extends BaseSecurityConfigurerAdapter {
 
-	protected FilterRegistrationBean<IcpInterfaceFilterCore> registration;
-	private IcpInterfaceFilterCore filterContainer;
+	protected FilterRegistrationBean<LzInterfaceFilterCore> registration;
+	private LzInterfaceFilterCore filterContainer;
 
 	/**
 	 * 初始化
 	 */
 	@Override
 	protected void init() {
-		this.filterContainer = new IcpInterfaceFilterCore();
-		this.filter(IcpFilterManager.getFilterConfigurer());
+		this.filterContainer = new LzInterfaceFilterCore();
+		this.filter(LzFilterManager.getFilterConfigurer());
 	}
 
 	/**
@@ -44,7 +44,7 @@ public abstract class SecurityFilterConfigurerAdapter extends BaseSecurityConfig
 	protected abstract void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer);
 
 	@Bean
-	protected FilterRegistrationBean<IcpInterfaceFilterCore> initFilterRegistrationBean() {
+	protected FilterRegistrationBean<LzInterfaceFilterCore> initFilterRegistrationBean() {
 		if (this.registration == null) {
 			this.registration = new FilterRegistrationBean<>();
 			if (this.registration.getUrlPatterns().isEmpty()) {

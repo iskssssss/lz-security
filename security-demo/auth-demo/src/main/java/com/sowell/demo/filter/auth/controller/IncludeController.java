@@ -3,7 +3,7 @@
 //import com.sowell.common.core.web.result.R;
 //import com.sowell.security.auth.annotation.AuthCheck;
 //import com.sowell.security.defaults.DefaultAuthDetails;
-//import com.sowell.security.log.IcpLoggerUtil;
+//import com.sowell.security.log.LzLoggerUtil;
 //import com.sowell.security.token.AccessTokenUtil;
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiOperation;
@@ -43,7 +43,7 @@
 //	@ApiOperation(value = "1", notes = "1")
 //	@GetMapping("/1")
 //	public R<DefaultAuthDetails> interface1() {
-//		IcpLoggerUtil.info(getClass(), "用户1请求");
+//		LzLoggerUtil.info(getClass(), "用户1请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		return R.success(authDetails);
 //	}
@@ -51,7 +51,7 @@
 //	@ApiOperation(value = "2", notes = "2")
 //	@GetMapping("/2")
 //	public R<DefaultAuthDetails> interface2() {
-//		IcpLoggerUtil.info(getClass(), "用户2请求");
+//		LzLoggerUtil.info(getClass(), "用户2请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		return R.success(authDetails);
 //	}
@@ -59,7 +59,7 @@
 //	@ApiOperation(value = "3", notes = "3")
 //	@GetMapping("/3")
 //	public R<DefaultAuthDetails> interface3() {
-//		IcpLoggerUtil.info(getClass(), "用户3请求");
+//		LzLoggerUtil.info(getClass(), "用户3请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		return R.success(authDetails);
 //	}
@@ -67,7 +67,7 @@
 //	@ApiOperation(value = "error", notes = "error")
 //	@GetMapping("/error")
 //	public R<DefaultAuthDetails> error() {
-//		IcpLoggerUtil.info(getClass(), "用户3请求");
+//		LzLoggerUtil.info(getClass(), "用户3请求");
 //		final DefaultAuthDetails authDetails = AccessTokenUtil.getAuthDetails(DefaultAuthDetails.class);
 //		final int i = 1 / 0;
 //		return R.success(authDetails);

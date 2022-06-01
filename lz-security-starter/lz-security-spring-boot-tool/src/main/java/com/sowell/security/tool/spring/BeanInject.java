@@ -1,8 +1,8 @@
 package com.sowell.security.tool.spring;
 
-import com.sowell.security.IcpCoreManager;
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.LzConfig;
 import com.sowell.security.handler.DataEncoder;
 import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.security.token.IAccessTokenHandler;
@@ -22,16 +22,16 @@ import java.util.Map;
  * @Author: 孔胜
  * @Date: 2021/09/17 15:16
  */
-public class BeanInject extends IcpCoreManager {
+public class BeanInject extends LzCoreManager {
 
 	@Autowired
-	public void injectIcpConfig(IcpConfig icpConfig) {
-		IcpCoreManager.setIcpConfig(icpConfig);
+	public void injectLzConfig(LzConfig lzConfig) {
+		LzCoreManager.setLzConfig(lzConfig);
 	}
 
 	@Autowired
 	public void injectInterfacesMethodMap(Map<String, ControllerMethod> initControllerMethodMap) {
-		IcpCoreManager.setInterfacesMethodMap(initControllerMethodMap);
+		LzCoreManager.setInterfacesMethodMap(initControllerMethodMap);
 	}
 
 	/**
@@ -39,11 +39,11 @@ public class BeanInject extends IcpCoreManager {
 	 */
 	@Autowired(required = false)
 	public void injectAccessTokenHandler(IAccessTokenHandler<?> accessTokenHandler) {
-		if (IcpCoreManager.accessTokenHandler != null) {
+		if (LzCoreManager.accessTokenHandler != null) {
 			SpringUtil.destroyBean(accessTokenHandler);
 			return;
 		}
-		IcpCoreManager.setAccessTokenHandler(accessTokenHandler);
+		LzCoreManager.setAccessTokenHandler(accessTokenHandler);
 	}
 
 	/**
@@ -51,11 +51,11 @@ public class BeanInject extends IcpCoreManager {
 	 */
 	@Autowired(required = false)
 	public void injectRequestDataEncryptHandler(DataEncoder dataEncoder) {
-		if (IcpCoreManager.dataEncoder != null) {
+		if (LzCoreManager.dataEncoder != null) {
 			SpringUtil.destroyBean(dataEncoder);
 			return;
 		}
-		IcpCoreManager.setRequestDataEncryptHandler(dataEncoder);
+		LzCoreManager.setRequestDataEncryptHandler(dataEncoder);
 	}
 
 	/**
@@ -63,11 +63,11 @@ public class BeanInject extends IcpCoreManager {
 	 */
 	@Autowired(required = false)
 	public void injectEncryptSwitchHandler(EncodeSwitchHandler encodeSwitchHandler) {
-		if (IcpCoreManager.encodeSwitchHandler != null) {
+		if (LzCoreManager.encodeSwitchHandler != null) {
 			SpringUtil.destroyBean(encodeSwitchHandler);
 			return;
 		}
-		IcpCoreManager.setEncryptSwitchHandler(encodeSwitchHandler);
+		LzCoreManager.setEncryptSwitchHandler(encodeSwitchHandler);
 	}
 
 	/**
@@ -75,11 +75,11 @@ public class BeanInject extends IcpCoreManager {
 	 */
 	@Autowired(required = false)
 	public void injectCacheManager(BaseCacheManager cacheManager) {
-		if (IcpCoreManager.cacheManager != null) {
+		if (LzCoreManager.cacheManager != null) {
 			SpringUtil.destroyBean(cacheManager);
 			return;
 		}
-		IcpCoreManager.setCacheManager(cacheManager);
+		LzCoreManager.setCacheManager(cacheManager);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class BeanInject extends IcpCoreManager {
 	 */
 	@Autowired(required = false)
 	@Qualifier("mvcPathMatcher")
-	public void injectIcpContext(PathMatcher pathMatcher) {
-		IcpCoreManager.setIcpContext(new SpringContextTheadLocal(pathMatcher));
+	public void injectLzContext(PathMatcher pathMatcher) {
+		LzCoreManager.setLzContext(new SpringContextTheadLocal(pathMatcher));
 	}
 }

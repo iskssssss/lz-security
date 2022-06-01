@@ -2,7 +2,7 @@ package com.sowell.security.context;
 
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
-import com.sowell.security.context.model.IcpStorage;
+import com.sowell.security.context.model.LzStorage;
 
 /**
  * 上下文
@@ -11,7 +11,7 @@ import com.sowell.security.context.model.IcpStorage;
  * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
  * @date 2021/09/10 16:29
  */
-public interface IcpContext<RequestType, ResponseType> {
+public interface LzContext<RequestType, ResponseType> {
 
 	/**
 	 * 获取 BaseRequest
@@ -28,11 +28,11 @@ public interface IcpContext<RequestType, ResponseType> {
 	BaseResponse<ResponseType> getResponse();
 
 	/**
-	 * 获取 IcpStorage
+	 * 获取 LzStorage
 	 *
-	 * @return IcpStorage
+	 * @return LzStorage
 	 */
-	IcpStorage<RequestType> getStorage();
+	LzStorage<RequestType> getStorage();
 
 	/**
 	 * 路径匹配
