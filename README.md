@@ -13,7 +13,7 @@
 ```xml
 <dependency>
     <groupId>com.sowell.security</groupId>
-    <artifactId>sw-security-filter-spring-boot-starter</artifactId>
+    <artifactId>lz-security-filter-spring-boot-starter</artifactId>
     <version>1.1.33</version>
 </dependency>
 ```
@@ -23,7 +23,7 @@
 #### application.yml
 
 ```yml
-sw:
+lz:
   security:
     # [非必需] 是否打印日志信息(默认true)
     console-log-print: true

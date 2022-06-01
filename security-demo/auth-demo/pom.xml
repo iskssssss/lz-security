@@ -16,12 +16,12 @@
     <dependencies>
         <dependency>
             <groupId>com.sowell.security</groupId>
-            <artifactId>sw-security-auth-spring-boot-starter</artifactId>
+            <artifactId>lz-security-auth-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.sowell.security</groupId>
-            <artifactId>sw-security-plugins-redis</artifactId>
+            <artifactId>lz-security-plugins-redis</artifactId>
         </dependency>
 
         <dependency>

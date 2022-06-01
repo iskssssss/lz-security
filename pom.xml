@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sowell.security</groupId>
-    <artifactId>sw-security</artifactId>
+    <artifactId>lz-security</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
 
     <modules>
-        <module>sw-security-common</module>
-        <module>sw-security-core</module>
-        <module>sw-security-starter</module>
-        <module>sw-security-plugins</module>
-        <module>sw-security-auth</module>
-        <module>sw-security-filter</module>
-        <module>sw-tool</module>
+        <module>lz-security-common</module>
+        <module>lz-security-core</module>
+        <module>lz-security-starter</module>
+        <module>lz-security-plugins</module>
+        <module>lz-security-auth</module>
+        <module>lz-security-filter</module>
+        <module>lz-tool</module>
     </modules>
 
     <properties>
@@ -31,30 +31,30 @@
         <bcprov-jdk15to18.version>1.66</bcprov-jdk15to18.version>
 
         <!-- 通用工具模块 -->
-        <sw-tool.version>1.0.4</sw-tool.version>
+        <lz-tool.version>1.0.4</lz-tool.version>
 
         <!-- 通用模块 -->
-        <sw-security-common.version>1.2.2</sw-security-common.version>
+        <lz-security-common.version>1.2.2</lz-security-common.version>
         <!-- 核心模块 -->
-        <sw-security-core.version>1.2.4</sw-security-core.version>
+        <lz-security-core.version>1.2.4</lz-security-core.version>
         <!-- 认证模块 -->
-        <sw-security-auth.version>1.2.3</sw-security-auth.version>
+        <lz-security-auth.version>1.2.3</lz-security-auth.version>
         <!-- 过滤模块 -->
-        <sw-security-filter.version>1.2.3</sw-security-filter.version>
+        <lz-security-filter.version>1.2.3</lz-security-filter.version>
         <!-- 插件 -->
-        <sw-security-plugins-redis.version>1.2.3</sw-security-plugins-redis.version>
+        <lz-security-plugins-redis.version>1.2.3</lz-security-plugins-redis.version>
         <!-- 启动相关 -->
-        <sw-security-filter-spring-boot-starter.version>1.2.4</sw-security-filter-spring-boot-starter.version>
+        <lz-security-filter-spring-boot-starter.version>1.2.4</lz-security-filter-spring-boot-starter.version>
 
-        <sw-security-auth-spring-boot-starter.version>1.2.4</sw-security-auth-spring-boot-starter.version>
+        <lz-security-auth-spring-boot-starter.version>1.2.4</lz-security-auth-spring-boot-starter.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.sowell.tool</groupId>
-                <artifactId>sw-tool</artifactId>
-                <version>${sw-tool.version}</version>
+                <artifactId>lz-tool</artifactId>
+                <version>${lz-tool.version}</version>
             </dependency>
 
             <dependency>
@@ -113,44 +113,44 @@
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-common</artifactId>
-                <version>${sw-security-common.version}</version>
+                <artifactId>lz-security-common</artifactId>
+                <version>${lz-security-common.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-core</artifactId>
-                <version>${sw-security-core.version}</version>
+                <artifactId>lz-security-core</artifactId>
+                <version>${lz-security-core.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-auth</artifactId>
-                <version>${sw-security-auth.version}</version>
+                <artifactId>lz-security-auth</artifactId>
+                <version>${lz-security-auth.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-filter</artifactId>
-                <version>${sw-security-filter.version}</version>
+                <artifactId>lz-security-filter</artifactId>
+                <version>${lz-security-filter.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-plugins-redis</artifactId>
-                <version>${sw-security-plugins-redis.version}</version>
+                <artifactId>lz-security-plugins-redis</artifactId>
+                <version>${lz-security-plugins-redis.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-auth-spring-boot-starter</artifactId>
-                <version>${sw-security-auth-spring-boot-starter.version}</version>
+                <artifactId>lz-security-auth-spring-boot-starter</artifactId>
+                <version>${lz-security-auth-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.sowell.security</groupId>
-                <artifactId>sw-security-filter-spring-boot-starter</artifactId>
-                <version>${sw-security-filter-spring-boot-starter.version}</version>
+                <artifactId>lz-security-filter-spring-boot-starter</artifactId>
+                <version>${lz-security-filter-spring-boot-starter.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -177,7 +177,7 @@
     </distributionManagement>-->
 
     <build>
-        <finalName>sw-security</finalName>
+        <finalName>lz-security</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
