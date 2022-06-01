@@ -156,11 +156,11 @@
     </dependencyManagement>
 
     <repositories>
-        <repository>
+<!--        <repository>
             <id>releases</id>
             <name>releases</name>
             <url>http://192.168.1.14:8081/nexus/content/repositories/releases/</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>aliyun</id>
             <name>aliyun</name>
@@ -168,13 +168,13 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
+<!--    <distributionManagement>
         <repository>
             <id>releases</id>
             <name>releases</name>
             <url>http://192.168.1.14:8081/nexus/content/repositories/releases/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <build>
         <finalName>sw-security</finalName>

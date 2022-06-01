@@ -3,9 +3,8 @@ package com.sowell.security.defaults;
 import cn.hutool.crypto.SmUtil;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.TokenConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
-import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
 import com.sowell.security.token.IAccessTokenHandler;
@@ -51,7 +50,7 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 		String id = "UUID::" + authDetails.getId();
 		cacheManager.remove(id, token);
 
-		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		final BaseResponse<?> servletResponse = IcpSecurityContextThreadLocal.getServletResponse();
 		servletResponse.removeCookie(saveName);

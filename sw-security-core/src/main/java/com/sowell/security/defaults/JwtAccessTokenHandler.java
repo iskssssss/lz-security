@@ -2,7 +2,7 @@ package com.sowell.security.defaults;
 
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.cache.BaseCacheManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.TokenConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
@@ -47,7 +47,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 		String id = "JWT::" + authDetails.getId();
 		cacheManager.remove(id);
 
-		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		final BaseResponse<?> servletResponse = IcpSecurityContextThreadLocal.getServletResponse();
 		servletResponse.removeCookie(saveName);

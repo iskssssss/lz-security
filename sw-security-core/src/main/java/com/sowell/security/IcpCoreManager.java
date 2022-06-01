@@ -4,6 +4,7 @@ import com.sowell.security.cache.BaseCacheManager;
 import com.sowell.security.config.CoreConfigurer;
 import com.sowell.security.config.IcpConfig;
 import com.sowell.security.arrays.InterfacesMethodMap;
+import com.sowell.security.config.TokenConfig;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.IcpStorage;
 import com.sowell.security.defaults.*;
@@ -153,7 +154,7 @@ public class IcpCoreManager {
 		if (IcpCoreManager.accessTokenHandler == null) {
 			synchronized (IcpCoreManager.class) {
 				if (IcpCoreManager.accessTokenHandler == null) {
-					final IcpConfig.TokenConfig accessTokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+					final TokenConfig accessTokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
 					switch (accessTokenConfig.getType()) {
 						case IcpConstant.TOKEN_TYPE_BY_UUID:
 							IcpCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();

@@ -1,7 +1,7 @@
 package com.sowell.security.tool.context;
 
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.EncryptConfig;
 import com.sowell.security.context.IcpContextTheadLocal;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
@@ -96,7 +96,7 @@ public class IcpContextManager {
 			// 获取当前接口访问方法
 			ControllerMethod controllerMethod = IcpCoreManager.getMethodByInterfaceUrl(requestPath);
 			// 校验当前请求接口返回数据是否要加密
-			final IcpConfig.EncryptConfig encryptConfig = IcpCoreManager.getIcpConfig().getEncryptConfig();
+			final EncryptConfig encryptConfig = IcpCoreManager.getIcpConfig().getEncryptConfig();
 			SwRequest swRequest = new SwRequest(httpServletRequest);
 			SwResponse swResponse = new SwResponse(httpServletResponse);
 			swRequest.setControllerMethod(controllerMethod);

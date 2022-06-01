@@ -2,7 +2,7 @@ package com.sowell.security.token;
 
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.TokenConfig;
 import com.sowell.security.context.IcpSecurityContextThreadLocal;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.exception.HeaderNotAccessTokenException;
@@ -30,7 +30,7 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 		if (servletRequest == null) {
 			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
 		}
-		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		// 从请求头中获取Token
 		String accessToken = servletRequest.getHeader(saveName);

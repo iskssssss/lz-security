@@ -15,7 +15,6 @@
     <artifactId>sw-security-filter-spring-boot-starter</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.sowell.security</groupId>
             <artifactId>sw-security-spring-boot-tool</artifactId>

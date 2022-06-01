@@ -2,7 +2,7 @@ package com.sowell.security.token;
 
 import com.sowell.security.IcpConstant;
 import com.sowell.security.IcpCoreManager;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.TokenConfig;
 import com.sowell.security.context.IcpContext;
 import com.sowell.security.context.model.BaseResponse;
 import com.sowell.security.exception.auth.AccountNotExistException;
@@ -37,7 +37,7 @@ public final class AccessTokenUtil {
 	 */
 	public static String generateAccessToken(AuthDetails<?> t, boolean writeCookie) {
 		final String token = IcpCoreManager.getAccessTokenHandler().generateAccessToken(t);
-		final IcpConfig.TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
+		final TokenConfig tokenConfig = IcpCoreManager.getIcpConfig().getTokenConfig();
 		final String prefix = tokenConfig.getPrefix();
 		final boolean isOpenPrefix = StringUtil.isNotEmpty(prefix) && StringUtil.notAllSpace(prefix);
 		if (writeCookie) {

@@ -3,7 +3,7 @@ package com.sowell.security.defaults;
 import com.sowell.security.IcpCoreManager;
 import com.sowell.security.annotation.DataEncodeSwitch;
 import com.sowell.security.arrays.UrlHashSet;
-import com.sowell.security.config.IcpConfig;
+import com.sowell.security.config.EncryptConfig;
 import com.sowell.security.context.model.BaseRequest;
 import com.sowell.security.handler.EncodeSwitchHandler;
 import com.sowell.tool.http.enums.RequestMethodEnum;
@@ -18,7 +18,7 @@ import com.sowell.tool.reflect.model.ControllerMethod;
  */
 public class DefaultEncodeSwitchHandler implements EncodeSwitchHandler {
 
-	private final IcpConfig.EncryptConfig encryptConfig;
+	private final EncryptConfig encryptConfig;
 
 	public DefaultEncodeSwitchHandler() {
 		encryptConfig = IcpCoreManager.getIcpConfig().getEncryptConfig();
