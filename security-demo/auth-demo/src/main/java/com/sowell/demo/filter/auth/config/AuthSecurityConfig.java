@@ -23,8 +23,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 
-	@Autowired
-	private TestEncodeSwitchHandler testEncodeSwitchHandler;
+	private final TestEncodeSwitchHandler testEncodeSwitchHandler;
+
+	public AuthSecurityConfig(
+			TestEncodeSwitchHandler testEncodeSwitchHandler
+	) {
+		this.testEncodeSwitchHandler = testEncodeSwitchHandler;
+	}
 
 	@Override
 	protected void config(CoreConfigurerBuilder<CoreConfigurer> coreConfigurer) {
@@ -37,6 +42,7 @@ public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 	protected void auth(AuthConfigurerBuilder<AuthConfigurer> authConfigurer) {
 		authConfigurer
 				.userDetailsService(username -> {
+					// 用户信息获取
 					DefaultAuthDetails defaultAuthDetails = new DefaultAuthDetails();
 					if ("admin".equals(username)) {
 						defaultAuthDetails.setId("admin");
@@ -50,15 +56,14 @@ public class AuthSecurityConfig extends SecurityAuthConfigurerAdapter {
 					return defaultAuthDetails;
 				})
 				.accessStatusHandler(authDetails -> {
-
+					// 用户状态验证
 				})
-				.login()
-				.loginUrl("/api/login/login.do")
-				.identifierKey("username")
-				.credentialKey("password")
+				// 登录信息配置
+				.login().loginUrl("/api/login/login.do")
+				.identifierKey("username").credentialKey("password")
 				.and()
-				.logout()
-				.logoutUrl("/api/logout/logout.do");
+				// 登出信息配置
+				.logout().logoutUrl("/api/logout/logout.do");
 		IcpLoggerUtil.info(AuthSecurityConfig.class, "认证信息配置");
 	}
 

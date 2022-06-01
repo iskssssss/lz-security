@@ -10,12 +10,12 @@ spring:
     # Redis 数据库索引
     database: 0
     #     Redis 服务器地址
-    #    host: 127.0.0.1
-    host: 192.168.35.128
+    host: 127.0.0.1
+#    host: 192.168.35.128
     #     Redis 服务器端口
     port: 6379
     # Redis 服务器连接密码
-    password: 123456
+#    password: 123456
     # 连接池设置
     pool:
       # 最大连接数量 -1无限制
