@@ -100,7 +100,7 @@ public class SecurityConfig
  * 过滤日志处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/7/12 10:39
  */
 public interface BaseFilterLogHandler {
@@ -133,7 +133,7 @@ public interface BaseFilterLogHandler {
  * 过滤错误处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/7/14 9:10
  */
 public interface BaseFilterErrorHandler<T> {
@@ -158,7 +158,7 @@ public interface BaseFilterErrorHandler<T> {
  * AccessToken处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/26 17:13
  */
 public interface IAccessTokenHandler {
@@ -222,7 +222,7 @@ public interface IAccessTokenHandler {
  * 数据加解密处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/26 17:13
  */
 public interface RequestDataEncryptHandler {
@@ -252,7 +252,7 @@ public interface RequestDataEncryptHandler {
  * 缓存管理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/08/18 08:43
  */
 public interface BaseCacheManager {
@@ -311,7 +311,7 @@ public interface BaseCacheManager {
  * 接口过滤执行链
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/7/7 11:26
  */
 public abstract class AbstractInterfacesFilter extends InterfacesFilterBuilder {
@@ -344,7 +344,7 @@ public abstract class AbstractInterfacesFilter extends InterfacesFilterBuilder {
  * SpringBoot基础执行链
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/09/17 16:55
  */
 public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
@@ -382,7 +382,7 @@ public abstract class SwInterfacesFilter extends AbstractInterfacesFilter {
  * 测试执行链
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/22 17:33
  */
 public class TestInterfacesFilter extends SwInterfacesFilter {

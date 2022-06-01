@@ -10,7 +10,7 @@ import com.sowell.tool.encrypt.model.SwPublicKey;
  * 加解密配置
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2022 LZ
  * @date 2022/6/1 10:17
  */
 public class EncryptConfig {
@@ -118,13 +118,22 @@ public class EncryptConfig {
         this.encryptUrlList = new UrlHashSet(ArraysUtil.toList(StringUtil.delAllSpace(encryptUrlList), ",", true));
     }
 
-    @Override
-    public String toString() {
+    public String print() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n          ").append("• 是否加密").append("：").append(encrypt);
         sb.append("\n          ").append("• 私钥").append("：").append(privateKeyStr.getPrivateKeyStr());
         sb.append("\n          ").append("• 公钥").append("：").append(publicKeyStr.getPublicKeyStr());
         sb.append("\n          ").append("• 加密接口列表").append("：").append(this.getEncryptUrlList().toString());
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "EncryptConfig{" +
+                "encrypt=" + encrypt +
+                ", publicKeyStr=" + publicKeyStr +
+                ", privateKeyStr=" + privateKeyStr +
+                ", encryptUrlList=" + encryptUrlList +
+                '}';
     }
 }

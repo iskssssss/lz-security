@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * token配置
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2022 LZ
  * @date 2022/6/1 10:16
  */
 public class TokenConfig {
@@ -127,13 +127,22 @@ public class TokenConfig {
         this.timeout = timeout;
     }
 
+    public String print() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n          ").append("• 存放标识").append("：").append(name);
+        sb.append("\n          ").append("• 前缀").append("：").append(prefix);
+        sb.append("\n          ").append("• 类型").append("：").append(type);
+        sb.append("\n          ").append("• 过期时间（秒）").append("：").append(timeout);
+        return sb.toString();
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n          ").append("• Token 存放标识").append("：").append(name);
-        sb.append("\n          ").append("• Token 前缀").append("：").append(prefix);
-        sb.append("\n          ").append("• Token 类型").append("：").append(type);
-        sb.append("\n          ").append("• Token 过期时间（秒）").append("：").append(timeout);
-        return sb.toString();
+        return "TokenConfig{" +
+                "name='" + name + '\'' +
+                ", prefix='" + prefix + '\'' +
+                ", type='" + type + '\'' +
+                ", timeout=" + timeout +
+                '}';
     }
 }

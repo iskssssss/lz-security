@@ -1,5 +1,6 @@
 package com.sowell.security.filter.config;
 
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.fun.LzFilterAuthStrategy;
 
@@ -8,7 +9,7 @@ import com.sowell.security.fun.LzFilterAuthStrategy;
  * 过滤配置文件
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/7/10 21:55
  */
 public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfigurer> {
@@ -37,7 +38,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 拦截的接口列表
      */
     public UrlHashSet getIncludeUrls() {
-        final UrlHashSet filterUrlIncludeUrls = super.getFilterUrlIncludeUrls();
+        final UrlHashSet filterUrlIncludeUrls = LzCoreManager.getLzConfig().getFilterConfig().getIncludeUrlList();
         if (filterUrlIncludeUrls.isEmpty()) {
             filterUrlIncludeUrls.add("/**");
         }
@@ -50,7 +51,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 排除的接口列表
      */
     public UrlHashSet getExcludeUrls() {
-        return super.getFilterUrlExcludeUrls();
+        return LzCoreManager.getLzConfig().getFilterConfig().getExcludeUrlList();
     }
 
 }

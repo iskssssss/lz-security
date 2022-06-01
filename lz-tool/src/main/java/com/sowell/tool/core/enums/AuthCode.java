@@ -11,7 +11,7 @@ import java.util.Map;
  * TODO
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/11/03 15:07
  */
 public enum AuthCode implements ICode {

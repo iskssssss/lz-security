@@ -1,7 +1,7 @@
 package com.sowell.tool.core.enums;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @Version 版权 Copyright(c)2021 LZ
  * @ClassName:
  * @Descripton:
  * @Author: 孔胜

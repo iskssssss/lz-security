@@ -17,7 +17,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @Version 版权 Copyright(c)2021 LZ
  * @ClassName:
  * @Descripton:
  * @Author: 孔胜
@@ -48,7 +48,9 @@ public final class LzInterfaceFilterCore extends BaseFilterCore {
 	public boolean doFilter(LzRequest lzRequest, LzResponse lzResponse) {
 		try {
 			// 过滤前处理
-			this.filterBeforeHandler.run();
+			if (this.filterBeforeHandler != null) {
+				this.filterBeforeHandler.run();
+			}
 			final ControllerMethod controllerMethod = lzRequest.getControllerMethod();
 			final String requestPath = lzRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
@@ -67,7 +69,9 @@ public final class LzInterfaceFilterCore extends BaseFilterCore {
 			}
 		} finally {
 			// 过滤后处理
-			this.filterAfterHandler.run();
+			if (this.filterAfterHandler != null) {
+				this.filterAfterHandler.run();
+			}
 		}
 	}
 

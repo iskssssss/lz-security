@@ -8,7 +8,7 @@ import com.sowell.tool.encrypt.model.SwPrivateKey;
  * 默认请求加解密处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/26 17:21
  */
 public class DefaultDataEncoder implements DataEncoder {

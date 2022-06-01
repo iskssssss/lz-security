@@ -12,7 +12,7 @@ import com.sowell.tool.json.JsonUtil;
  * 默认过滤错误处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/09/16 14:51
  */
 public class DefaultFilterErrorHandler implements BaseFilterErrorHandler<RequestResult> {

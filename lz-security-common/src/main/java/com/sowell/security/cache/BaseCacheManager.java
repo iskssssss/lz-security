@@ -7,7 +7,7 @@ import java.util.Set;
  * 缓存管理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/08/18 08:43
  */
 public interface BaseCacheManager {

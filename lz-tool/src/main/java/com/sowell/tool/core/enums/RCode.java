@@ -9,7 +9,7 @@ import java.util.Map;
  * 错误码
  *
  * @version 1.0
- * Copyright(c)2021 杭州设维信息技术有限公司
+ * Copyright(c)2021 LZ
  * @ClassName: RCode
  * @Descripton: Token错误码
  * @author: sowell

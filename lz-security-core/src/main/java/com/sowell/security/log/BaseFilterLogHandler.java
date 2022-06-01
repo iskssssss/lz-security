@@ -8,7 +8,7 @@ import com.sowell.security.context.model.BaseResponse;
  * <p>可重写相应方法来记录日志信息</p>
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/7/12 10:39
  */
 public interface BaseFilterLogHandler {

@@ -1,5 +1,6 @@
 package com.sowell.security.filter.config;
 
+import com.sowell.security.LzCoreManager;
 import com.sowell.security.arrays.UrlHashSet;
 import com.sowell.security.filter.LzFilterManager;
 import com.sowell.security.filter.filters.AbsInterfacesFilterBuilder;
@@ -13,15 +14,15 @@ import java.util.Arrays;
  * TODO
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/27 14:19
  */
 public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 
 	protected final FilterUrl filterUrl = new FilterUrl();
 	protected final FilterConfig filterConfig = new FilterConfig();
-	protected LzFilterAuthStrategy filterAfterHandler = params -> { };
-	protected LzFilterAuthStrategy filterBeforeHandler = params -> { };
+	protected LzFilterAuthStrategy filterAfterHandler = null;
+	protected LzFilterAuthStrategy filterBeforeHandler = null;
 
 	/**
 	 * 获取接口过滤设置器
@@ -122,14 +123,6 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	}
 
 	public class FilterUrl {
-		/**
-		 * 拦截URL
-		 */
-		protected final UrlHashSet includeUrlSet = new UrlHashSet();
-		/**
-		 * 排除URL
-		 */
-		protected final UrlHashSet excludeUrlSet = new UrlHashSet();
 
 		/**
 		 * 设置拦截接口
@@ -137,7 +130,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		 * @param includeUrls 拦截接口列表
 		 */
 		public FilterUrl addIncludeUrls(String... includeUrls) {
-			addUrlHashSet(this.includeUrlSet, includeUrls);
+			addUrlHashSet(LzCoreManager.getLzConfig().getFilterConfig().getIncludeUrlList(), includeUrls);
 			return this;
 		}
 
@@ -147,21 +140,13 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		 * @param excludeUrls 开放接口列表
 		 */
 		public FilterUrl addExcludeUrls(String... excludeUrls) {
-			addUrlHashSet(this.excludeUrlSet, excludeUrls);
+			addUrlHashSet(LzCoreManager.getLzConfig().getFilterConfig().getExcludeUrlList(), excludeUrls);
 			return this;
 		}
 
 		public FilterConfigurerBuilder<T> and() {
 			return FilterConfigurerBuilder.this;
 		}
-	}
-
-	protected UrlHashSet getFilterUrlIncludeUrls() {
-		return this.filterUrl.includeUrlSet;
-	}
-
-	protected UrlHashSet getFilterUrlExcludeUrls() {
-		return this.filterUrl.excludeUrlSet;
 	}
 
 	private void addUrlHashSet(UrlHashSet urlHashSet, String... urls) {

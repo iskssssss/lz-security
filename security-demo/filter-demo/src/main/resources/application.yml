@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 9696
 
 spring:
   redis:
@@ -47,3 +47,8 @@ lz:
       public-key-str: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCFi9vYzmI+ktpZsv7VTKOEHrNqpRSm5QaA0EHYv72G72ehgTKNuHw0CDskASCJ85gKMzy5uANX+6Q4gz9uAE/1duH3Oc9zxLiyr4iptrZj4v667kW5VcXXdho4shP6LOX+8KaW0ddG6Rt9BX8qUjM8J+7yVjo4EJzJ3Pri0TvvZwIDAQAB
       # [未重写请求加解密处理器时该项为必需] 私钥
       private-key-str: MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAIWL29jOYj6S2lmy/tVMo4Qes2qlFKblBoDQQdi/vYbvZ6GBMo24fDQIOyQBIInzmAozPLm4A1f7pDiDP24AT/V24fc5z3PEuLKviKm2tmPi/rruRblVxdd2GjiyE/os5f7wppbR10bpG30FfypSMzwn7vJWOjgQnMnc+uLRO+9nAgMBAAECgYAzY61W0ZxmndYePE3pwJMPrUy3Vg0LaAhHm1wrTyVcflWvhWrxtDM/RoeThEeELlOsYSkWAmRu/+uiv4ayCra5mpi0fKwgZflI4nQILgluyAMBASURxpoq+G1bJ7XvhXTy1Vygi2WiQU/1ucNFTHJmmHN5bx/hPi8gwQ/BaI1ZcQJBAN7ouKS4M07JReKoi4yzBreJpNB0nke78+oo4v7P8R55ZrSaNNyja7TeRhdHdSRjJOwEz6jwfs0jai1R3bzhHn8CQQCZXw8U6C432r+qi50kqt5jcVcpvluB4h8L1TNByTR6id4Ph/5GJTtqoFwYsJNzJdOJu2asQnEO7apGPHMFz4sZAkB6ISHBRhb+bLJ4jAXhcdkVSDnf6HUsMmNigUJVgBLIspU+EFs0I+mIMFxQttsMs7FwCvbHxfSDaorrB7aonOL7AkAzXZfSe7RG9pcsihe2GRfkHCiCDYPeKxoUv3GsPbO6uoPJldU+LugIXO6bQkAP14JSZZYMaTAuPMDDRymKr6i5AkBLJHn3vx+O8cbJ+LoXTCaMz/kWmqsHoQPOoCynKAjQLXBN7u9f3inL+RF2hjmGyIWjoXkFKeFMpRv/nKyxfq7I
+    filter-config:
+      exclude-`url-list:
+        - /sdfsdf
+      include-url-list:
+        - /sdfsdf

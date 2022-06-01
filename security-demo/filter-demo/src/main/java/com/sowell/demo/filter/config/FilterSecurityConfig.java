@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.LinkedList;
 
 /**
- * @Version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @Version 版权 Copyright(c)2021 LZ
  * @ClassName:
  * @Descripton:
  * @Author: 孔胜
@@ -30,7 +30,7 @@ public class FilterSecurityConfig extends SecurityFilterConfigurerAdapter {
 
 	@Override
 	protected void filter(FilterConfigurerBuilder<FilterConfigurer> filterConfigurer) {
-		System.out.println(LzCoreManager.getLzConfig().toString());
+		System.out.println(LzCoreManager.getLzConfig().print());
 		filterConfigurer
 				.filterUrl()
 				// [非必需] 排除的接口

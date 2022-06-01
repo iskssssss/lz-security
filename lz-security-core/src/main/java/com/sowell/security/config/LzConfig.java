@@ -10,7 +10,7 @@ import java.util.List;
  * 配置文件
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/08/26 11:27
  */
 public class LzConfig {
@@ -27,6 +27,10 @@ public class LzConfig {
 	 * 加密配置信息
 	 */
 	private EncryptConfig encryptConfig;
+	/**
+	 * 过滤配置信息
+	 */
+	private FilterConfig filterConfig;
 	/**
 	 * 接口方法扫描位置
 	 */
@@ -91,6 +95,24 @@ public class LzConfig {
 	}
 
 	/**
+	 * 获取过滤配置信息
+	 *
+	 * @return 过滤配置信息
+	 */
+	public FilterConfig getFilterConfig() {
+		return filterConfig;
+	}
+
+	/**
+	 * 获取过滤配置信息
+	 *
+	 * @param filterConfig 过滤配置信息
+	 */
+	public void setFilterConfig(FilterConfig filterConfig) {
+		this.filterConfig = filterConfig;
+	}
+
+	/**
 	 * 获取接口扫描路径列表
 	 *
 	 * @return 接口扫描路径列表
@@ -133,13 +155,25 @@ public class LzConfig {
 		this.type = type;
 	}
 
-	@Override
-	public String toString() {
+	public String print() {
 		StringBuilder sb = new StringBuilder("配置信息：");
 		sb.append("\n     ").append("• 是否打印日志").append("：").append(consoleLogPrint);
-		sb.append("\n     ").append("- Token配置信息").append("：").append(tokenConfig.toString());
-		sb.append("\n     ").append("- 加密配置信息").append("：").append(encryptConfig.toString());
+		sb.append("\n     ").append("- Token配置信息").append("：").append(tokenConfig.print());
+		sb.append("\n     ").append("- 加密配置信息").append("：").append(encryptConfig.print());
+		sb.append("\n     ").append("- 过滤配置信息").append("：").append(filterConfig.print());
 		sb.append("\n     ").append("• 扫描位置").append("：").append(this.getControllerMethodScanPathList());
 		return sb.toString();
+	}
+
+	@Override
+	public String toString() {
+		return "LzConfig{" +
+				"consoleLogPrint=" + consoleLogPrint +
+				", tokenConfig=" + tokenConfig +
+				", encryptConfig=" + encryptConfig +
+				", filterConfig=" + filterConfig +
+				", controllerMethodScanPathList=" + controllerMethodScanPathList +
+				", type='" + type + '\'' +
+				'}';
 	}
 }

@@ -21,7 +21,7 @@ import java.util.List;
  * <p>可通过此工具类获取预置的过滤器</p>
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/28 16:00
  */
 public class FilterUtil {

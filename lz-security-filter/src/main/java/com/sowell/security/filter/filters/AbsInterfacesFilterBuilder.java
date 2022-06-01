@@ -22,7 +22,7 @@ import java.io.IOException;
  * <p>通过此类来实现自定义接口过滤</p>
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/22 15:50
  */
 public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {

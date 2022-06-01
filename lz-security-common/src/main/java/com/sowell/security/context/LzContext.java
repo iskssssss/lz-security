@@ -8,7 +8,7 @@ import com.sowell.security.context.model.LzStorage;
  * 上下文
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2021 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2021 LZ
  * @date 2021/09/10 16:29
  */
 public interface LzContext<RequestType, ResponseType> {
