@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>lz-security</artifactId>
-        <groupId>com.sowell.security</groupId>
+        <groupId>cn.lz.security</groupId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -16,7 +16,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sowell.security</groupId>
+            <groupId>cn.lz.security</groupId>
             <artifactId>lz-security-filter</artifactId>
         </dependency>
     </dependencies>

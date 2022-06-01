@@ -12,7 +12,7 @@
 
 ```xml
 <dependency>
-    <groupId>com.sowell.security</groupId>
+    <groupId>cn.lz.security</groupId>
     <artifactId>lz-security-filter-spring-boot-starter</artifactId>
     <version>1.1.33</version>
 </dependency>

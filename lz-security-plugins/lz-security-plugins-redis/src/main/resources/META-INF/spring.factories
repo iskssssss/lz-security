@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.sowell.security.plugins.config.RedisConfig,\
-com.sowell.security.plugins.utils.RedisUtil,\
-com.sowell.security.plugins.cache.RedisCacheManager
+cn.lz.security.plugins.config.RedisConfig,\
+cn.lz.security.plugins.utils.RedisUtil,\
+cn.lz.security.plugins.cache.RedisCacheManager

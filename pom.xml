@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sowell.security</groupId>
+    <groupId>cn.lz.security</groupId>
     <artifactId>lz-security</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
@@ -52,7 +52,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.sowell.tool</groupId>
+                <groupId>cn.lz.tool</groupId>
                 <artifactId>lz-tool</artifactId>
                 <version>${lz-tool.version}</version>
             </dependency>
@@ -112,43 +112,43 @@
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-common</artifactId>
                 <version>${lz-security-common.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-core</artifactId>
                 <version>${lz-security-core.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-auth</artifactId>
                 <version>${lz-security-auth.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-filter</artifactId>
                 <version>${lz-security-filter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-plugins-redis</artifactId>
                 <version>${lz-security-plugins-redis.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-auth-spring-boot-starter</artifactId>
                 <version>${lz-security-auth-spring-boot-starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.sowell.security</groupId>
+                <groupId>cn.lz.security</groupId>
                 <artifactId>lz-security-filter-spring-boot-starter</artifactId>
                 <version>${lz-security-filter-spring-boot-starter.version}</version>
             </dependency>

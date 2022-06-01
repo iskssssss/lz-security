@@ -1,3 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.sowell.security.filter.spring.FilterManagerBeanInject,\
-com.sowell.security.filter.spring.FilterBeanRegister
+cn.lz.security.filter.spring.FilterManagerBeanInject,\
+cn.lz.security.filter.spring.FilterBeanRegister
