@@ -156,25 +156,12 @@
     </dependencyManagement>
 
     <repositories>
-<!--        <repository>
-            <id>releases</id>
-            <name>releases</name>
-            <url>http://192.168.1.14:8081/nexus/content/repositories/releases/</url>
-        </repository>-->
         <repository>
             <id>aliyun</id>
             <name>aliyun</name>
             <url>https://maven.aliyun.com/repository/public</url>
         </repository>
     </repositories>
-
-<!--    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>releases</name>
-            <url>http://192.168.1.14:8081/nexus/content/repositories/releases/</url>
-        </repository>
-    </distributionManagement>-->
 
     <build>
         <finalName>lz-security</finalName>
