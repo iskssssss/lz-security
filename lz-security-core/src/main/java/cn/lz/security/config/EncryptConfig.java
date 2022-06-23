@@ -28,6 +28,11 @@ public class EncryptConfig {
     private SwPrivateKey privateKeyStr;
 
     /**
+     * 请求加密后 密文存放键名
+     */
+    private String cipherSaveKey;
+
+    /**
      * 加密接口列表（逗号(,)隔开）
      * <p>/a/**,/b 或 /a/**, /b</p>
      */
@@ -94,6 +99,24 @@ public class EncryptConfig {
     }
 
     /**
+     * 获取密文存放键名
+     *
+     * @return 密文存放键名
+     */
+    public String getCipherSaveKey() {
+        return this.cipherSaveKey;
+    }
+
+    /**
+     * 设置密文存放键名
+     *
+     * @param cipherSaveKey 密文存放键名
+     */
+    public void setCipherSaveKey(String cipherSaveKey) {
+        this.cipherSaveKey = cipherSaveKey;
+    }
+
+    /**
      * 获取加密接口列表
      *
      * @return 加密接口列表
@@ -120,9 +143,10 @@ public class EncryptConfig {
 
     public String print() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n          ").append("• 是否加密").append("：").append(encrypt);
+        sb.append("\n          ").append("• 是否加密").append("：").append(getEncrypt());
         sb.append("\n          ").append("• 私钥").append("：").append(privateKeyStr.getPrivateKeyStr());
         sb.append("\n          ").append("• 公钥").append("：").append(publicKeyStr.getPublicKeyStr());
+        sb.append("\n          ").append("• 密文存放键名").append("：").append(getCipherSaveKey());
         sb.append("\n          ").append("• 加密接口列表").append("：").append(this.getEncryptUrlList().toString());
         return sb.toString();
     }
@@ -133,6 +157,7 @@ public class EncryptConfig {
                 "encrypt=" + encrypt +
                 ", publicKeyStr=" + publicKeyStr +
                 ", privateKeyStr=" + privateKeyStr +
+                ", cipherSaveKey='" + cipherSaveKey + '\'' +
                 ", encryptUrlList=" + encryptUrlList +
                 '}';
     }

@@ -156,8 +156,11 @@ public class LzContextManager {
 	 */
 	private static void handlerRequest(LzRequest lzRequest) {
 		try {
-			final boolean isDecrypt = LzCoreManager.getEncryptSwitchHandler().isDecrypt(lzRequest);
+			EncodeSwitchHandler encryptSwitchHandler = LzCoreManager.getEncryptSwitchHandler();
+			final boolean isDecrypt = encryptSwitchHandler.isDecrypt(lzRequest);
+			String requestContentType = encryptSwitchHandler.requestContentType(lzRequest);
 			lzRequest.setDecrypt(isDecrypt);
+			lzRequest.setRequestContentType(requestContentType);
 			if (isDecrypt) {
 				final HttpServletRequest request = lzRequest.getRequest();
 				lzRequest.setRequest(new HttpServletRequestWrapper(request));

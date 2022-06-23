@@ -2,6 +2,7 @@ package cn.lz.security.filter.config;
 
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.arrays.UrlHashSet;
+import cn.lz.security.filter.filters.AbsInterfacesFilterBuilder;
 import cn.lz.security.fun.LzFilterAuthStrategy;
 
 
@@ -30,6 +31,14 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      */
     public LzFilterAuthStrategy getFilterAfterHandler() {
         return super.filterAfterHandler;
+    }
+
+    /**
+     * 获取开始记录日志的过滤器类
+     * @return 过滤器类
+     */
+    public Class<? extends AbsInterfacesFilterBuilder> getLogBeforeFilterClass() {
+        return super.filterConfig.logBeforeFilterClass;
     }
 
     /**

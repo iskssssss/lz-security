@@ -5,8 +5,13 @@ import cn.lz.security.exception.base.SecurityException;
 import cn.lz.tool.core.bytes.ByteUtil;
 import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.core.string.StringUtil;
+import cn.lz.tool.http.enums.MediaType;
+import cn.lz.tool.io.FileUtil;
 import cn.lz.tool.json.JsonUtil;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -78,5 +83,71 @@ public final class ServletUtil {
         }
         final int length = jsonBytes.length;
         response.print(jsonBytes, 0, length);
+    }
+
+    /**
+     * 将文件写入客户端
+     */
+    public static <ResponseType> void download(
+            BaseResponse<ResponseType> response,
+            String contentType,
+            String fileName,
+            byte[] fileBytes
+    ) throws UnsupportedEncodingException {
+        if (fileBytes == null || fileBytes.length < 1) {
+            return;
+        }
+        if (StringUtil.isEmpty(contentType)) {
+            contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+        response.setHeader("Content-Type", contentType);
+        response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + "\"");
+        final int length = fileBytes.length;
+        response.print(fileBytes, 0, length);
+    }
+
+    /**
+     * 将文件写入客户端
+     */
+    public static <ResponseType> void download(
+            BaseResponse<ResponseType> response,
+            String fileName,
+            byte[] fileBytes
+    ) throws UnsupportedEncodingException {
+        ServletUtil.download(response, MediaType.APPLICATION_OCTET_STREAM_VALUE, fileName, fileBytes);
+    }
+
+    /**
+     * 将文件写入客户端
+     */
+    public static <ResponseType> void download(
+            BaseResponse<ResponseType> response,
+            File file
+    ) throws UnsupportedEncodingException {
+        ServletUtil.download(response, file.getName(), file);
+    }
+
+    /**
+     * 将文件写入客户端
+     */
+    public static <ResponseType> void download(
+            BaseResponse<ResponseType> response,
+            String fileName,
+            File file
+    ) throws UnsupportedEncodingException {
+        ServletUtil.download(response, MediaType.APPLICATION_OCTET_STREAM_VALUE, fileName, file);
+    }
+
+    /**
+     * 将文件写入客户端
+     */
+    public static <ResponseType> void download(
+            BaseResponse<ResponseType> response,
+            String contentType,
+            String fileName,
+            File file
+    ) throws UnsupportedEncodingException {
+        byte[] fileBytes = FileUtil.readBytes(file);
+        ServletUtil.download(response, contentType, fileName, fileBytes);
     }
 }

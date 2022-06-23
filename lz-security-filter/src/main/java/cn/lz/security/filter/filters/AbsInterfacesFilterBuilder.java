@@ -78,14 +78,27 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 		// 日志处理
 		final Class<? extends IInterfacesFilter> nextFilterClass = nextFilter.getClass();
 		final LogBeforeFilter logBeforeFilter = nextFilterClass.getAnnotation(LogBeforeFilter.class);
-		if (logBeforeFilter != null) {
-			final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
-			final BaseFilterLogHandler filterLogHandler = LzFilterManager.getFilterLogHandler();
-			final Object logEntity = filterLogHandler.before(request, response);
-			// 暂缓
-			lzContext.setAttribute(LzConstant.LOG_SWITCH, true);
-			lzContext.setAttribute(LzConstant.LOG_ENTITY_CACHE_KEY, logEntity);
+		Class<? extends AbsInterfacesFilterBuilder> logBeforeFilterClass = LzFilterManager.getFilterConfigurer().getLogBeforeFilterClass();
+		// 两者都为null不记录日志。
+		if (logBeforeFilter == null && logBeforeFilterClass == null) {
+			return nextFilter.doFilter(request, response, params);
 		}
+		if (logBeforeFilterClass != null) {
+			// 如{logBeforeFilter}注解的类不是{logBeforeFilterClass}类则不记录日志。
+			if (logBeforeFilter != null && !nextFilterClass.isAssignableFrom(logBeforeFilterClass)) {
+				return nextFilter.doFilter(request, response, params);
+			}
+			// 如下一过滤器类不是{logBeforeFilterClass}类则不记录日志。
+			if (!nextFilterClass.isAssignableFrom(logBeforeFilterClass)) {
+				return nextFilter.doFilter(request, response, params);
+			}
+		}
+		final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
+		final BaseFilterLogHandler filterLogHandler = LzFilterManager.getFilterLogHandler();
+		final Object logEntity = filterLogHandler.before(request, response);
+		// 暂缓
+		lzContext.setAttribute(LzConstant.LOG_SWITCH, true);
+		lzContext.setAttribute(LzConstant.LOG_ENTITY_CACHE_KEY, logEntity);
 		return nextFilter.doFilter(request, response, params);
 	}
 

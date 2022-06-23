@@ -72,8 +72,22 @@ public class DefaultEncodeSwitchHandler implements EncodeSwitchHandler {
 			dataEncodeSwitch = controllerMethod.getMethodAndControllerAnnotation(DataEncodeSwitch.class);
 		}
 		if (dataEncodeSwitch == null) {
-			return MediaType.ALL_VALUE;
+			return MediaType.APPLICATION_JSON_VALUE;
 		}
 		return dataEncodeSwitch.responseContentType();
+	}
+
+	@Override
+	public String requestContentType(BaseRequest<?> request) {
+		DataEncodeSwitch dataEncodeSwitch = null;
+		final ControllerMethod controllerMethod = request.getControllerMethod();
+		if (controllerMethod != null) {
+			// 获取当前访问接口方法/类的加密注解
+			dataEncodeSwitch = controllerMethod.getMethodAndControllerAnnotation(DataEncodeSwitch.class);
+		}
+		if (dataEncodeSwitch == null) {
+			return MediaType.APPLICATION_JSON_VALUE;
+		}
+		return dataEncodeSwitch.requestContentType();
 	}
 }

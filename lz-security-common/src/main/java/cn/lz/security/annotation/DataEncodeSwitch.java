@@ -33,7 +33,14 @@ public @interface DataEncodeSwitch {
 	/**
 	 * 响应内容类型
 	 *
-	 * @return 内容类型
+	 * @return 响应内容类型
 	 */
-	String responseContentType() default MediaType.ALL_VALUE;
+	String responseContentType() default MediaType.APPLICATION_JSON_VALUE;
+
+	/**
+	 * 请求数据类型
+	 *
+	 * @return 请求数据类型
+	 */
+	String requestContentType() default MediaType.APPLICATION_JSON_VALUE;
 }

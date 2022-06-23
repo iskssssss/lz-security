@@ -18,6 +18,7 @@ public abstract class BaseRequest<T> {
 
 	protected T request;
 	protected boolean decrypt;
+	protected String requestContentType;
 	private ControllerMethod controllerMethod;
 
 	public BaseRequest() {
@@ -64,6 +65,14 @@ public abstract class BaseRequest<T> {
 	 */
 	public boolean isDecrypt() {
 		return this.decrypt;
+	}
+
+	public void setRequestContentType(String requestContentType) {
+		this.requestContentType = requestContentType;
+	}
+
+	public String getRequestContentType() {
+		return requestContentType;
 	}
 
 	/**

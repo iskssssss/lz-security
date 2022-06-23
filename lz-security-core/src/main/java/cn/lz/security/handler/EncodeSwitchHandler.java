@@ -28,9 +28,16 @@ public interface EncodeSwitchHandler {
 	boolean isEncrypt(BaseRequest<?> request);
 
 	/**
-	 * 获取响应类型字符串
+	 * 获取响应数据类型字符串
 	 *
-	 * @return 响应类型字符串
+	 * @return 响应数据类型字符串
 	 */
 	String responseContentType(BaseRequest<?> request);
+
+	/**
+	 * 获取请求数据类型字符串
+	 *
+	 * @return 请求数据类型字符串
+	 */
+	String requestContentType(BaseRequest<?> request);
 }

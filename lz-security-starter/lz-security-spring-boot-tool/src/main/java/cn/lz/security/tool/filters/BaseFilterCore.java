@@ -1,5 +1,6 @@
 package cn.lz.security.tool.filters;
 
+import cn.lz.security.config.EncryptConfig;
 import cn.lz.security.handler.DataEncoder;
 import cn.lz.security.tool.mode.LzRequest;
 import cn.lz.security.tool.mode.LzResponse;
@@ -14,6 +15,7 @@ import cn.lz.security.utils.ServletUtil;
 import cn.lz.tool.cache.utils.GlobalScheduled;
 import cn.lz.tool.core.bytes.ByteUtil;
 import cn.lz.tool.core.enums.RCode;
+import cn.lz.tool.core.string.StringUtil;
 import cn.lz.tool.http.enums.MediaType;
 
 import javax.servlet.Filter;
@@ -85,8 +87,27 @@ public abstract class BaseFilterCore implements Filter {
 		try {
 			final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) lzRequest.getRequest();
 			final byte[] bodyBytes = httpServletRequestWrapper.getBody();
-			final Map requestData = ByteUtil.toObject(bodyBytes, Map.class);
-			final Object decrypt = dataEncoder.decrypt(ByteUtil.toBytes(requestData.get("data")));
+			EncryptConfig encryptConfig = LzCoreManager.getLzConfig().getEncryptConfig();
+			String cipherSaveKey = encryptConfig.getCipherSaveKey();
+			byte[] bytes;
+			if (StringUtil.isNotEmpty(cipherSaveKey)) {
+				final Map requestData = ByteUtil.toObject(bodyBytes, Map.class);
+				Object data = requestData.get(cipherSaveKey);
+				bytes = ByteUtil.toBytes(data);
+			} else {
+				bytes = bodyBytes;
+			}
+			String requestContentType = lzRequest.getRequestContentType();
+			Object decrypt;
+			if (StringUtil.isEmpty(requestContentType) ||
+					requestContentType.contains("json") ||
+					requestContentType.contains("xml") ||
+					requestContentType.contains("text")
+			) {
+				decrypt = ByteUtil.toObject(dataEncoder.decrypt(bytes));
+			} else {
+				decrypt = dataEncoder.decrypt(bytes);
+			}
 			httpServletRequestWrapper.setBody(ByteUtil.toBytes(decrypt));
 		} catch (Exception e) {
 			throw new SecurityException(RCode.DATA_DECRYPT_FAILED);

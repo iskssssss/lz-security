@@ -90,7 +90,10 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	}
 
 	public class FilterConfig {
-		protected Class<? extends AbsInterfacesFilterBuilder> logBeforeFilter;
+		/**
+		 * 开始记录日志的过滤器类
+		 */
+		protected Class<? extends AbsInterfacesFilterBuilder> logBeforeFilterClass;
 
 		/**
 		 * 设置接口过滤执行链
@@ -107,13 +110,13 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		}
 
 		/**
-		 * 设置
+		 * 设置开始记录日志的过滤器类
 		 *
-		 * @param logBeforeFilter
-		 * @return
+		 * @param logBeforeFilterClass 过滤器类
+		 * @return this
 		 */
-		public FilterConfig setLogBeforeFilter(Class<? extends AbsInterfacesFilterBuilder> logBeforeFilter) {
-			this.logBeforeFilter = logBeforeFilter;
+		public FilterConfig setLogBeforeFilterClass(Class<? extends AbsInterfacesFilterBuilder> logBeforeFilterClass) {
+			this.logBeforeFilterClass = logBeforeFilterClass;
 			return this;
 		}
 
