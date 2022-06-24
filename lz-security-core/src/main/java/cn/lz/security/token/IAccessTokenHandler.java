@@ -30,7 +30,7 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 		if (servletRequest == null) {
 			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
 		}
-		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
+		final TokenConfig tokenConfig = LzCoreManager.getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		// 从请求头中获取Token
 		String accessToken = servletRequest.getHeader(saveName);

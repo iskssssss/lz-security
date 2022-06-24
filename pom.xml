@@ -43,6 +43,7 @@
         <lz-security-filter.version>2.0.0</lz-security-filter.version>
         <!-- 插件 -->
         <lz-security-plugins-redis.version>2.0.0</lz-security-plugins-redis.version>
+        <lz-security-plugins-jwt.version>2.0.0</lz-security-plugins-jwt.version>
         <!-- 启动相关 -->
         <lz-security-filter-spring-boot-starter.version>2.0.0</lz-security-filter-spring-boot-starter.version>
 
@@ -137,8 +138,8 @@
 
             <dependency>
                 <groupId>cn.lz.security</groupId>
-                <artifactId>lz-security-plugins-redis</artifactId>
-                <version>${lz-security-plugins-redis.version}</version>
+                <artifactId>lz-security-plugins-jwt</artifactId>
+                <version>${lz-security-plugins-jwt.version}</version>
             </dependency>
 
             <dependency>

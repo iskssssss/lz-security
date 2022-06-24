@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
  * @Author eternity
  * @Date 2020/5/28 12:39
  */
-@Component
 public class RedisConfig {
 
     @Bean(value = "redisTemplate")

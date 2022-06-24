@@ -15,14 +15,14 @@ public class DefaultDataEncoder implements DataEncoder {
 
 	@Override
 	public byte[] encrypt(byte[] bytes) {
-		final SwPrivateKey priKey = LzCoreManager.getLzConfig().getEncryptConfig().getPrivateKeyStr();
+		final SwPrivateKey priKey = LzCoreManager.getEncryptConfig().getPrivateKey();
 		final byte[] encryptResult = priKey.encrypt(bytes);
 		return encryptResult;
 	}
 
 	@Override
 	public byte[] decrypt(byte[] bytes) {
-		final SwPrivateKey privateKey = LzCoreManager.getLzConfig().getEncryptConfig().getPrivateKeyStr();
+		final SwPrivateKey privateKey = LzCoreManager.getEncryptConfig().getPrivateKey();
 		final byte[] decryptResult = privateKey.decrypt(bytes);
 		return decryptResult;
 	}

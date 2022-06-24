@@ -1,4 +1,4 @@
-package cn.lz.security.defaults;
+package cn.lz.security.token;
 
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.cache.BaseCacheManager;
@@ -6,7 +6,6 @@ import cn.lz.security.config.TokenConfig;
 import cn.lz.security.context.LzSecurityContextThreadLocal;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.exception.auth.AccountNotExistException;
-import cn.lz.security.token.IAccessTokenHandler;
 import cn.lz.tool.core.string.StringUtil;
 import cn.lz.tool.jwt.JwtUtil;
 import cn.lz.tool.jwt.model.AuthDetails;
@@ -23,7 +22,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 	@Override
 	public String generateAccessToken(AuthDetails authDetails) {
 		final BaseCacheManager cacheManager = LzCoreManager.getCacheManager();
-		long timeoutMillis = LzCoreManager.getLzConfig().getTokenConfig().getTimeoutForMillis();
+		long timeoutMillis = LzCoreManager.getTokenConfig().getTimeoutForMillis();
 		String id = "JWT::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isNotEmpty(idValue)) {
@@ -47,7 +46,7 @@ public class JwtAccessTokenHandler implements IAccessTokenHandler<AuthDetails> {
 		String id = "JWT::" + authDetails.getId();
 		cacheManager.remove(id);
 
-		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
+		final TokenConfig tokenConfig = LzCoreManager.getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		final BaseResponse<?> servletResponse = LzSecurityContextThreadLocal.getServletResponse();
 		servletResponse.removeCookie(saveName);

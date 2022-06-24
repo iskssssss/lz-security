@@ -19,12 +19,12 @@ public final class LzConstant {
 	 * token类型 uuid
 	 */
 	public static final String TOKEN_TYPE_BY_UUID = "UUID";
-	/**
-	 * token类型 jwt
-	 */
-	public static final String TOKEN_TYPE_BY_JWT = "JWT";
+//	/**
+//	 * token类型 jwt
+//	 */
+//	public static final String TOKEN_TYPE_BY_JWT = "JWT";
 
 	public static final String PREFIX_TOKEN_SPLIT = " ";
 
-	public static final String PREFIX_TOKEN_SPLIT_FOR_COOKIE = "_";
+	public static final String PREFIX_TOKEN_SPLIT_FOR_COOKIE = " ";
 }

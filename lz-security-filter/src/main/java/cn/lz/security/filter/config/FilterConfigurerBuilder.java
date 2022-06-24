@@ -133,7 +133,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		 * @param includeUrls 拦截接口列表
 		 */
 		public FilterUrl addIncludeUrls(String... includeUrls) {
-			addUrlHashSet(LzCoreManager.getLzConfig().getFilterConfig().getIncludeUrlList(), includeUrls);
+			addUrlHashSet(LzCoreManager.getFilterConfig().getIncludeUrlList(), includeUrls);
 			return this;
 		}
 
@@ -143,7 +143,7 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 		 * @param excludeUrls 开放接口列表
 		 */
 		public FilterUrl addExcludeUrls(String... excludeUrls) {
-			addUrlHashSet(LzCoreManager.getLzConfig().getFilterConfig().getExcludeUrlList(), excludeUrls);
+			addUrlHashSet(LzCoreManager.getFilterConfig().getExcludeUrlList(), excludeUrls);
 			return this;
 		}
 

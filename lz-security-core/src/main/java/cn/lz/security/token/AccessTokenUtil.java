@@ -37,7 +37,7 @@ public final class AccessTokenUtil {
 	 */
 	public static String generateAccessToken(AuthDetails<?> t, boolean writeCookie) {
 		final String token = LzCoreManager.getAccessTokenHandler().generateAccessToken(t);
-		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
+		final TokenConfig tokenConfig = LzCoreManager.getTokenConfig();
 		final String prefix = tokenConfig.getPrefix();
 		final boolean isOpenPrefix = StringUtil.isNotEmpty(prefix) && StringUtil.notAllSpace(prefix);
 		if (writeCookie) {

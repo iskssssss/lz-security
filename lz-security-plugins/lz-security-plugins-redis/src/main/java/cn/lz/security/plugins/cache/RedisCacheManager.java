@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  * @version 版权 Copyright(c)2021 LZ
  * @date 2021/10/28 17:44
  */
-@Component
 public class RedisCacheManager implements BaseCacheManager {
 
 	@Override

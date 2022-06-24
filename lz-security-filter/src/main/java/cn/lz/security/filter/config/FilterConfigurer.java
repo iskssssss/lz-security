@@ -47,7 +47,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 拦截的接口列表
      */
     public UrlHashSet getIncludeUrls() {
-        final UrlHashSet filterUrlIncludeUrls = LzCoreManager.getLzConfig().getFilterConfig().getIncludeUrlList();
+        final UrlHashSet filterUrlIncludeUrls = LzCoreManager.getFilterConfig().getIncludeUrlList();
         if (filterUrlIncludeUrls.isEmpty()) {
             filterUrlIncludeUrls.add("/**");
         }
@@ -60,7 +60,7 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 排除的接口列表
      */
     public UrlHashSet getExcludeUrls() {
-        return LzCoreManager.getLzConfig().getFilterConfig().getExcludeUrlList();
+        return LzCoreManager.getFilterConfig().getExcludeUrlList();
     }
 
 }

@@ -1,7 +1,10 @@
 package cn.lz.security.tool.spring;
 
 import cn.lz.security.LzCoreManager;
+import cn.lz.security.config.EncryptConfig;
+import cn.lz.security.config.FilterConfig;
 import cn.lz.security.config.LzConfig;
+import cn.lz.security.config.TokenConfig;
 import cn.lz.security.tool.utils.SpringUtil;
 import cn.lz.tool.reflect.model.ControllerMethod;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -24,6 +27,24 @@ public class BeanRegister {
 	@ConfigurationProperties("lz.security")
 	public LzConfig registerLzConfig() {
 		return new LzConfig();
+	}
+
+	@Bean
+	@ConfigurationProperties("lz.security.token-config")
+	public TokenConfig registerTokenConfig() {
+		return new TokenConfig();
+	}
+
+	@Bean
+	@ConfigurationProperties("lz.security.encrypt-config")
+	public EncryptConfig registerEncryptConfig() {
+		return new EncryptConfig();
+	}
+
+	@Bean
+	@ConfigurationProperties("lz.security.filter-config")
+	public FilterConfig registerFilterConfig() {
+		return new FilterConfig();
 	}
 
 	@Bean

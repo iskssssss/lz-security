@@ -21,11 +21,20 @@ public class EncryptConfig {
     /**
      * 公钥
      */
-    private SwPublicKey publicKeyStr;
+    private SwPublicKey publicKey;
     /**
      * 私钥
      */
-    private SwPrivateKey privateKeyStr;
+    private SwPrivateKey privateKey;
+    /**
+     * 公钥
+     */
+    private String pubKey;
+    /**
+     * 私钥
+     */
+    private String priKey;
+
 
     /**
      * 请求加密后 密文存放键名
@@ -61,20 +70,30 @@ public class EncryptConfig {
      *
      * @return 公钥
      */
-    public SwPublicKey getPublicKeyStr() {
-        return publicKeyStr;
+    public SwPublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    /**
+     * 获取公钥
+     *
+     * @return 公钥
+     */
+    public String getPubKey() {
+        return pubKey;
     }
 
     /**
      * 设置公钥
      *
-     * @param publicKeyStr 公钥
+     * @param pubKey 公钥
      */
-    public void setPublicKeyStr(String publicKeyStr) {
-        if (StringUtil.isEmpty(publicKeyStr)) {
+    public void setPubKey(String pubKey) {
+        if (StringUtil.isEmpty(pubKey)) {
             return;
         }
-        this.publicKeyStr = new SwPublicKey(publicKeyStr);
+        this.pubKey = pubKey;
+        this.publicKey = new SwPublicKey(pubKey);
     }
 
     /**
@@ -82,20 +101,30 @@ public class EncryptConfig {
      *
      * @return 私钥
      */
-    public SwPrivateKey getPrivateKeyStr() {
-        return privateKeyStr;
+    public SwPrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    /**
+     * 获取私钥
+     *
+     * @return 私钥
+     */
+    public String getPriKey() {
+        return priKey;
     }
 
     /**
      * 设置私钥
      *
-     * @param privateKeyStr 私钥
+     * @param priKey 私钥
      */
-    public void setPrivateKeyStr(String privateKeyStr) {
-        if (StringUtil.isEmpty(privateKeyStr)) {
+    public void setPriKey(String priKey) {
+        if (StringUtil.isEmpty(priKey)) {
             return;
         }
-        this.privateKeyStr = new SwPrivateKey(privateKeyStr);
+        this.priKey = priKey;
+        this.privateKey = new SwPrivateKey(priKey);
     }
 
     /**
@@ -144,8 +173,8 @@ public class EncryptConfig {
     public String print() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n          ").append("• 是否加密").append("：").append(getEncrypt());
-        sb.append("\n          ").append("• 私钥").append("：").append(privateKeyStr.getPrivateKeyStr());
-        sb.append("\n          ").append("• 公钥").append("：").append(publicKeyStr.getPublicKeyStr());
+        sb.append("\n          ").append("• 私钥").append("：").append(priKey);
+        sb.append("\n          ").append("• 公钥").append("：").append(pubKey);
         sb.append("\n          ").append("• 密文存放键名").append("：").append(getCipherSaveKey());
         sb.append("\n          ").append("• 加密接口列表").append("：").append(this.getEncryptUrlList().toString());
         return sb.toString();
@@ -155,8 +184,10 @@ public class EncryptConfig {
     public String toString() {
         return "EncryptConfig{" +
                 "encrypt=" + encrypt +
-                ", publicKeyStr=" + publicKeyStr +
-                ", privateKeyStr=" + privateKeyStr +
+                ", publicKey=" + publicKey +
+                ", privateKey=" + privateKey +
+                ", pubKey='" + pubKey + '\'' +
+                ", priKey='" + priKey + '\'' +
                 ", cipherSaveKey='" + cipherSaveKey + '\'' +
                 ", encryptUrlList=" + encryptUrlList +
                 '}';

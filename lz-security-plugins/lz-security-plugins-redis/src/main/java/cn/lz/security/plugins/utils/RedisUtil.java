@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  * @Author eternity
  * @Date 2020/5/24 19:58
  */
-@Component
 @SuppressWarnings("unchecked")
 public final class RedisUtil {
     private static final LzLogger log = LzLoggerUtil.getLzLogger(RedisUtil.class);

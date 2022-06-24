@@ -1,19 +1,17 @@
 package cn.lz.security;
 
 import cn.lz.security.arrays.InterfacesMethodMap;
-import cn.lz.security.config.LzConfig;
-import cn.lz.security.config.TokenConfig;
-import cn.lz.security.defaults.*;
-import cn.lz.security.exception.base.SecurityException;
+import cn.lz.security.cache.BaseCacheManager;
+import cn.lz.security.config.*;
+import cn.lz.security.context.LzContext;
+import cn.lz.security.context.model.LzStorage;
+import cn.lz.security.defaults.DefaultCacheManager;
+import cn.lz.security.defaults.DefaultDataEncoder;
+import cn.lz.security.defaults.DefaultEncodeSwitchHandler;
+import cn.lz.security.defaults.token.UUIDAccessTokenHandler;
 import cn.lz.security.handler.DataEncoder;
 import cn.lz.security.handler.EncodeSwitchHandler;
 import cn.lz.security.token.IAccessTokenHandler;
-import cn.lz.security.cache.BaseCacheManager;
-import cn.lz.security.config.CoreConfigurer;
-import cn.lz.security.context.LzContext;
-import cn.lz.security.context.model.LzStorage;
-import cn.lz.security.defaults.*;
-import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.reflect.model.ControllerMethod;
 
 import java.util.Map;
@@ -46,6 +44,72 @@ public class LzCoreManager {
 	 */
 	public static LzConfig getLzConfig() {
 		return lzConfig;
+	}
+
+	//====================================================================================================================================
+
+	protected static TokenConfig tokenConfig = null;
+
+	/**
+	 * 设置配置文件
+	 *
+	 * @param tokenConfig 配置文件
+	 */
+	public static void setTokenConfig(TokenConfig tokenConfig) {
+		LzCoreManager.tokenConfig = tokenConfig;
+	}
+
+	/**
+	 * 获取配置文件
+	 *
+	 * @return 配置文件
+	 */
+	public static TokenConfig getTokenConfig() {
+		return tokenConfig;
+	}
+
+	//====================================================================================================================================
+
+	protected static EncryptConfig encryptConfig = null;
+
+	/**
+	 * 设置配置文件
+	 *
+	 * @param encryptConfig 配置文件
+	 */
+	public static void setEncryptConfig(EncryptConfig encryptConfig) {
+		LzCoreManager.encryptConfig = encryptConfig;
+	}
+
+	/**
+	 * 获取配置文件
+	 *
+	 * @return 配置文件
+	 */
+	public static EncryptConfig getEncryptConfig() {
+		return encryptConfig;
+	}
+
+	//====================================================================================================================================
+
+	protected static FilterConfig filterConfig = null;
+
+	/**
+	 * 设置配置文件
+	 *
+	 * @param filterConfig 配置文件
+	 */
+	public static void setFilterConfig(FilterConfig filterConfig) {
+		LzCoreManager.filterConfig = filterConfig;
+	}
+
+	/**
+	 * 获取配置文件
+	 *
+	 * @return 配置文件
+	 */
+	public static FilterConfig getFilterConfig() {
+		return filterConfig;
 	}
 
 	//====================================================================================================================================
@@ -155,17 +219,18 @@ public class LzCoreManager {
 		if (LzCoreManager.accessTokenHandler == null) {
 			synchronized (LzCoreManager.class) {
 				if (LzCoreManager.accessTokenHandler == null) {
-					final TokenConfig accessTokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
-					switch (accessTokenConfig.getType()) {
-						case LzConstant.TOKEN_TYPE_BY_UUID:
-							LzCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
-							break;
-						case LzConstant.TOKEN_TYPE_BY_JWT:
-							LzCoreManager.accessTokenHandler = new JwtAccessTokenHandler();
-							break;
-						default:
-							throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
-					}
+//					final TokenConfig accessTokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
+					LzCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
+//					switch (accessTokenConfig.getType()) {
+//						case LzConstant.TOKEN_TYPE_BY_UUID:
+//							LzCoreManager.accessTokenHandler = new UUIDAccessTokenHandler();
+//							break;
+//						case LzConstant.TOKEN_TYPE_BY_JWT:
+//							LzCoreManager.accessTokenHandler = new JwtAccessTokenHandler();
+//							break;
+//						default:
+//							throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
+//					}
 				}
 			}
 		}

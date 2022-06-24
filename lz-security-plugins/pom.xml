@@ -15,6 +15,7 @@
 
     <modules>
         <module>lz-security-plugins-redis</module>
+        <module>lz-security-plugins-jwt</module>
     </modules>
 
     <dependencyManagement>

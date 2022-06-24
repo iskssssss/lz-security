@@ -1,4 +1,4 @@
-package cn.lz.security.defaults;
+package cn.lz.security.defaults.token;
 
 import cn.hutool.crypto.SmUtil;
 import cn.lz.security.LzCoreManager;
@@ -23,7 +23,7 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 	@Override
 	public String generateAccessToken(AuthDetails authDetails) {
 		final BaseCacheManager cacheManager = LzCoreManager.getCacheManager();
-		long timeoutMillis = LzCoreManager.getLzConfig().getTokenConfig().getTimeoutForMillis();
+		long timeoutMillis = LzCoreManager.getTokenConfig().getTimeoutForMillis();
 		String id = "UUID::" + authDetails.getId();
 		final Object idValue = cacheManager.get(id);
 		if (StringUtil.isNotEmpty(idValue)) {
@@ -50,7 +50,7 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 		String id = "UUID::" + authDetails.getId();
 		cacheManager.remove(id, token);
 
-		final TokenConfig tokenConfig = LzCoreManager.getLzConfig().getTokenConfig();
+		final TokenConfig tokenConfig = LzCoreManager.getTokenConfig();
 		final String saveName = tokenConfig.getName();
 		final BaseResponse<?> servletResponse = LzSecurityContextThreadLocal.getServletResponse();
 		servletResponse.removeCookie(saveName);

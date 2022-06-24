@@ -87,7 +87,7 @@ public abstract class BaseFilterCore implements Filter {
 		try {
 			final HttpServletRequestWrapper httpServletRequestWrapper = (HttpServletRequestWrapper) lzRequest.getRequest();
 			final byte[] bodyBytes = httpServletRequestWrapper.getBody();
-			EncryptConfig encryptConfig = LzCoreManager.getLzConfig().getEncryptConfig();
+			EncryptConfig encryptConfig = LzCoreManager.getEncryptConfig();
 			String cipherSaveKey = encryptConfig.getCipherSaveKey();
 			byte[] bytes;
 			if (StringUtil.isNotEmpty(cipherSaveKey)) {

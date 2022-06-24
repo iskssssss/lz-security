@@ -97,7 +97,7 @@ public class LzContextManager {
 			// 获取当前接口访问方法
 			ControllerMethod controllerMethod = LzCoreManager.getMethodByInterfaceUrl(requestPath);
 			// 校验当前请求接口返回数据是否要加密
-			final EncryptConfig encryptConfig = LzCoreManager.getLzConfig().getEncryptConfig();
+			final EncryptConfig encryptConfig = LzCoreManager.getEncryptConfig();
 			LzRequest lzRequest = new LzRequest(httpServletRequest);
 			LzResponse lzResponse = new LzResponse(httpServletResponse);
 			lzRequest.setControllerMethod(controllerMethod);

@@ -22,7 +22,7 @@ public class DefaultEncodeSwitchHandler implements EncodeSwitchHandler {
 	private final EncryptConfig encryptConfig;
 
 	public DefaultEncodeSwitchHandler() {
-		encryptConfig = LzCoreManager.getLzConfig().getEncryptConfig();
+		encryptConfig = LzCoreManager.getEncryptConfig();
 	}
 
 	@Override

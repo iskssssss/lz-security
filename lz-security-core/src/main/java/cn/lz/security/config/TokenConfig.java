@@ -1,9 +1,5 @@
 package cn.lz.security.config;
 
-import cn.lz.security.LzConstant;
-import cn.lz.tool.core.string.StringUtil;
-
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,10 +22,10 @@ public class TokenConfig {
      * Token 默认过期时间(3600秒)
      */
     private static final long DEFAULT_TIMEOUT = 3600L;
-    /**
-     * Token 类型（uuid, jwt）
-     */
-    private String type = "UUID";
+//    /**
+//     * Token 类型（uuid）
+//     */
+//    private String type = "UUID";
     /**
      * Token 过期时间（秒）(默认3600秒)
      */
@@ -71,26 +67,26 @@ public class TokenConfig {
         this.prefix = prefix;
     }
 
-    /**
-     * 获取类型
-     *
-     * @return 类型
-     */
-    public String getType() {
-        if (StringUtil.isEmpty(this.type)) {
-            return LzConstant.TOKEN_TYPE_BY_UUID;
-        }
-        return this.type.toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * 设置类型
-     *
-     * @param type 类型
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
+//    /**
+//     * 获取类型
+//     *
+//     * @return 类型
+//     */
+//    public String getType() {
+//        if (StringUtil.isEmpty(this.type)) {
+//            return LzConstant.TOKEN_TYPE_BY_UUID;
+//        }
+//        return this.type.toUpperCase(Locale.ROOT);
+//    }
+//
+//    /**
+//     * 设置类型
+//     *
+//     * @param type 类型
+//     */
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 
     /**
      * 获取过期时间（秒）
@@ -131,7 +127,7 @@ public class TokenConfig {
         StringBuilder sb = new StringBuilder();
         sb.append("\n          ").append("• 存放标识").append("：").append(name);
         sb.append("\n          ").append("• 前缀").append("：").append(prefix);
-        sb.append("\n          ").append("• 类型").append("：").append(type);
+//        sb.append("\n          ").append("• 类型").append("：").append(type);
         sb.append("\n          ").append("• 过期时间（秒）").append("：").append(timeout);
         return sb.toString();
     }
@@ -141,7 +137,7 @@ public class TokenConfig {
         return "TokenConfig{" +
                 "name='" + name + '\'' +
                 ", prefix='" + prefix + '\'' +
-                ", type='" + type + '\'' +
+//                ", type='" + type + '\'' +
                 ", timeout=" + timeout +
                 '}';
     }

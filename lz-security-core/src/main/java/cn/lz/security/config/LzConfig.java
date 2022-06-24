@@ -19,18 +19,18 @@ public class LzConfig {
 	 * 是否在控制台打印日志信息(默认打印)
 	 */
 	private Boolean consoleLogPrint = true;
-	/**
-	 * Token配置信息
-	 */
-	private TokenConfig tokenConfig;
-	/**
-	 * 加密配置信息
-	 */
-	private EncryptConfig encryptConfig;
-	/**
-	 * 过滤配置信息
-	 */
-	private FilterConfig filterConfig;
+//	/**
+//	 * Token配置信息
+//	 */
+//	private TokenConfig tokenConfig;
+//	/**
+//	 * 加密配置信息
+//	 */
+//	private EncryptConfig encryptConfig;
+//	/**
+//	 * 过滤配置信息
+//	 */
+//	private FilterConfig filterConfig;
 	/**
 	 * 接口方法扫描位置
 	 */
@@ -57,60 +57,60 @@ public class LzConfig {
 	public void setConsoleLogPrint(Boolean consoleLogPrint) {
 		this.consoleLogPrint = consoleLogPrint;
 	}
-
-	/**
-	 * 获取Token配置信息
-	 *
-	 * @return Token配置信息
-	 */
-	public TokenConfig getTokenConfig() {
-		return tokenConfig;
-	}
-
-	/**
-	 * 设置Token配置信息
-	 *
-	 * @param tokenConfig Token配置信息
-	 */
-	public void setTokenConfig(TokenConfig tokenConfig) {
-		this.tokenConfig = tokenConfig;
-	}
-
-	/**
-	 * 获取加解密配置信息
-	 *
-	 * @return 加解密配置信息
-	 */
-	public EncryptConfig getEncryptConfig() {
-		return encryptConfig;
-	}
-
-	/**
-	 * 获取加解密配置信息
-	 *
-	 * @param encryptConfig 加解密配置信息
-	 */
-	public void setEncryptConfig(EncryptConfig encryptConfig) {
-		this.encryptConfig = encryptConfig;
-	}
-
-	/**
-	 * 获取过滤配置信息
-	 *
-	 * @return 过滤配置信息
-	 */
-	public FilterConfig getFilterConfig() {
-		return filterConfig;
-	}
-
-	/**
-	 * 获取过滤配置信息
-	 *
-	 * @param filterConfig 过滤配置信息
-	 */
-	public void setFilterConfig(FilterConfig filterConfig) {
-		this.filterConfig = filterConfig;
-	}
+//
+//	/**
+//	 * 获取Token配置信息
+//	 *
+//	 * @return Token配置信息
+//	 */
+//	public TokenConfig getTokenConfig() {
+//		return tokenConfig;
+//	}
+//
+//	/**
+//	 * 设置Token配置信息
+//	 *
+//	 * @param tokenConfig Token配置信息
+//	 */
+//	public void setTokenConfig(TokenConfig tokenConfig) {
+//		this.tokenConfig = tokenConfig;
+//	}
+//
+//	/**
+//	 * 获取加解密配置信息
+//	 *
+//	 * @return 加解密配置信息
+//	 */
+//	public EncryptConfig getEncryptConfig() {
+//		return encryptConfig;
+//	}
+//
+//	/**
+//	 * 获取加解密配置信息
+//	 *
+//	 * @param encryptConfig 加解密配置信息
+//	 */
+//	public void setEncryptConfig(EncryptConfig encryptConfig) {
+//		this.encryptConfig = encryptConfig;
+//	}
+//
+//	/**
+//	 * 获取过滤配置信息
+//	 *
+//	 * @return 过滤配置信息
+//	 */
+//	public FilterConfig getFilterConfig() {
+//		return filterConfig;
+//	}
+//
+//	/**
+//	 * 获取过滤配置信息
+//	 *
+//	 * @param filterConfig 过滤配置信息
+//	 */
+//	public void setFilterConfig(FilterConfig filterConfig) {
+//		this.filterConfig = filterConfig;
+//	}
 
 	/**
 	 * 获取接口扫描路径列表
@@ -158,9 +158,9 @@ public class LzConfig {
 	public String print() {
 		StringBuilder sb = new StringBuilder("配置信息：");
 		sb.append("\n     ").append("• 是否打印日志").append("：").append(consoleLogPrint);
-		sb.append("\n     ").append("- Token配置信息").append("：").append(tokenConfig.print());
-		sb.append("\n     ").append("- 加密配置信息").append("：").append(encryptConfig.print());
-		sb.append("\n     ").append("- 过滤配置信息").append("：").append(filterConfig.print());
+//		sb.append("\n     ").append("- Token配置信息").append("：").append(tokenConfig.print());
+//		sb.append("\n     ").append("- 加密配置信息").append("：").append(encryptConfig.print());
+//		sb.append("\n     ").append("- 过滤配置信息").append("：").append(filterConfig.print());
 		sb.append("\n     ").append("• 扫描位置").append("：").append(this.getControllerMethodScanPathList());
 		return sb.toString();
 	}
@@ -169,9 +169,9 @@ public class LzConfig {
 	public String toString() {
 		return "LzConfig{" +
 				"consoleLogPrint=" + consoleLogPrint +
-				", tokenConfig=" + tokenConfig +
-				", encryptConfig=" + encryptConfig +
-				", filterConfig=" + filterConfig +
+//				", tokenConfig=" + tokenConfig +
+//				", encryptConfig=" + encryptConfig +
+//				", filterConfig=" + filterConfig +
 				", controllerMethodScanPathList=" + controllerMethodScanPathList +
 				", type='" + type + '\'' +
 				'}';

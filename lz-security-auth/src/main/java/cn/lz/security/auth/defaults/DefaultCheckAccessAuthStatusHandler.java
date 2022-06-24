@@ -23,8 +23,7 @@ public class DefaultCheckAccessAuthStatusHandler implements ICheckAccessAuthStat
 			BaseResponse<?> response
 	) {
 		final BaseRequest servletRequest = LzSecurityContextThreadLocal.getServletRequest();
-		final LzConfig lzConfig = LzCoreManager.getLzConfig();
-		final String saveName = lzConfig.getTokenConfig().getName();
+		final String saveName = LzCoreManager.getTokenConfig().getName();
 		final String authorizationToken = servletRequest.getHeader(saveName);
 		return StringUtil.isNotEmpty(authorizationToken);
 	}
