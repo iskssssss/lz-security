@@ -14,10 +14,7 @@ import cn.lz.security.context.model.BaseResponse;
 public class LogoutHandler extends AbstractLogoutHandler {
 
     @Override
-    public boolean logout(
-            BaseRequest<?> request,
-            BaseResponse<?> response
-    ) {
+    public boolean logout(BaseRequest<?> request, BaseResponse<?> response) {
         final LogoutService logoutService = LzAuthManager.getLogoutService();
         return logoutService.logout(request, response);
     }

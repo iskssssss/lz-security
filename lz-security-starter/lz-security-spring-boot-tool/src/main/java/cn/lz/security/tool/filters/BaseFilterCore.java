@@ -1,16 +1,18 @@
 package cn.lz.security.tool.filters;
 
+import cn.lz.security.LzConstant;
+import cn.lz.security.LzCoreManager;
 import cn.lz.security.config.EncryptConfig;
+import cn.lz.security.exception.CorsException;
+import cn.lz.security.exception.base.SecurityException;
+import cn.lz.security.filter.LzFilterManager;
+import cn.lz.security.fun.LzFilterAuthStrategy;
 import cn.lz.security.handler.DataEncoder;
+import cn.lz.security.log.LzLoggerUtil;
+import cn.lz.security.tool.context.LzContextManager;
 import cn.lz.security.tool.mode.LzRequest;
 import cn.lz.security.tool.mode.LzResponse;
 import cn.lz.security.tool.wrapper.HttpServletRequestWrapper;
-import cn.lz.security.LzConstant;
-import cn.lz.security.LzCoreManager;
-import cn.lz.security.exception.base.SecurityException;
-import cn.lz.security.filter.LzFilterManager;
-import cn.lz.security.log.LzLoggerUtil;
-import cn.lz.security.tool.context.LzContextManager;
 import cn.lz.security.utils.ServletUtil;
 import cn.lz.tool.cache.utils.GlobalScheduled;
 import cn.lz.tool.core.bytes.ByteUtil;
@@ -22,6 +24,7 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -32,6 +35,21 @@ import java.util.Map;
  * @date 2021/11/03 11:16
  */
 public abstract class BaseFilterCore implements Filter {
+
+	/**
+	 * 被拦截后处理
+	 */
+	protected LzFilterAuthStrategy interceptHandler;
+
+	/**
+	 * 跨域信息处理
+	 */
+	protected LzFilterAuthStrategy corsHandler = params -> {
+		if (params.length < 2 || !(params[0] instanceof LzRequest) || !(params[1] instanceof LzResponse)) {
+			return;
+		}
+		LzCoreManager.getCorsConfig().initHeader((LzRequest) params[0], (LzResponse) params[1]);
+	};
 
 	/**
 	 * 过滤
@@ -48,18 +66,34 @@ public abstract class BaseFilterCore implements Filter {
 		LzContextManager.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 			SecurityException securityException = null;
 			try {
+				if ("OPTIONS".equals(swRequest.getMethod())) {
+					// 跨域处理
+					corsHandler.run(swRequest, swResponse);
+					swResponse.setStatus(200);
+					swResponse.print(RCode.SUCCESS.toJson().getBytes(StandardCharsets.UTF_8));
+					return;
+				}
 				final DataEncoder dataEncoder = LzCoreManager.getRequestDataEncryptHandler();
 				// 解密处理
 				this.decryptHandler(dataEncoder, swRequest);
 				// 过滤处理
 				if (this.doFilter(swRequest, swResponse)) {
 					chain.doFilter(swRequest.getRequest(), swResponse.getResponse());
+				} else {
+					// 跨域处理
+					corsHandler.run(swRequest, swResponse);
+					// 被拦截后处理
+					interceptHandler.run();
 				}
 				// 加密处理
 				this.encryptHandler(dataEncoder, swResponse);
 			} catch (Exception e) {
 				// 错误处理
 				securityException = exceptionHandler(e);
+				if (!(e instanceof CorsException)) {
+					// 跨域处理
+					corsHandler.run(swRequest, swResponse);
+				}
 			} finally {
 				final Object handlerData = LzFilterManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {

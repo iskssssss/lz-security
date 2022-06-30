@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +64,7 @@ public class SpringUtil implements BeanFactoryPostProcessor {
 
     /**
      * 销毁bean
+     *
      * @param obj bean对象
      */
     public static void destroyBean(Object obj) {
@@ -169,89 +172,136 @@ public class SpringUtil implements BeanFactoryPostProcessor {
      * @param packagePaths 处理包的位置
      * @return 接口地址和对应的方法字典集合
      */
-    public static Map<String, ControllerMethod> getControllerMethodMap(List<String> packagePaths) {
+    public static Map<String, Map<String, ControllerMethod>> getControllerMethodMap(List<String> packagePaths) {
         // 接口对应方法
-        final Map<String, ControllerMethod> interfacesMethodMap = new HashMap<>(16);
+        final Map<String, Map<String, ControllerMethod>> resultMap = new HashMap<>(16);
         // 获取所有控制器
         final Map<String, Object> restControllerBeanMap = SpringUtil.getBeansWithAnnotationByPackage(Controller.class, packagePaths);
         // 获取控制器中的方法
         for (Object restControllerBean : restControllerBeanMap.values()) {
             final Class<?> restControllerBeanClass = restControllerBean.getClass();
-            final List<String> controllerPathList = getMappingPaths(restControllerBeanClass);
-            ReflectionUtils.doWithMethods(restControllerBeanClass, method -> {
-                final List<String> methodPathList = getMappingPaths(method);
-                List<String> requestPaths = new LinkedList<>();
-                ControllerMethod controllerMethod = new ControllerMethod(requestPaths, restControllerBeanClass, method);
-                if (methodPathList == null) {
-                    return;
+            Map<String, Set<RequestMethod>> controllerPathMap = new HashMap<>();
+            final RequestMapping requestMapping = restControllerBeanClass.getAnnotation(RequestMapping.class);
+            if (null != requestMapping) {
+                Set<RequestMethod> requestMethodSet = Arrays.stream(requestMapping.method()).collect(Collectors.toSet());
+                String[] pathList = requestMapping.value().length > 0 ? requestMapping.value() : requestMapping.path();
+                for (String path : pathList) {
+                    controllerPathMap.put(path, requestMethodSet);
                 }
-                // 拼接接口
-                if (controllerPathList == null) {
-                    for (String methodPath : methodPathList) {
-                        String requestPath;
-                        if (methodPath.startsWith("/")) {
-                            requestPath = methodPath;
-                        } else {
-                            requestPath = "/" + methodPath;
-                        }
-                        requestPaths.add(requestPath);
-                        interfacesMethodMap.put(methodPath, controllerMethod);
-                    }
-                    return;
-                }
-                for (String controllerPath : controllerPathList) {
-                    if (!controllerPath.startsWith("/")) {
-                        controllerPath = "/" + controllerPath;
-                    }
-                    for (String methodPath : methodPathList) {
-                        String requestPath;
-                        if (methodPath.startsWith("/")) {
-                            requestPath = controllerPath + methodPath;
-                        } else {
-                            requestPath = controllerPath + "/" + methodPath;
-                        }
-                        requestPaths.add(requestPath);
-                        interfacesMethodMap.put(requestPath, controllerMethod);
-                    }
-                }
-
-            }, ReflectionUtils.USER_DECLARED_METHODS);
+            }
+            ReflectionUtils.doWithMethods(restControllerBeanClass,
+                    method -> SpringUtil.initMethodMappingPaths(resultMap, controllerPathMap, restControllerBeanClass, method),
+                    method -> method.getAnnotation(RequestMapping.class) != null ||
+                            method.getAnnotation(GetMapping.class) != null ||
+                            method.getAnnotation(PostMapping.class) != null ||
+                            method.getAnnotation(PutMapping.class) != null ||
+                            method.getAnnotation(DeleteMapping.class) != null
+            );
         }
-        return interfacesMethodMap;
+        return resultMap;
     }
 
     /**
      * 获取Mapping注解中的接口地址
      *
-     * @param annotatedElement Mapping注解
-     * @return 接口地址列表
+     * @param resultMap               结果
+     * @param controllerPathMap       类的接口信息
+     * @param restControllerBeanClass 类类
+     * @param method        接口方法
      */
-    public static List<String> getMappingPaths(AnnotatedElement annotatedElement) {
-        final RequestMapping requestMapping = annotatedElement.getAnnotation(RequestMapping.class);
-        String[] pathList = null;
+    public static void initMethodMappingPaths(
+            Map<String, Map<String, ControllerMethod>> resultMap,
+            Map<String, Set<RequestMethod>> controllerPathMap,
+            Class<?> restControllerBeanClass,
+            Method method
+    ) {
+        Set<String> keySet = new HashSet<>(controllerPathMap.keySet());
+        if (keySet.isEmpty()) {
+            keySet.add("");
+        }
+        Set<String> requestPaths = new HashSet<>();
+        ControllerMethod controllerMethod = new ControllerMethod(requestPaths, restControllerBeanClass, method);
+        final RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
         if (null != requestMapping) {
-            pathList = requestMapping.value().length > 0 ? requestMapping.value() : requestMapping.path();
+            Set<RequestMethod> requestMethodSet = Arrays.stream(requestMapping.method()).collect(Collectors.toSet());
+            for (Set<RequestMethod> methodSet : controllerPathMap.values()) {
+                requestMethodSet.addAll(methodSet);
+            }
+            String[] pathList = requestMapping.value().length > 0 ? requestMapping.value() : requestMapping.path();
+            for (String path : pathList) {
+                path = (path.startsWith("/") ? "" : "/") + path;
+                for (String key : keySet) {
+                    if (StringUtil.isNotEmpty(key)) {
+                        key = (key.startsWith("/") ? "" : "/") + key;
+                    }
+                    requestPaths.add(key + path);
+                    Map<String, ControllerMethod> methodMap = resultMap.computeIfAbsent(key + path, s -> new HashMap<>());
+                    for (RequestMethod requestMethod : requestMethodSet) {
+                        methodMap.put(requestMethod.name(), controllerMethod);
+                    }
+                }
+            }
         }
-        final GetMapping getMapping = annotatedElement.getAnnotation(GetMapping.class);
+        final GetMapping getMapping = method.getAnnotation(GetMapping.class);
         if (null != getMapping) {
-            pathList = getMapping.value().length > 0 ? getMapping.value() : getMapping.path();
+            String[] pathList = getMapping.value().length > 0 ? getMapping.value() : getMapping.path();
+            for (String path : pathList) {
+                path = (path.startsWith("/") ? "" : "/") + path;
+                for (String key : keySet) {
+                    if (StringUtil.isNotEmpty(key)) {
+                        key = (key.startsWith("/") ? "" : "/") + key;
+                    }
+                    requestPaths.add(key + path);
+                    Map<String, ControllerMethod> methodMap = resultMap.computeIfAbsent(key + path, s -> new HashMap<>());
+                    methodMap.put(RequestMethod.GET.name(), controllerMethod);
+                }
+            }
         }
-        final PostMapping postMapping = annotatedElement.getAnnotation(PostMapping.class);
+        final PostMapping postMapping = method.getAnnotation(PostMapping.class);
         if (null != postMapping) {
-            pathList = postMapping.value().length > 0 ? postMapping.value() : postMapping.path();
+            String[] pathList = postMapping.value().length > 0 ? postMapping.value() : postMapping.path();
+            for (String path : pathList) {
+                path = (path.startsWith("/") ? "" : "/") + path;
+                for (String key : keySet) {
+                    if (StringUtil.isNotEmpty(key)) {
+                        key = (key.startsWith("/") ? "" : "/") + key;
+                    }
+                    requestPaths.add(key + path);
+                    Map<String, ControllerMethod> methodMap = resultMap.computeIfAbsent(key + path, s -> new HashMap<>());
+                    methodMap.put(RequestMethod.POST.name(), controllerMethod);
+                }
+            }
         }
-        final PutMapping putMapping = annotatedElement.getAnnotation(PutMapping.class);
+        final PutMapping putMapping = method.getAnnotation(PutMapping.class);
         if (null != putMapping) {
-            pathList = putMapping.value().length > 0 ? putMapping.value() : putMapping.path();
+            String[] pathList = putMapping.value().length > 0 ? putMapping.value() : putMapping.path();
+            for (String path : pathList) {
+                path = (path.startsWith("/") ? "" : "/") + path;
+                for (String key : keySet) {
+                    if (StringUtil.isNotEmpty(key)) {
+                        key = (key.startsWith("/") ? "" : "/") + key;
+                    }
+                    requestPaths.add(key + path);
+                    Map<String, ControllerMethod> methodMap = resultMap.computeIfAbsent(key + path, s -> new HashMap<>());
+                    methodMap.put(RequestMethod.PUT.name(), controllerMethod);
+                }
+            }
         }
-        final DeleteMapping deleteMapping = annotatedElement.getAnnotation(DeleteMapping.class);
+        final DeleteMapping deleteMapping = method.getAnnotation(DeleteMapping.class);
         if (null != deleteMapping) {
-            pathList = deleteMapping.value().length > 0 ? deleteMapping.value() : deleteMapping.path();
+            String[] pathList = deleteMapping.value().length > 0 ? deleteMapping.value() : deleteMapping.path();
+            for (String path : pathList) {
+                path = (path.startsWith("/") ? "" : "/") + path;
+                for (String key : keySet) {
+                    if (StringUtil.isNotEmpty(key)) {
+                        key = (key.startsWith("/") ? "" : "/") + key;
+                    }
+                    requestPaths.add(key + path);
+                    Map<String, ControllerMethod> methodMap = resultMap.computeIfAbsent(key + path, s -> new HashMap<>());
+                    methodMap.put(RequestMethod.DELETE.name(), controllerMethod);
+                }
+            }
         }
-        if (pathList == null || pathList.length < 1) {
-            return null;
-        }
-        return Arrays.asList(pathList);
     }
 
     /**

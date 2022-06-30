@@ -25,6 +25,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	protected final LogoutHandlerInfo logoutHandlerInfo;
 	protected LzFilterAuthStrategy authAfterHandler = params -> { };
 	protected LzFilterAuthStrategy authBeforeHandler = params -> { };
+	protected LzFilterAuthStrategy interceptHandler = params -> { };
 
 	public AuthConfigurerBuilder() {
 		this.loginHandlerInfo = new LoginHandlerInfo();
@@ -93,6 +94,17 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	 */
 	public AuthConfigurerBuilder<T> setAuthAfterHandler(LzFilterAuthStrategy authAfterHandler) {
 		this.authAfterHandler = authAfterHandler;
+		return this;
+	}
+
+	/**
+	 * 过滤被拦截处理器
+	 *
+	 * @param interceptHandler 过滤被拦截处理器
+	 * @return this
+	 */
+	public AuthConfigurerBuilder<T> setInterceptHandler(LzFilterAuthStrategy interceptHandler) {
+		this.interceptHandler = interceptHandler;
 		return this;
 	}
 

@@ -114,6 +114,35 @@ public class LzCoreManager {
 
 	//====================================================================================================================================
 
+	protected static CorsConfig corsConfig = null;
+
+	/**
+	 * 设置配置文件
+	 *
+	 * @param corsConfig 配置文件
+	 */
+	public static void setCorsConfig(CorsConfig corsConfig) {
+		LzCoreManager.corsConfig = corsConfig;
+	}
+
+	/**
+	 * 获取配置文件
+	 *
+	 * @return 配置文件
+	 */
+	public static CorsConfig getCorsConfig() {
+		if (LzCoreManager.corsConfig == null) {
+			synchronized (LzCoreManager.class) {
+				if (LzCoreManager.corsConfig == null) {
+					LzCoreManager.corsConfig = new CorsConfig();
+				}
+			}
+		}
+		return LzCoreManager.corsConfig;
+	}
+
+	//====================================================================================================================================
+
 	protected static LzContext<?, ?> lzContext = null;
 
 	/**
@@ -183,7 +212,7 @@ public class LzCoreManager {
 	 *
 	 * @param interfacesMethodMap 接口方法映射集合
 	 */
-	public static void setInterfacesMethodMap(Map<String, ControllerMethod> interfacesMethodMap) {
+	public static void setInterfacesMethodMap(Map<String, Map<String, ControllerMethod>> interfacesMethodMap) {
 		INTERFACES_METHOD_MAP.putInterfacesMethodMap(interfacesMethodMap);
 	}
 
@@ -193,8 +222,19 @@ public class LzCoreManager {
 	 * @param url 请求接口
 	 * @return 方法
 	 */
-	public static ControllerMethod getMethodByInterfaceUrl(String url) {
+	public static Map<String, ControllerMethod> getMethodByInterfaceUrl(String url) {
 		return INTERFACES_METHOD_MAP.getMethodByInterfaceUrl(url);
+	}
+
+	/**
+	 * 获取请求接口对应的方法
+	 *
+	 * @param url    请求接口
+	 * @param method 请求类型
+	 * @return 方法
+	 */
+	public static ControllerMethod getMethodByInterfaceUrl(String url, String method) {
+		return INTERFACES_METHOD_MAP.getMethodByInterfaceUrl(url, method);
 	}
 
 	//====================================================================================================================================

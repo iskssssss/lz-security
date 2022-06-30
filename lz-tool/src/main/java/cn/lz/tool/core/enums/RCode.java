@@ -19,7 +19,7 @@ public enum RCode implements ICode {
     /**
      * 操作成功
      */
-    SUCCESS(0, "操作成功。"),
+    SUCCESS(200, "操作成功。"),
     /**
      * 未查询到相关数据
      */

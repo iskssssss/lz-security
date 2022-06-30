@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @Version 版权 Copyright(c)2021 LZ
@@ -37,6 +42,24 @@ public class LzResponse extends BaseResponse<HttpServletResponse> {
 	@Override
 	public BaseResponse<HttpServletResponse> setHeader(String name, String value) {
 		getResponse().setHeader(name, value);
+		return this;
+	}
+
+	@Override
+	public BaseResponse<HttpServletResponse> addHeader(String name, List<String> valueList) {
+		if (valueList == null || valueList.isEmpty()) {
+			return this;
+		}
+		HttpServletResponse response = getResponse();
+		String header = response.getHeader(name);
+		if (StringUtil.isEmpty(header)) {
+			response.addHeader(name, String.join(",", new HashSet<>(valueList)));
+			return this;
+		}
+		String[] split = header.split(",");
+		Set<String> valueSet = Arrays.stream(split).filter(StringUtil::isNotEmpty).collect(Collectors.toSet());
+		valueSet.addAll(valueList);
+		response.addHeader(name, String.join(",", valueSet));
 		return this;
 	}
 

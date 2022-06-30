@@ -3,6 +3,7 @@ package cn.lz.tool.core;
 import cn.lz.tool.core.string.StringUtil;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,5 +40,9 @@ public class ArraysUtil {
 		}
 		final String listString = textList.stream().map(x -> splitChar + x).collect(Collectors.joining());
 		return listString.substring(1);
+	}
+
+	public static boolean isEmpty(Collection<?> collection) {
+		return collection == null || collection.isEmpty();
 	}
 }

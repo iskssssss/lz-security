@@ -1,22 +1,29 @@
 package cn.lz.security.auth.filters;
 
+import cn.lz.security.annotation.ExcludeInterface;
+import cn.lz.security.annotation.IncludeInterface;
+import cn.lz.security.arrays.UrlHashSet;
 import cn.lz.security.auth.LzAuthManager;
 import cn.lz.security.auth.annotation.AnonymousCheck;
 import cn.lz.security.auth.annotation.AuthCheck;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.security.filter.LzFilterManager;
-import cn.lz.security.annotation.ExcludeInterface;
-import cn.lz.security.annotation.IncludeInterface;
+import cn.lz.security.filter.config.FilterConfigurer;
 import cn.lz.security.fun.LzFilterAuthStrategy;
 import cn.lz.security.token.AccessTokenUtil;
+import cn.lz.security.tool.context.LzContextManager;
 import cn.lz.security.tool.filters.BaseFilterCore;
 import cn.lz.security.tool.mode.LzRequest;
 import cn.lz.security.tool.mode.LzResponse;
+import cn.lz.security.utils.ServletUtil;
 import cn.lz.tool.core.enums.AuthCode;
+import cn.lz.tool.core.enums.RCode;
+import cn.lz.tool.http.enums.MediaType;
 import cn.lz.tool.reflect.model.ControllerMethod;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TODO
@@ -40,6 +47,7 @@ public class LzAuthFilterCore extends BaseFilterCore {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.authBeforeHandler = LzAuthManager.getAuthConfigurer().getAuthBeforeHandler();
 		this.authAfterHandler = LzAuthManager.getAuthConfigurer().getAuthAfterHandler();
+		super.interceptHandler = LzAuthManager.getAuthConfigurer().getInterceptHandler();
 	}
 
 	@Override
@@ -52,6 +60,12 @@ public class LzAuthFilterCore extends BaseFilterCore {
 			if (!includeHandler(controllerMethod, requestPath)) {
 				return true;
 			}
+			if (controllerMethod == null) {
+				if (AccessTokenUtil.checkExpiration()) {
+					throw new SecurityException(AuthCode.AUTHORIZATION);
+				}
+				return true;
+			}
 			// 匿名接口处理
 			final AnonymousCheck anonymousCheck = controllerMethod.getMethodAndControllerAnnotation(AnonymousCheck.class);
 			if (anonymousCheck != null && anonymousCheck.open()) {
@@ -62,15 +76,11 @@ public class LzAuthFilterCore extends BaseFilterCore {
 			}
 			// 认证接口处理
 			final AuthCheck authCheck = controllerMethod.getMethodAndControllerAnnotation(AuthCheck.class);
-			if (authCheck == null) {
-				return true;
-			}
-			final boolean authCheckOpen = authCheck.open();
-			if (authCheckOpen) {
-				if (!AccessTokenUtil.checkExpiration()) {
-					return true;
+			if (authCheck != null && authCheck.open()) {
+				if (AccessTokenUtil.checkExpiration()) {
+					throw new SecurityException(AuthCode.AUTHORIZATION);
 				}
-				throw new SecurityException(AuthCode.AUTHORIZATION);
+				return true;
 			}
 			return true;
 		} finally {
@@ -95,13 +105,16 @@ public class LzAuthFilterCore extends BaseFilterCore {
 		if (excludeInterface != null) {
 			return excludeInterface.open();
 		}
-		if (LzFilterManager.getFilterConfigurer().getExcludeUrls().containsPath(requestPath)) {
+		FilterConfigurer filterConfigurer = LzFilterManager.getFilterConfigurer();
+		UrlHashSet excludeUrls = filterConfigurer.getExcludeUrls();
+		if (excludeUrls.containsPath(requestPath)) {
 			return false;
 		}
 		if (includeInterface != null) {
 			return includeInterface.open();
 		}
-		return LzFilterManager.getFilterConfigurer().getIncludeUrls().containsPath(requestPath);
+		UrlHashSet includeUrls = filterConfigurer.getIncludeUrls();
+		return includeUrls.containsPath(requestPath);
 	}
 
 	@Override

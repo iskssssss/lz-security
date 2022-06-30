@@ -54,7 +54,7 @@ public class BeanRegister {
 
 	@Bean
 	@DependsOn({"registerLzConfig", "registerSpringUtil"})
-	public Map<String, ControllerMethod> registerInterfacesMethodMap() {
+	public Map<String, Map<String, ControllerMethod>> registerInterfacesMethodMap() {
 		final LzConfig lzConfig = LzCoreManager.getLzConfig();
 		final List<String> methodScanPath = lzConfig.getControllerMethodScanPathList();
 		return SpringUtil.getControllerMethodMap(methodScanPath);

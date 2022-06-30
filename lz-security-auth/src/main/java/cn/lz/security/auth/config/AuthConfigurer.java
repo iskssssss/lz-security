@@ -29,6 +29,15 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 		return super.authAfterHandler;
 	}
 
+	/**
+	 * 获取过滤被拦截处理器
+	 *
+	 * @return 过滤被拦截处理器
+	 */
+	public LzFilterAuthStrategy getInterceptHandler() {
+		return super.interceptHandler;
+	}
+
 	public String getLoginUrl() {
 		return this.loginHandlerInfo.loginUrl;
 	}

@@ -12,8 +12,5 @@ import cn.lz.security.context.model.BaseResponse;
  */
 public abstract class AbstractLogoutHandler {
 
-   public abstract boolean logout(
-           BaseRequest<?> request,
-           BaseResponse<?> response
-   );
+   public abstract boolean logout(BaseRequest<?> request, BaseResponse<?> response);
 }

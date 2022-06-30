@@ -94,8 +94,9 @@ public class LzContextManager {
 			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			// 当前访问的接口
 			final String requestPath = httpServletRequest.getServletPath();
+			String method = httpServletRequest.getMethod();
 			// 获取当前接口访问方法
-			ControllerMethod controllerMethod = LzCoreManager.getMethodByInterfaceUrl(requestPath);
+			ControllerMethod controllerMethod = LzCoreManager.getMethodByInterfaceUrl(requestPath, method);
 			// 校验当前请求接口返回数据是否要加密
 			final EncryptConfig encryptConfig = LzCoreManager.getEncryptConfig();
 			LzRequest lzRequest = new LzRequest(httpServletRequest);
@@ -106,8 +107,8 @@ public class LzContextManager {
 				LzContextManager.handlerRequest(lzRequest);
 				LzContextManager.handlerResponse(lzRequest, lzResponse);
 			} else {
-				lzRequest = new LzRequest(httpServletRequest, false);
-				lzResponse = new LzResponse(httpServletResponse, false);
+				lzRequest.setDecrypt(false);
+				lzResponse.setEncrypt(false);
 			}
 			// 设置上下文
 			LzContextManager.setContext(lzRequest, lzResponse, startRequestTime);

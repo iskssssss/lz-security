@@ -1,6 +1,9 @@
 package cn.lz.security.tool.spring;
 
+import cn.lz.security.config.EncryptConfig;
+import cn.lz.security.config.FilterConfig;
 import cn.lz.security.config.LzConfig;
+import cn.lz.security.config.TokenConfig;
 import cn.lz.security.handler.DataEncoder;
 import cn.lz.security.handler.EncodeSwitchHandler;
 import cn.lz.security.LzCoreManager;
@@ -30,7 +33,22 @@ public class BeanInject extends LzCoreManager {
 	}
 
 	@Autowired
-	public void injectInterfacesMethodMap(Map<String, ControllerMethod> initControllerMethodMap) {
+	public void injectLzConfig(TokenConfig tokenConfig) {
+		LzCoreManager.setTokenConfig(tokenConfig);
+	}
+
+	@Autowired
+	public void injectLzConfig(EncryptConfig encryptConfig) {
+		LzCoreManager.setEncryptConfig(encryptConfig);
+	}
+
+	@Autowired
+	public void injectLzConfig(FilterConfig filterConfig) {
+		LzCoreManager.setFilterConfig(filterConfig);
+	}
+
+	@Autowired
+	public void injectInterfacesMethodMap(Map<String, Map<String, ControllerMethod>> initControllerMethodMap) {
 		LzCoreManager.setInterfacesMethodMap(initControllerMethodMap);
 	}
 

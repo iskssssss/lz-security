@@ -3,6 +3,8 @@ package cn.lz.security.context.model;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.tool.core.enums.RCode;
 
+import java.util.List;
+
 /**
  * @Version 版权 Copyright(c)2021 LZ
  * @ClassName:
@@ -80,6 +82,15 @@ public abstract class BaseResponse<T> {
 	 * @return 响应流
 	 */
 	public abstract BaseResponse<T> setHeader(String name, String value);
+
+	/**
+	 * 添加请求头信息
+	 *
+	 * @param name      键
+	 * @param valueList 值列表
+	 * @return 响应流
+	 */
+	public abstract BaseResponse<T> addHeader(String name, List<String> valueList);
 
 	/**
 	 * 向客户端打印信息
