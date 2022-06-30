@@ -7,13 +7,13 @@ import cn.lz.security.tool.utils.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @Version 版权 Copyright(c)2021 LZ
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/17 15:16
+ * 自动注入类
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 LZ
+ * @date 2021/11/03 10:42
  */
-public class FilterManagerBeanInject extends LzFilterManager {
+public class FilterBeanInject extends LzFilterManager {
 
 	/**
 	 * 自动注入<b>过滤日志处理器</b>

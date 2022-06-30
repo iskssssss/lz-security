@@ -9,7 +9,7 @@ import cn.lz.security.handler.EncodeSwitchHandler;
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.cache.BaseCacheManager;
 import cn.lz.security.token.IAccessTokenHandler;
-import cn.lz.security.tool.context.SpringContextTheadLocal;
+import cn.lz.security.tool.context.SpringBootContextTheadLocal;
 import cn.lz.security.tool.utils.SpringUtil;
 import cn.lz.tool.reflect.model.ControllerMethod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,34 +19,49 @@ import org.springframework.util.PathMatcher;
 import java.util.Map;
 
 /**
- * @Version 版权 Copyright(c)2021 LZ
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/17 15:16
+ * 自动注入类
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 LZ
+ * @date 2021/11/03 10:42
  */
 public class BeanInject extends LzCoreManager {
 
+	/**
+	 * 自动注入<b>基础配置文件</b>
+	 */
 	@Autowired
 	public void injectLzConfig(LzConfig lzConfig) {
 		LzCoreManager.setLzConfig(lzConfig);
 	}
 
+	/**
+	 * 自动注入<b>token配置文件</b>
+	 */
 	@Autowired
-	public void injectLzConfig(TokenConfig tokenConfig) {
+	public void injectTokenConfig(TokenConfig tokenConfig) {
 		LzCoreManager.setTokenConfig(tokenConfig);
 	}
 
+	/**
+	 * 自动注入<b>加解密配置文件</b>
+	 */
 	@Autowired
-	public void injectLzConfig(EncryptConfig encryptConfig) {
+	public void injectEncryptConfig(EncryptConfig encryptConfig) {
 		LzCoreManager.setEncryptConfig(encryptConfig);
 	}
 
+	/**
+	 * 自动注入<b>过滤配置文件</b>
+	 */
 	@Autowired
-	public void injectLzConfig(FilterConfig filterConfig) {
+	public void injectFilterConfig(FilterConfig filterConfig) {
 		LzCoreManager.setFilterConfig(filterConfig);
 	}
 
+	/**
+	 * 自动注入<b>接口方法映射信息</b>
+	 */
 	@Autowired
 	public void injectInterfacesMethodMap(Map<String, Map<String, ControllerMethod>> initControllerMethodMap) {
 		LzCoreManager.setInterfacesMethodMap(initControllerMethodMap);
@@ -106,6 +121,6 @@ public class BeanInject extends LzCoreManager {
 	@Autowired(required = false)
 	@Qualifier("mvcPathMatcher")
 	public void injectLzContext(PathMatcher pathMatcher) {
-		LzCoreManager.setLzContext(new SpringContextTheadLocal(pathMatcher));
+		LzCoreManager.setLzContext(new SpringBootContextTheadLocal(pathMatcher));
 	}
 }

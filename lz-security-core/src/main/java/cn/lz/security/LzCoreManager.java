@@ -4,7 +4,6 @@ import cn.lz.security.arrays.InterfacesMethodMap;
 import cn.lz.security.cache.BaseCacheManager;
 import cn.lz.security.config.*;
 import cn.lz.security.context.LzContext;
-import cn.lz.security.context.model.LzStorage;
 import cn.lz.security.defaults.DefaultCacheManager;
 import cn.lz.security.defaults.DefaultDataEncoder;
 import cn.lz.security.defaults.DefaultEncodeSwitchHandler;
@@ -325,13 +324,4 @@ public class LzCoreManager {
 	}
 
 	//====================================================================================================================================
-
-	/**
-	 * 从{@link LzCoreManager#getLzContext()}中获取存储信息
-	 *
-	 * @return 存储信息
-	 */
-	public static LzStorage<?> getStorage() {
-		return LzCoreManager.getLzContext().getStorage();
-	}
 }

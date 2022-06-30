@@ -21,6 +21,13 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 过滤前处理方法
      */
     public LzFilterAuthStrategy getFilterBeforeHandler() {
+        if (super.filterBeforeHandler == null) {
+            synchronized (FilterConfigurer.class) {
+                if (super.filterBeforeHandler == null) {
+                    super.filterBeforeHandler = params -> { };
+                }
+            }
+        }
         return super.filterBeforeHandler;
     }
 
@@ -30,11 +37,35 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      * @return 过滤后处理方法
      */
     public LzFilterAuthStrategy getFilterAfterHandler() {
+        if (super.filterAfterHandler == null) {
+            synchronized (FilterConfigurer.class) {
+                if (super.filterAfterHandler == null) {
+                    super.filterAfterHandler = params -> { };
+                }
+            }
+        }
         return super.filterAfterHandler;
     }
 
     /**
+     * 获取过滤被拦截处理器
+     *
+     * @return 过滤被拦截处理器
+     */
+    public LzFilterAuthStrategy getInterceptHandler() {
+        if (super.interceptHandler == null) {
+            synchronized (FilterConfigurer.class) {
+                if (super.interceptHandler == null) {
+                    super.interceptHandler = params -> { };
+                }
+            }
+        }
+        return super.interceptHandler;
+    }
+
+    /**
      * 获取开始记录日志的过滤器类
+     *
      * @return 过滤器类
      */
     public Class<? extends AbsInterfacesFilterBuilder> getLogBeforeFilterClass() {

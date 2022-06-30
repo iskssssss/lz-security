@@ -6,10 +6,12 @@ import cn.lz.security.config.EncryptConfig;
 import cn.lz.security.exception.CorsException;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.security.filter.LzFilterManager;
+import cn.lz.security.filter.config.FilterConfigurer;
 import cn.lz.security.fun.LzFilterAuthStrategy;
 import cn.lz.security.handler.DataEncoder;
+import cn.lz.security.log.BaseFilterLogHandler;
 import cn.lz.security.log.LzLoggerUtil;
-import cn.lz.security.tool.context.LzContextManager;
+import cn.lz.security.tool.context.LzSpringBootContextManager;
 import cn.lz.security.tool.mode.LzRequest;
 import cn.lz.security.tool.mode.LzResponse;
 import cn.lz.security.tool.wrapper.HttpServletRequestWrapper;
@@ -20,10 +22,7 @@ import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.core.string.StringUtil;
 import cn.lz.tool.http.enums.MediaType;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -34,12 +33,7 @@ import java.util.Map;
  * @version 版权 Copyright(c)2021 LZ
  * @date 2021/11/03 11:16
  */
-public abstract class BaseFilterCore implements Filter {
-
-	/**
-	 * 被拦截后处理
-	 */
-	protected LzFilterAuthStrategy interceptHandler;
+public abstract class BaseFilterCore extends LzSpringBootContextManager implements Filter {
 
 	/**
 	 * 跨域信息处理
@@ -63,9 +57,12 @@ public abstract class BaseFilterCore implements Filter {
 
 	@Override
 	public final void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
-		LzContextManager.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
+		LzSpringBootContextManager.setContext(request, response, System.currentTimeMillis(), (swRequest, swResponse) -> {
 			SecurityException securityException = null;
 			try {
+				// 过滤前处理
+				FilterConfigurer filterConfigurer = LzFilterManager.getFilterConfigurer();
+				filterConfigurer.getFilterBeforeHandler().run();
 				if ("OPTIONS".equals(swRequest.getMethod())) {
 					// 跨域处理
 					corsHandler.run(swRequest, swResponse);
@@ -83,10 +80,12 @@ public abstract class BaseFilterCore implements Filter {
 					// 跨域处理
 					corsHandler.run(swRequest, swResponse);
 					// 被拦截后处理
-					interceptHandler.run();
+					filterConfigurer.getInterceptHandler().run();
 				}
 				// 加密处理
 				this.encryptHandler(dataEncoder, swResponse);
+				// 过滤后处理
+				filterConfigurer.getFilterAfterHandler().run();
 			} catch (Exception e) {
 				// 错误处理
 				securityException = exceptionHandler(e);
@@ -98,14 +97,17 @@ public abstract class BaseFilterCore implements Filter {
 				final Object handlerData = LzFilterManager.getFilterDataHandler().handler(swRequest, swResponse, securityException);
 				if (securityException != null && handlerData != null) {
 					if (handlerData instanceof RCode) {
-						ServletUtil.printResponse(LzContextManager.getResponse(), MediaType.APPLICATION_JSON_VALUE, (RCode) handlerData);
+						ServletUtil.printResponse(LzSpringBootContextManager.getResponse(), MediaType.APPLICATION_JSON_VALUE, (RCode) handlerData);
 					} else {
-						ServletUtil.printResponse(LzContextManager.getResponse(), MediaType.APPLICATION_JSON_VALUE, (byte[]) handlerData);
+						ServletUtil.printResponse(LzSpringBootContextManager.getResponse(), MediaType.APPLICATION_JSON_VALUE, (byte[]) handlerData);
 					}
 				}
-				final Object logSwitch = swRequest.getAttribute(LzConstant.LOG_SWITCH);
-				if (logSwitch instanceof Boolean && ((Boolean) logSwitch)) {
-					LzFilterManager.getFilterLogHandler().after(swRequest, swResponse, swRequest.getAttribute(LzConstant.LOG_ENTITY_CACHE_KEY), securityException);
+				BaseFilterLogHandler filterLogHandler = LzFilterManager.getFilterLogHandler();
+				if (filterLogHandler != null) {
+					final Object logSwitch = swRequest.getAttribute(LzConstant.LOG_SWITCH);
+					if (logSwitch instanceof Boolean && ((Boolean) logSwitch)) {
+						filterLogHandler.after(swRequest, swResponse, swRequest.getAttribute(LzConstant.LOG_ENTITY_CACHE_KEY), securityException);
+					}
 				}
 			}
 		});

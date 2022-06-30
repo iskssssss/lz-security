@@ -1,9 +1,7 @@
 package cn.lz.security.auth.config;
 
-import cn.lz.security.fun.LzFilterAuthStrategy;
-
 /**
- * TODO
+ * 认证相关配置信息获取类
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 LZ
@@ -12,53 +10,56 @@ import cn.lz.security.fun.LzFilterAuthStrategy;
 public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 
 	/**
-	 * 获取认证前处理方法
+	 * 获取登录地址
 	 *
-	 * @return 认证前处理方法
+	 * @return 登录地址
 	 */
-	public LzFilterAuthStrategy getAuthBeforeHandler() {
-		return super.authBeforeHandler;
-	}
-
-	/**
-	 * 获取认证后处理方法
-	 *
-	 * @return 认证后处理方法
-	 */
-	public LzFilterAuthStrategy getAuthAfterHandler() {
-		return super.authAfterHandler;
-	}
-
-	/**
-	 * 获取过滤被拦截处理器
-	 *
-	 * @return 过滤被拦截处理器
-	 */
-	public LzFilterAuthStrategy getInterceptHandler() {
-		return super.interceptHandler;
-	}
-
 	public String getLoginUrl() {
 		return this.loginHandlerInfo.loginUrl;
 	}
 
+	/**
+	 * 获取登出地址
+	 *
+	 * @return 登出地址
+	 */
+	public String getLogoutUrl() {
+		return this.logoutHandlerInfo.logoutUrl;
+	}
+
+	/**
+	 * 获取存放标识的键值
+	 *
+	 * @return 存放标识的键值
+	 */
 	public String getIdentifierKey() {
 		return this.loginHandlerInfo.identifierKey;
 	}
 
+	/**
+	 * 获取存放凭据的键值
+	 *
+	 * @return 存放凭据的键值
+	 */
 	public String getCredentialKey() {
 		return this.loginHandlerInfo.credentialKey;
 	}
 
+	/**
+	 * 获取存放验证码的键值
+	 *
+	 * @return 存放验证码的键值
+	 */
 	public String getCodeKey() {
 		return this.loginHandlerInfo.codeKey;
 	}
 
+	/**
+	 * 获取存放记住我的键值
+	 *
+	 * @return 存放记住我的键值
+	 */
 	public String getRememberMeKey() {
 		return this.loginHandlerInfo.rememberMeKey;
-	}
-
-	public String getLogoutUrl() {
-		return this.logoutHandlerInfo.logoutUrl;
 	}
 }

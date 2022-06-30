@@ -25,7 +25,6 @@ import java.util.Map;
  */
 public abstract class BaseSecurityConfigurerAdapter implements EnvironmentAware, WebMvcConfigurer {
 
-
     /**
      * 初始化
      */
@@ -68,7 +67,6 @@ public abstract class BaseSecurityConfigurerAdapter implements EnvironmentAware,
      * @param registry 跨域配置
      */
     protected void initCorsInfo(CorsRegistry registry) {
-
     }
 
     @Override

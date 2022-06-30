@@ -2,7 +2,7 @@ package cn.lz.security.context;
 
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
-import cn.lz.security.context.model.LzStorage;
+import cn.lz.security.context.model.Storage;
 
 /**
  * 上下文
@@ -32,7 +32,7 @@ public interface LzContext<RequestType, ResponseType> {
 	 *
 	 * @return LzStorage
 	 */
-	LzStorage<RequestType> getStorage();
+	Storage<RequestType> getStorage();
 
 	/**
 	 * 路径匹配
@@ -42,12 +42,4 @@ public interface LzContext<RequestType, ResponseType> {
 	 * @return
 	 */
 	boolean matchUrl(String pattern, String path);
-
-	default void setAttribute(String key, Object value) {
-		getRequest().setAttribute(key, value);
-	}
-
-	default Object setAttribute(String key) {
-		return getRequest().getAttribute(key);
-	}
 }

@@ -52,7 +52,7 @@ public class UUIDAccessTokenHandler implements IAccessTokenHandler<AuthDetails> 
 
 		final TokenConfig tokenConfig = LzCoreManager.getTokenConfig();
 		final String saveName = tokenConfig.getName();
-		final BaseResponse<?> servletResponse = LzSecurityContextThreadLocal.getServletResponse();
+		final BaseResponse<?> servletResponse = LzSecurityContextThreadLocal.getResponse();
 		servletResponse.removeCookie(saveName);
 	}
 

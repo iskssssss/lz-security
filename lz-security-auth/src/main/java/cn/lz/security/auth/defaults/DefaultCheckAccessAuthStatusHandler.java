@@ -2,7 +2,6 @@ package cn.lz.security.auth.defaults;
 
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.auth.handler.ICheckAccessAuthStatusHandler;
-import cn.lz.security.config.LzConfig;
 import cn.lz.security.context.LzSecurityContextThreadLocal;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
@@ -22,7 +21,7 @@ public class DefaultCheckAccessAuthStatusHandler implements ICheckAccessAuthStat
 			BaseRequest<?> request,
 			BaseResponse<?> response
 	) {
-		final BaseRequest servletRequest = LzSecurityContextThreadLocal.getServletRequest();
+		final BaseRequest servletRequest = LzSecurityContextThreadLocal.getRequest();
 		final String saveName = LzCoreManager.getTokenConfig().getName();
 		final String authorizationToken = servletRequest.getHeader(saveName);
 		return StringUtil.isNotEmpty(authorizationToken);

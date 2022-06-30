@@ -5,7 +5,7 @@ import cn.lz.security.token.AccessTokenUtil;
 import cn.lz.tool.jwt.model.AuthDetails;
 
 /**
- * TODO
+ * 登录操作类
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 LZ
@@ -13,22 +13,35 @@ import cn.lz.tool.jwt.model.AuthDetails;
  */
 public class LzLogin {
 
+	/**
+	 * 登录
+	 *
+	 * @param userId 用户ID
+	 * @return token
+	 */
 	public static String login(String userId) {
 		// 获取用户信息
 		final UserDetailsService userDetailsService = LzAuthManager.getUserDetailsService();
-		final AuthDetails<?> authDetails = userDetailsService.readUserByUsername(userId);
+		final AuthDetails<?> authDetails = userDetailsService.readUserByUserId(userId);
 
 		// 获取token
 		final String token = AccessTokenUtil.generateAccessToken(authDetails, true);
-
 		return token;
 	}
 
+	/**
+	 * 登出
+	 */
 	public static void logout() {
 		AccessTokenUtil.invalid();
 		// TODO 登出
 	}
 
+	/**
+	 * 登出
+	 *
+	 * @param userId 用户ID
+	 */
 	public static void logout(String userId) {
 		// TODO 登出
 	}

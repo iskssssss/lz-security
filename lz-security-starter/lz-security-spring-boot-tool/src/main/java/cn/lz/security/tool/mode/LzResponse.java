@@ -3,12 +3,12 @@ package cn.lz.security.tool.mode;
 import cn.lz.security.tool.wrapper.HttpServletResponseWrapper;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.exception.base.SecurityException;
-import cn.lz.security.tool.utils.CookieUtil;
 import cn.lz.tool.core.bytes.ByteUtil;
 import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.core.string.StringUtil;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -128,11 +128,25 @@ public class LzResponse extends BaseResponse<HttpServletResponse> {
 
 	@Override
 	public void addCookie(String name, String value, String path, String domain, int expiry) {
-		CookieUtil.set(getResponse(), name, value, path, domain, expiry);
+		this.setCookie(getResponse(), name, value, path, domain, expiry);
 	}
 
 	@Override
 	public void removeCookie(String name) {
-		CookieUtil.remove(getResponse(), name);
+		this.setCookie(response, name, null, null, null, 0);
+	}
+
+	/**
+	 * 设置Cookie
+	 */
+	private void setCookie(HttpServletResponse response, String name, String value, String path, String domain, int expiry) {
+		Cookie cookie = new Cookie(name, value);
+		cookie.setPath(StringUtil.isEmpty(path) ? "/" : path);
+		if (StringUtil.isNotEmpty(domain)) {
+			cookie.setDomain(domain);
+		}
+		cookie.setHttpOnly(false);
+		cookie.setMaxAge(expiry);
+		response.addCookie(cookie);
 	}
 }

@@ -1,10 +1,7 @@
 package cn.lz.security.auth;
 
 import cn.lz.security.auth.config.AuthConfigurer;
-import cn.lz.security.auth.defaults.AuthErrorHandlerDefaultImpl;
-import cn.lz.security.auth.defaults.AuthSuccessHandlerDefaultImpl;
-import cn.lz.security.auth.defaults.DefaultCheckAccessAuthStatusHandler;
-import cn.lz.security.auth.defaults.DefaultPasswordEncoder;
+import cn.lz.security.auth.defaults.*;
 import cn.lz.security.auth.handler.impl.AuthorizationHandler;
 import cn.lz.security.auth.login.AuthErrorHandler;
 import cn.lz.security.auth.login.AuthSuccessHandler;
@@ -103,6 +100,13 @@ public class LzAuthManager {
 	protected static UserDetailsService userDetailsService;
 
 	public static UserDetailsService getUserDetailsService() {
+		if (userDetailsService == null) {
+			synchronized (LzAuthManager.class) {
+				if (userDetailsService == null) {
+					userDetailsService = new UserDetailsServiceDefault();
+				}
+			}
+		}
 		return userDetailsService;
 	}
 

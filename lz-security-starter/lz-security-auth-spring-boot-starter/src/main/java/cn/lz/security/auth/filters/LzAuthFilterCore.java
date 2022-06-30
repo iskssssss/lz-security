@@ -3,30 +3,23 @@ package cn.lz.security.auth.filters;
 import cn.lz.security.annotation.ExcludeInterface;
 import cn.lz.security.annotation.IncludeInterface;
 import cn.lz.security.arrays.UrlHashSet;
-import cn.lz.security.auth.LzAuthManager;
 import cn.lz.security.auth.annotation.AnonymousCheck;
 import cn.lz.security.auth.annotation.AuthCheck;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.security.filter.LzFilterManager;
 import cn.lz.security.filter.config.FilterConfigurer;
-import cn.lz.security.fun.LzFilterAuthStrategy;
 import cn.lz.security.token.AccessTokenUtil;
-import cn.lz.security.tool.context.LzContextManager;
 import cn.lz.security.tool.filters.BaseFilterCore;
 import cn.lz.security.tool.mode.LzRequest;
 import cn.lz.security.tool.mode.LzResponse;
-import cn.lz.security.utils.ServletUtil;
 import cn.lz.tool.core.enums.AuthCode;
-import cn.lz.tool.core.enums.RCode;
-import cn.lz.tool.http.enums.MediaType;
 import cn.lz.tool.reflect.model.ControllerMethod;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import java.nio.charset.StandardCharsets;
 
 /**
- * TODO
+ * 认证过滤处理中心
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 LZ
@@ -34,58 +27,41 @@ import java.nio.charset.StandardCharsets;
  */
 public class LzAuthFilterCore extends BaseFilterCore {
 
-	/**
-	 * 过滤前处理
-	 */
-	private LzFilterAuthStrategy authBeforeHandler;
-	/**
-	 * 过滤后处理
-	 */
-	private LzFilterAuthStrategy authAfterHandler;
-
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		this.authBeforeHandler = LzAuthManager.getAuthConfigurer().getAuthBeforeHandler();
-		this.authAfterHandler = LzAuthManager.getAuthConfigurer().getAuthAfterHandler();
-		super.interceptHandler = LzAuthManager.getAuthConfigurer().getInterceptHandler();
 	}
 
 	@Override
 	public boolean doFilter(LzRequest lzRequest, LzResponse lzResponse) {
-		try {
-			this.authBeforeHandler.run();
-			final ControllerMethod controllerMethod = lzRequest.getControllerMethod();
-			final String requestPath = lzRequest.getRequestPath();
-			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
-			if (!includeHandler(controllerMethod, requestPath)) {
-				return true;
-			}
-			if (controllerMethod == null) {
-				if (AccessTokenUtil.checkExpiration()) {
-					throw new SecurityException(AuthCode.AUTHORIZATION);
-				}
-				return true;
-			}
-			// 匿名接口处理
-			final AnonymousCheck anonymousCheck = controllerMethod.getMethodAndControllerAnnotation(AnonymousCheck.class);
-			if (anonymousCheck != null && anonymousCheck.open()) {
-				if (AccessTokenUtil.checkExpiration()) {
-					return true;
-				}
-				throw new SecurityException(AuthCode.ANONYMOUS);
-			}
-			// 认证接口处理
-			final AuthCheck authCheck = controllerMethod.getMethodAndControllerAnnotation(AuthCheck.class);
-			if (authCheck != null && authCheck.open()) {
-				if (AccessTokenUtil.checkExpiration()) {
-					throw new SecurityException(AuthCode.AUTHORIZATION);
-				}
-				return true;
+		final ControllerMethod controllerMethod = lzRequest.getControllerMethod();
+		final String requestPath = lzRequest.getRequestPath();
+		// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
+		if (!includeHandler(controllerMethod, requestPath)) {
+			return true;
+		}
+		if (controllerMethod == null) {
+			if (AccessTokenUtil.checkExpiration()) {
+				throw new SecurityException(AuthCode.AUTHORIZATION);
 			}
 			return true;
-		} finally {
-			this.authAfterHandler.run();
 		}
+		// 匿名接口处理
+		final AnonymousCheck anonymousCheck = controllerMethod.getMethodAndControllerAnnotation(AnonymousCheck.class);
+		if (anonymousCheck != null && anonymousCheck.open()) {
+			if (AccessTokenUtil.checkExpiration()) {
+				return true;
+			}
+			throw new SecurityException(AuthCode.ANONYMOUS);
+		}
+		// 认证接口处理
+		final AuthCheck authCheck = controllerMethod.getMethodAndControllerAnnotation(AuthCheck.class);
+		if (authCheck != null && authCheck.open()) {
+			if (AccessTokenUtil.checkExpiration()) {
+				throw new SecurityException(AuthCode.AUTHORIZATION);
+			}
+			return true;
+		}
+		return true;
 	}
 
 	/**

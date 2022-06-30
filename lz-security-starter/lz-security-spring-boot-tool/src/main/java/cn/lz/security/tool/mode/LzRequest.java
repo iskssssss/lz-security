@@ -5,11 +5,12 @@ import cn.lz.security.LzCoreManager;
 import cn.lz.security.context.LzContext;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.exception.base.SecurityException;
-import cn.lz.security.tool.utils.CookieUtil;
 import cn.lz.tool.core.enums.RCode;
+import cn.lz.tool.core.string.StringUtil;
 import cn.lz.tool.io.IoUtil;
 
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -97,7 +98,20 @@ public class LzRequest extends BaseRequest<HttpServletRequest> {
 
 	@Override
 	public String getCookieValue(String name) {
-		return CookieUtil.getValue(getRequest(), name);
+		final Cookie[] cookies = request.getCookies();
+		if (cookies == null || cookies.length < 1) {
+			return null;
+		}
+		for (Cookie cookie : cookies) {
+			final String cookieName = cookie.getName();
+			if (StringUtil.isEmpty(cookieName)) {
+				continue;
+			}
+			if (cookieName.startsWith(name)) {
+				return cookie.getValue();
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -76,6 +76,10 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 			return yes(request);
 		}
 		// 日志处理
+		final BaseFilterLogHandler filterLogHandler = LzFilterManager.getFilterLogHandler();
+		if (filterLogHandler == null) {
+			return nextFilter.doFilter(request, response, params);
+		}
 		final Class<? extends IInterfacesFilter> nextFilterClass = nextFilter.getClass();
 		final LogBeforeFilter logBeforeFilter = nextFilterClass.getAnnotation(LogBeforeFilter.class);
 		Class<? extends AbsInterfacesFilterBuilder> logBeforeFilterClass = LzFilterManager.getFilterConfigurer().getLogBeforeFilterClass();
@@ -93,12 +97,10 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 				return nextFilter.doFilter(request, response, params);
 			}
 		}
-		final LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
-		final BaseFilterLogHandler filterLogHandler = LzFilterManager.getFilterLogHandler();
 		final Object logEntity = filterLogHandler.before(request, response);
 		// 暂缓
-		lzContext.setAttribute(LzConstant.LOG_SWITCH, true);
-		lzContext.setAttribute(LzConstant.LOG_ENTITY_CACHE_KEY, logEntity);
+		request.setAttribute(LzConstant.LOG_SWITCH, true);
+		request.setAttribute(LzConstant.LOG_ENTITY_CACHE_KEY, logEntity);
 		return nextFilter.doFilter(request, response, params);
 	}
 

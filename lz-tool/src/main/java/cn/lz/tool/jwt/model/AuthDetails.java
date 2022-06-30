@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
+ * 用户认证实体类
  * @Version 版权 Copyright(c)2021 LZ
  * @ClassName:
  * @Descripton:

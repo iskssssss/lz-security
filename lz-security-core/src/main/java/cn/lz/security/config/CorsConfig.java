@@ -45,6 +45,9 @@ public class CorsConfig {
             if (allowOrigin == null) {
                 throw new CorsException();
             }
+            if (CorsItemConfig.ALL.equals(allowOrigin)) {
+                baseResponse.setHeader("Vary", "Origin");
+            }
             List<String> exposedHeaders = config.getExposedHeaders();
             String allowCredentials = String.valueOf(config.getAllowCredentials());
             String maxAge = String.valueOf(config.getMaxAge());

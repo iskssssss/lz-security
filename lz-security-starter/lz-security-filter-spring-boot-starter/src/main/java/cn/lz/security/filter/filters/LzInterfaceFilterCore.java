@@ -17,40 +17,25 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 /**
- * @Version 版权 Copyright(c)2021 LZ
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/09/10 15:25
+ * 接口过滤处理中心
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2021 LZ
+ * @date 2021/11/03 11:22
  */
 public final class LzInterfaceFilterCore extends BaseFilterCore {
-
-	/**
-	 * 过滤前处理
-	 */
-	private LzFilterAuthStrategy filterBeforeHandler;
-	/**
-	 * 过滤后处理
-	 */
-	private LzFilterAuthStrategy filterAfterHandler;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		if (SpringUtil.getBeansWithAnnotationCount(LogBeforeFilter.class) > 1) {
 			throw new RuntimeException("注解(LogBeforeFilter)全局只可存在一个。");
 		}
-		this.filterBeforeHandler = LzFilterManager.getFilterConfigurer().getFilterBeforeHandler();
-		this.filterAfterHandler = LzFilterManager.getFilterConfigurer().getFilterAfterHandler();
 		LzFilterManager.init();
 	}
 
 	@Override
 	public boolean doFilter(LzRequest lzRequest, LzResponse lzResponse) {
 		try {
-			// 过滤前处理
-			if (this.filterBeforeHandler != null) {
-				this.filterBeforeHandler.run();
-			}
 			final ControllerMethod controllerMethod = lzRequest.getControllerMethod();
 			final String requestPath = lzRequest.getRequestPath();
 			// 判断当前访问地址 (是否是开放地址 or 是否在拦截地址中)
@@ -66,11 +51,6 @@ public final class LzInterfaceFilterCore extends BaseFilterCore {
 				throw (SecurityException) e.getCause();
 			} else {
 				throw new SecurityException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "过滤异常", e);
-			}
-		} finally {
-			// 过滤后处理
-			if (this.filterAfterHandler != null) {
-				this.filterAfterHandler.run();
 			}
 		}
 	}

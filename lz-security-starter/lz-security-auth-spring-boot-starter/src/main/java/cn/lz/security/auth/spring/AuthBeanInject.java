@@ -12,13 +12,13 @@ import cn.lz.security.tool.utils.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * TODO
+ * 自动注入类
  *
  * @author 孔胜
  * @version 版权 Copyright(c)2021 LZ
  * @date 2021/11/03 10:42
  */
-public class AuthManagerBeanInject extends LzAuthManager {
+public class AuthBeanInject extends LzAuthManager {
 
 	/**
 	 * 自动注入<b>密码验证</b>

@@ -21,8 +21,9 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 
 	protected final FilterUrl filterUrl = new FilterUrl();
 	protected final FilterConfig filterConfig = new FilterConfig();
-	protected LzFilterAuthStrategy filterAfterHandler = null;
-	protected LzFilterAuthStrategy filterBeforeHandler = null;
+	protected LzFilterAuthStrategy filterAfterHandler = params -> { };
+	protected LzFilterAuthStrategy filterBeforeHandler = params -> { };
+	protected LzFilterAuthStrategy interceptHandler = params -> { };
 
 	/**
 	 * 获取接口过滤设置器
@@ -78,6 +79,17 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 */
 	public FilterConfigurerBuilder<T> setFilterAfterHandler(LzFilterAuthStrategy filterAfterHandler) {
 		this.filterAfterHandler = filterAfterHandler;
+		return this;
+	}
+
+	/**
+	 * 过滤被拦截处理器
+	 *
+	 * @param interceptHandler 过滤被拦截处理器
+	 * @return this
+	 */
+	public FilterConfigurerBuilder<T> setInterceptHandler(LzFilterAuthStrategy interceptHandler) {
+		this.interceptHandler = interceptHandler;
 		return this;
 	}
 

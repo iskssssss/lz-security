@@ -69,7 +69,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
             }
             // 获取用户信息
             final UserDetailsService userDetailsService = LzAuthManager.getUserDetailsService();
-            final AuthDetails<?> authDetails = userDetailsService.readUserByUsername((String) usernameValue);
+            final AuthDetails<?> authDetails = userDetailsService.readUserByUserId((String) usernameValue);
             // 验证用户密码
             final String password = authDetails.getCredential();
             final PasswordEncoder passwordEncoder = LzAuthManager.getPasswordEncoder();

@@ -1,18 +1,18 @@
 package cn.lz.security.tool.context;
 
-import cn.lz.security.config.EncryptConfig;
-import cn.lz.security.handler.EncodeSwitchHandler;
-import cn.lz.security.tool.mode.LzRequest;
-import cn.lz.security.tool.mode.LzResponse;
-import cn.lz.security.tool.wrapper.HttpServletRequestWrapper;
-import cn.lz.security.tool.wrapper.HttpServletResponseWrapper;
 import cn.lz.security.LzCoreManager;
-import cn.lz.security.context.LzContextTheadLocal;
+import cn.lz.security.config.EncryptConfig;
+import cn.lz.security.context.LzContext;
 import cn.lz.security.context.LzSecurityContextThreadLocal;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.security.fun.LzFilterFunction;
+import cn.lz.security.handler.EncodeSwitchHandler;
 import cn.lz.security.log.LzLoggerUtil;
+import cn.lz.security.tool.mode.LzRequest;
+import cn.lz.security.tool.mode.LzResponse;
+import cn.lz.security.tool.wrapper.HttpServletRequestWrapper;
+import cn.lz.security.tool.wrapper.HttpServletResponseWrapper;
 import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.reflect.model.ControllerMethod;
 
@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
  * @Author: 孔胜
  * @Date: 2021/09/17 11:56
  */
-public class LzContextManager {
+public class LzSpringBootContextManager {
 
 	/**
 	 * 设置上下文
@@ -39,8 +39,11 @@ public class LzContextManager {
 	 * @param request  请求流
 	 * @param response 响应流
 	 */
-	public static void setContext(ServletRequest request, ServletResponse response) {
-		LzContextManager.setContext(request, response, System.currentTimeMillis(), null);
+	protected static void setContext(
+			ServletRequest request,
+			ServletResponse response
+	) {
+		LzSpringBootContextManager.setContext(request, response, System.currentTimeMillis(), null);
 	}
 
 	/**
@@ -50,8 +53,12 @@ public class LzContextManager {
 	 * @param response         响应流
 	 * @param startRequestTime 请求时间
 	 */
-	public static void setContext(ServletRequest request, ServletResponse response, long startRequestTime) {
-		LzContextManager.setContext(request, response, startRequestTime, null);
+	protected static void setContext(
+			ServletRequest request,
+			ServletResponse response,
+			long startRequestTime
+	) {
+		LzSpringBootContextManager.setContext(request, response, startRequestTime, null);
 	}
 
 	/**
@@ -61,13 +68,13 @@ public class LzContextManager {
 	 * @param response 响应流
 	 * @param function 回调方法
 	 */
-	public static void setContext(
+	protected static void setContext(
 			ServletRequest request,
 			ServletResponse response,
 			LzFilterFunction<LzRequest, LzResponse> function
 	) {
 		final long startRequestTime = System.currentTimeMillis();
-		LzContextManager.setContext(request, response, startRequestTime, function);
+		LzSpringBootContextManager.setContext(request, response, startRequestTime, function);
 	}
 
 	/**
@@ -78,7 +85,7 @@ public class LzContextManager {
 	 * @param startRequestTime 请求时间
 	 * @param function         回调方法
 	 */
-	public static void setContext(
+	protected static void setContext(
 			ServletRequest request,
 			ServletResponse response,
 			long startRequestTime,
@@ -104,21 +111,21 @@ public class LzContextManager {
 			lzRequest.setControllerMethod(controllerMethod);
 			// 处理请求流和响应流信息
 			if (encryptConfig.getEncrypt()) {
-				LzContextManager.handlerRequest(lzRequest);
-				LzContextManager.handlerResponse(lzRequest, lzResponse);
+				LzSpringBootContextManager.handlerRequest(lzRequest);
+				LzSpringBootContextManager.handlerResponse(lzRequest, lzResponse);
 			} else {
 				lzRequest.setDecrypt(false);
 				lzResponse.setEncrypt(false);
 			}
 			// 设置上下文
-			LzContextManager.setContext(lzRequest, lzResponse, startRequestTime);
+			LzSpringBootContextManager.setContext(lzRequest, lzResponse, startRequestTime);
 			if (function == null) {
 				return;
 			}
 			// 执行方法
 			function.run(lzRequest, lzResponse);
 		} catch (Exception exception) {
-			LzLoggerUtil.error(LzContextManager.class, exception.getMessage(), exception);
+			LzLoggerUtil.error(LzSpringBootContextManager.class, exception.getMessage(), exception);
 			final byte[] bytes = RCode.INTERNAL_SERVER_ERROR.toJson().getBytes(StandardCharsets.UTF_8);
 			final int length = bytes.length;
 			try (ServletOutputStream outputStream = response instanceof HttpServletResponseWrapper ?
@@ -131,7 +138,7 @@ public class LzContextManager {
 			}
 		} finally {
 			if (function != null) {
-				LzContextManager.removeContext();
+				LzSpringBootContextManager.removeContext();
 			}
 		}
 	}
@@ -144,8 +151,8 @@ public class LzContextManager {
 	 * @param startRequestTime 请求时间
 	 */
 	private static void setContext(LzRequest request, LzResponse response, long startRequestTime) {
-		final LzSpringStorage lzSpringStorage = new LzSpringStorage(request, startRequestTime);
-		LzSecurityContextThreadLocal.setBox(request, response, lzSpringStorage);
+		final SpringBootStorage lzSpringBootStorage = new SpringBootStorage(request, startRequestTime);
+		LzSecurityContextThreadLocal.setStorageBox(response, lzSpringBootStorage);
 	}
 
 	/**
@@ -197,9 +204,9 @@ public class LzContextManager {
 	/**
 	 * 移除上下文
 	 */
-	public static void removeContext() {
+	protected static void removeContext() {
 		try {
-			BaseRequest<?> servletRequest = LzSecurityContextThreadLocal.getServletRequest();
+			BaseRequest<?> servletRequest = LzSecurityContextThreadLocal.getRequest();
 			if (servletRequest == null) {
 				return;
 			}
@@ -215,8 +222,8 @@ public class LzContextManager {
 	 *
 	 * @return 上下文
 	 */
-	private static LzContextTheadLocal<?, ?> getLzContext() {
-		return ((LzContextTheadLocal<?, ?>) LzCoreManager.getLzContext());
+	private static LzContext<?, ?> getLzContext() {
+		return LzCoreManager.getLzContext();
 	}
 
 	/**
@@ -224,9 +231,9 @@ public class LzContextManager {
 	 *
 	 * @return 存储器
 	 */
-	public static LzSpringStorage getStorage() {
-		LzContextTheadLocal<?, ?> lzContext = getLzContext();
-		return ((LzSpringStorage) lzContext.getStorage());
+	public static SpringBootStorage getStorage() {
+		LzContext<?, ?> lzContext = getLzContext();
+		return ((SpringBootStorage) lzContext.getStorage());
 	}
 
 	/**
@@ -235,7 +242,7 @@ public class LzContextManager {
 	 * @return 请求流
 	 */
 	public static LzRequest getRequest() {
-		LzContextTheadLocal<?, ?> lzContext = getLzContext();
+		LzContext<?, ?> lzContext = getLzContext();
 		return ((LzRequest) lzContext.getRequest());
 	}
 
@@ -245,7 +252,7 @@ public class LzContextManager {
 	 * @return 响应流
 	 */
 	public static LzResponse getResponse() {
-		LzContextTheadLocal<?, ?> lzContext = getLzContext();
+		LzContext<?, ?> lzContext = getLzContext();
 		return ((LzResponse) lzContext.getResponse());
 	}
 }
