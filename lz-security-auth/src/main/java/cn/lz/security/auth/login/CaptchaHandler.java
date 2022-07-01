@@ -1,4 +1,4 @@
-package cn.lz.security.auth.handler;
+package cn.lz.security.auth.login;
 
 /**
  * @Version 版权 Copyright(c)2021 LZ

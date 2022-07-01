@@ -14,7 +14,7 @@ import cn.lz.tool.jwt.model.AuthDetailsDefault;
 public class UserDetailsServiceDefault implements UserDetailsService {
 
     @Override
-    public AuthDetails<?> readUserByUserId(String userId) throws SecurityException {
+    public AuthDetails<?> readUserByIdentifier(String userId) throws SecurityException {
         AuthDetails<AuthDetailsDefault> authDetails = new AuthDetailsDefault();
         authDetails.setId(userId);
         return authDetails;

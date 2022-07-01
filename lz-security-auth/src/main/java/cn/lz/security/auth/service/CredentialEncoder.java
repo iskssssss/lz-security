@@ -7,7 +7,7 @@ package cn.lz.security.auth.service;
  * @Author: 孔胜
  * @Date: 2021/6/24 14:22
  */
-public interface PasswordEncoder {
+public interface CredentialEncoder {
 
     /**
      * 密码加密

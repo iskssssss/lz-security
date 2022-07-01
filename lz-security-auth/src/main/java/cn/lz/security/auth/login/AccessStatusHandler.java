@@ -1,4 +1,4 @@
-package cn.lz.security.auth.handler;
+package cn.lz.security.auth.login;
 
 import cn.lz.tool.jwt.model.AuthDetails;
 

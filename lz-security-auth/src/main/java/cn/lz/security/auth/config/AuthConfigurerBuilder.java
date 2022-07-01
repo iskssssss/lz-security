@@ -1,13 +1,13 @@
 package cn.lz.security.auth.config;
 
 import cn.lz.security.auth.LzAuthManager;
-import cn.lz.security.auth.handler.AccessStatusHandler;
-import cn.lz.security.auth.handler.CaptchaHandler;
-import cn.lz.security.auth.handler.ICheckAccessAuthStatusHandler;
+import cn.lz.security.auth.login.AccessStatusHandler;
+import cn.lz.security.auth.login.CaptchaHandler;
+import cn.lz.security.auth.login.ICheckAccessAuthStatusHandler;
 import cn.lz.security.auth.login.AuthErrorHandler;
 import cn.lz.security.auth.login.AuthSuccessHandler;
 import cn.lz.security.auth.logout.LogoutService;
-import cn.lz.security.auth.service.PasswordEncoder;
+import cn.lz.security.auth.service.CredentialEncoder;
 import cn.lz.security.auth.service.UserDetailsService;
 
 /**
@@ -53,11 +53,11 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	/**
 	 * 设置密码加解密处理器
 	 *
-	 * @param passwordEncoder 密码加解密处理器
+	 * @param credentialEncoder 密码加解密处理器
 	 * @return this
 	 */
-	public AuthConfigurerBuilder<T> passwordEncoder(PasswordEncoder passwordEncoder) {
-		LzAuthManager.setPasswordEncoder(passwordEncoder);
+	public AuthConfigurerBuilder<T> passwordEncoder(CredentialEncoder credentialEncoder) {
+		LzAuthManager.setCredentialEncoder(credentialEncoder);
 		return this;
 	}
 

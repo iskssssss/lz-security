@@ -1,4 +1,4 @@
-package cn.lz.security.auth.handler;
+package cn.lz.security.auth.login;
 
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
@@ -19,9 +19,6 @@ public interface ICheckAccessAuthStatusHandler {
 	 * @param response 响应
 	 * @return 认证状态
 	 */
-	boolean check(
-			BaseRequest<?> request,
-			BaseResponse<?> response
-	);
+	boolean check(BaseRequest<?> request, BaseResponse<?> response);
 
 }

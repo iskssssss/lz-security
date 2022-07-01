@@ -1,7 +1,7 @@
 package cn.lz.security.auth.defaults;
 
 import cn.lz.security.LzCoreManager;
-import cn.lz.security.auth.handler.ICheckAccessAuthStatusHandler;
+import cn.lz.security.auth.login.ICheckAccessAuthStatusHandler;
 import cn.lz.security.context.LzSecurityContextThreadLocal;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
@@ -14,7 +14,7 @@ import cn.lz.tool.core.string.StringUtil;
  * @Author: 孔胜
  * @Date: 2021/09/16 16:50
  */
-public class DefaultCheckAccessAuthStatusHandler implements ICheckAccessAuthStatusHandler {
+public class CheckAccessAuthStatusHandlerDefault implements ICheckAccessAuthStatusHandler {
 
 	@Override
 	public boolean check(

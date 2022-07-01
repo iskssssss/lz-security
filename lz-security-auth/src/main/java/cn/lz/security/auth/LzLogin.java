@@ -22,7 +22,7 @@ public class LzLogin {
 	public static String login(String userId) {
 		// 获取用户信息
 		final UserDetailsService userDetailsService = LzAuthManager.getUserDetailsService();
-		final AuthDetails<?> authDetails = userDetailsService.readUserByUserId(userId);
+		final AuthDetails<?> authDetails = userDetailsService.readUserByIdentifier(userId);
 
 		// 获取token
 		final String token = AccessTokenUtil.generateAccessToken(authDetails, true);

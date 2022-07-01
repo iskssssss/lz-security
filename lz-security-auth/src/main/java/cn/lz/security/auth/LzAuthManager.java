@@ -2,18 +2,17 @@ package cn.lz.security.auth;
 
 import cn.lz.security.auth.config.AuthConfigurer;
 import cn.lz.security.auth.defaults.*;
-import cn.lz.security.auth.handler.impl.AuthorizationHandler;
+import cn.lz.security.auth.login.AccessStatusHandler;
+import cn.lz.security.auth.login.LoginService;
+import cn.lz.security.auth.login.CaptchaHandler;
+import cn.lz.security.auth.login.ICheckAccessAuthStatusHandler;
 import cn.lz.security.auth.login.AuthErrorHandler;
 import cn.lz.security.auth.login.AuthSuccessHandler;
-import cn.lz.security.auth.logout.AbstractLogoutHandler;
-import cn.lz.security.auth.service.PasswordEncoder;
-import cn.lz.security.auth.service.UserDetailsService;
-import cn.lz.security.auth.handler.AbstractAuthorizationHandler;
-import cn.lz.security.auth.handler.AccessStatusHandler;
-import cn.lz.security.auth.handler.CaptchaHandler;
-import cn.lz.security.auth.handler.ICheckAccessAuthStatusHandler;
-import cn.lz.security.auth.logout.LogoutHandler;
+import cn.lz.security.auth.defaults.LoginServiceDefault;
 import cn.lz.security.auth.logout.LogoutService;
+import cn.lz.security.auth.logout.LogoutServiceDefault;
+import cn.lz.security.auth.service.CredentialEncoder;
+import cn.lz.security.auth.service.UserDetailsService;
 
 /**
  * TODO
@@ -34,40 +33,40 @@ public class LzAuthManager {
 
 	//====================================================================================================================================
 
-	protected static AbstractAuthorizationHandler authorizationHandler;
+	protected static LoginService loginService;
 
-	public static AbstractAuthorizationHandler getAuthorizationHandler() {
-		if (LzAuthManager.authorizationHandler == null) {
+	public static LoginService getLoginService() {
+		if (LzAuthManager.loginService == null) {
 			synchronized (LzAuthManager.class) {
-				if (LzAuthManager.authorizationHandler == null) {
-					LzAuthManager.authorizationHandler = new AuthorizationHandler();
+				if (LzAuthManager.loginService == null) {
+					LzAuthManager.loginService = new LoginServiceDefault();
 				}
 			}
 		}
-		return LzAuthManager.authorizationHandler;
+		return LzAuthManager.loginService;
 	}
 
-	public static void setAuthorizationHandler(AbstractAuthorizationHandler authorizationHandler) {
-		LzAuthManager.authorizationHandler = authorizationHandler;
+	public static void setLoginService(LoginService loginService) {
+		LzAuthManager.loginService = loginService;
 	}
 
 	//====================================================================================================================================
 
-	protected static AbstractLogoutHandler logoutHandler;
+	protected static LogoutService logoutService;
 
-	public static AbstractLogoutHandler getLogoutHandler() {
-		if (LzAuthManager.logoutHandler == null) {
+	public static LogoutService getLogoutService() {
+		if (LzAuthManager.logoutService == null) {
 			synchronized (LzAuthManager.class) {
-				if (LzAuthManager.logoutHandler == null) {
-					LzAuthManager.logoutHandler = new LogoutHandler();
+				if (LzAuthManager.logoutService == null) {
+					LzAuthManager.logoutService = new LogoutServiceDefault();
 				}
 			}
 		}
-		return LzAuthManager.logoutHandler;
+		return LzAuthManager.logoutService;
 	}
 
-	public static void setLogoutHandler(AbstractLogoutHandler logoutHandler) {
-		LzAuthManager.logoutHandler = logoutHandler;
+	public static void setLogoutService(LogoutService logoutService) {
+		LzAuthManager.logoutService = logoutService;
 	}
 
 	//====================================================================================================================================
@@ -75,21 +74,21 @@ public class LzAuthManager {
 	/**
 	 * 密码验证
 	 */
-	protected static volatile PasswordEncoder passwordEncoder;
+	protected static volatile CredentialEncoder credentialEncoder;
 
-	public static PasswordEncoder getPasswordEncoder() {
-		if (LzAuthManager.passwordEncoder == null) {
+	public static CredentialEncoder getCredentialEncoder() {
+		if (LzAuthManager.credentialEncoder == null) {
 			synchronized (LzAuthManager.class) {
-				if (LzAuthManager.passwordEncoder == null) {
-					LzAuthManager.passwordEncoder = new DefaultPasswordEncoder();
+				if (LzAuthManager.credentialEncoder == null) {
+					LzAuthManager.credentialEncoder = new CredentialEncoderDefault();
 				}
 			}
 		}
-		return LzAuthManager.passwordEncoder;
+		return LzAuthManager.credentialEncoder;
 	}
 
-	public static void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		LzAuthManager.passwordEncoder = passwordEncoder;
+	public static void setCredentialEncoder(CredentialEncoder credentialEncoder) {
+		LzAuthManager.credentialEncoder = credentialEncoder;
 	}
 
 	//====================================================================================================================================
@@ -155,7 +154,7 @@ public class LzAuthManager {
 		if (LzAuthManager.authSuccessHandler == null) {
 			synchronized (LzAuthManager.class) {
 				if (LzAuthManager.authSuccessHandler == null) {
-					LzAuthManager.authSuccessHandler = new AuthSuccessHandlerDefaultImpl();
+					LzAuthManager.authSuccessHandler = new AuthSuccessHandlerDefault();
 				}
 			}
 		}
@@ -177,7 +176,7 @@ public class LzAuthManager {
 		if (LzAuthManager.authErrorHandler == null) {
 			synchronized (LzAuthManager.class) {
 				if (LzAuthManager.authErrorHandler == null) {
-					LzAuthManager.authErrorHandler = new AuthErrorHandlerDefaultImpl();
+					LzAuthManager.authErrorHandler = new AuthErrorHandlerDefault();
 				}
 			}
 		}
@@ -198,7 +197,7 @@ public class LzAuthManager {
 		if (LzAuthManager.checkAccessAuthStatusHandler == null) {
 			synchronized (LzAuthManager.class) {
 				if (LzAuthManager.checkAccessAuthStatusHandler == null) {
-					LzAuthManager.checkAccessAuthStatusHandler = new DefaultCheckAccessAuthStatusHandler();
+					LzAuthManager.checkAccessAuthStatusHandler = new CheckAccessAuthStatusHandlerDefault();
 				}
 			}
 		}
@@ -207,17 +206,5 @@ public class LzAuthManager {
 
 	public static void setCheckAccessAuthStatusHandler(ICheckAccessAuthStatusHandler checkAccessAuthStatusHandler) {
 		LzAuthManager.checkAccessAuthStatusHandler = checkAccessAuthStatusHandler;
-	}
-
-	//====================================================================================================================================
-
-	protected static LogoutService logoutService;
-
-	public static LogoutService getLogoutService() {
-		return logoutService;
-	}
-
-	public static void setLogoutService(LogoutService logoutService) {
-		LzAuthManager.logoutService = logoutService;
 	}
 }

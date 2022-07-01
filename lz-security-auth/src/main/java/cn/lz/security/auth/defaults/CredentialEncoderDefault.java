@@ -1,6 +1,6 @@
 package cn.lz.security.auth.defaults;
 
-import cn.lz.security.auth.service.PasswordEncoder;
+import cn.lz.security.auth.service.CredentialEncoder;
 
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import java.util.Objects;
  * @Author: 孔胜
  * @Date: 2021/09/16 16:52
  */
-public class DefaultPasswordEncoder implements PasswordEncoder {
+public class CredentialEncoderDefault implements CredentialEncoder {
 	@Override
 	public String encode(CharSequence rawPassword) {
 		return rawPassword.toString();

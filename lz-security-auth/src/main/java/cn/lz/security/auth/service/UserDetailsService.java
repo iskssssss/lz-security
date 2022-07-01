@@ -14,11 +14,11 @@ import cn.lz.tool.jwt.model.AuthDetails;
 public interface UserDetailsService {
 
     /**
-     * 根据用户id获取用户信息
+     * 根据标识获取信息
      *
-     * @param userId 用户id
-     * @return 用户信息
+     * @param identifier 标识
+     * @return 信息
      * @throws SecurityException 获取中发生的异常
      */
-    AuthDetails<?> readUserByUserId(String userId) throws SecurityException;
+    AuthDetails<?> readUserByIdentifier(String identifier) throws SecurityException;
 }

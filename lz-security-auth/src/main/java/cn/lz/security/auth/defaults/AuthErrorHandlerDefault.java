@@ -15,7 +15,7 @@ import cn.lz.tool.http.enums.MediaType;
  * @version 版权 Copyright(c)2021 LZ
  * @date 2021/6/23 17:22
  */
-public class AuthErrorHandlerDefaultImpl implements AuthErrorHandler {
+public class AuthErrorHandlerDefault implements AuthErrorHandler {
 
 	@Override
 	public void error(BaseRequest<?> request, BaseResponse<?> response, SecurityException securityException) {

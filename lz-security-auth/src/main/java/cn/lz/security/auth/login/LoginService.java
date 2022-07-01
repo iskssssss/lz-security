@@ -1,4 +1,4 @@
-package cn.lz.security.auth.handler;
+package cn.lz.security.auth.login;
 
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
@@ -10,10 +10,7 @@ import cn.lz.security.context.model.BaseResponse;
  * @Author: 孔胜
  * @Date: 2021/6/24 8:56
  */
-public abstract class AbstractAuthorizationHandler {
+public interface LoginService {
 
-    public abstract boolean authorization(
-            BaseRequest<?> request,
-            BaseResponse<?> response
-    );
+    boolean login(BaseRequest<?> request, BaseResponse<?> response);
 }

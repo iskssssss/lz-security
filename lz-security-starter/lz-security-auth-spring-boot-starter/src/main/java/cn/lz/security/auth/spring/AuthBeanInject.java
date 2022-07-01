@@ -1,12 +1,12 @@
 package cn.lz.security.auth.spring;
 
 import cn.lz.security.auth.LzAuthManager;
-import cn.lz.security.auth.handler.AccessStatusHandler;
-import cn.lz.security.auth.handler.CaptchaHandler;
-import cn.lz.security.auth.handler.ICheckAccessAuthStatusHandler;
+import cn.lz.security.auth.login.AccessStatusHandler;
+import cn.lz.security.auth.login.CaptchaHandler;
+import cn.lz.security.auth.login.ICheckAccessAuthStatusHandler;
 import cn.lz.security.auth.login.AuthErrorHandler;
 import cn.lz.security.auth.login.AuthSuccessHandler;
-import cn.lz.security.auth.service.PasswordEncoder;
+import cn.lz.security.auth.service.CredentialEncoder;
 import cn.lz.security.auth.service.UserDetailsService;
 import cn.lz.security.tool.utils.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ public class AuthBeanInject extends LzAuthManager {
 	 * 自动注入<b>密码验证</b>
 	 */
 	@Autowired(required = false)
-	public void injectPasswordEncoder(PasswordEncoder passwordEncoder) {
-		if (LzAuthManager.passwordEncoder != null) {
-			SpringUtil.destroyBean(passwordEncoder);
+	public void injectPasswordEncoder(CredentialEncoder credentialEncoder) {
+		if (LzAuthManager.credentialEncoder != null) {
+			SpringUtil.destroyBean(credentialEncoder);
 			return;
 		}
-		LzAuthManager.setPasswordEncoder(passwordEncoder);
+		LzAuthManager.setCredentialEncoder(credentialEncoder);
 	}
 
 	/**

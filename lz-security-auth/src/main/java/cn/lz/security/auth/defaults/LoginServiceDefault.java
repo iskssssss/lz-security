@@ -1,18 +1,13 @@
-package cn.lz.security.auth.handler.impl;
+package cn.lz.security.auth.defaults;
 
-import cn.lz.security.auth.config.AuthConfigurer;
-import cn.lz.security.auth.login.AuthErrorHandler;
-import cn.lz.security.auth.login.AuthSuccessHandler;
-import cn.lz.security.auth.service.PasswordEncoder;
 import cn.lz.security.auth.LzAuthManager;
-import cn.lz.security.auth.handler.AbstractAuthorizationHandler;
-import cn.lz.security.auth.handler.AccessStatusHandler;
-import cn.lz.security.auth.handler.CaptchaHandler;
+import cn.lz.security.auth.login.*;
+import cn.lz.security.auth.service.CredentialEncoder;
 import cn.lz.security.auth.service.UserDetailsService;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
-import cn.lz.security.exception.auth.BadCredentialsException;
 import cn.lz.security.exception.ParamsException;
+import cn.lz.security.exception.auth.BadCredentialsException;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.tool.core.string.StringUtil;
 import cn.lz.tool.json.JsonUtil;
@@ -21,27 +16,16 @@ import cn.lz.tool.jwt.model.AuthDetails;
 import java.util.Map;
 
 /**
- * @Version 版权 Copyright(c)2021 LZ
- * @ClassName:
- * @Descripton:
- * @Author: 孔胜
- * @Date: 2021/6/24 8:55
+ * 登录服务类 默认实现类
+ *
+ * @author 孔胜
+ * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @date 2022/6/30 17:52
  */
-public class AuthorizationHandler extends AbstractAuthorizationHandler {
-
-    private final String identifierName;
-    private final String credentialName;
-    private final String codeKey;
-
-    public AuthorizationHandler() {
-        AuthConfigurer authConfigurer = LzAuthManager.getAuthConfigurer();
-        identifierName = authConfigurer.getIdentifierKey();
-        credentialName = authConfigurer.getCredentialKey();
-        codeKey = authConfigurer.getCodeKey();
-    }
+public class LoginServiceDefault implements LoginService {
 
     @Override
-    public boolean authorization(BaseRequest<?> swRequest, BaseResponse<?> swResponse) {
+    public boolean login(BaseRequest<?> swRequest, BaseResponse<?> swResponse) {
         final byte[] bodyBytes = swRequest.getBodyBytes();
         String bodyData = null;
         if (bodyBytes != null && bodyBytes.length > 1) {
@@ -51,17 +35,17 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
             throw new ParamsException();
         }
         final Map loginData = JsonUtil.parseObject(bodyData, Map.class);
-        Object usernameValue = null;
+        Object identifierValue = null;
         try {
-            usernameValue = loginData.get(identifierName);
-            final Object passwordValue = loginData.get(credentialName);
-            if (StringUtil.isEmpty(usernameValue) || StringUtil.isEmpty(passwordValue)) {
+            identifierValue = loginData.get(LzAuthManager.getAuthConfigurer().getIdentifierKey());
+            final Object credentialValue = loginData.get(LzAuthManager.getAuthConfigurer().getCredentialKey());
+            if (StringUtil.isEmpty(identifierValue) || StringUtil.isEmpty(credentialValue)) {
                 throw new ParamsException();
             }
             // 验证验证码
             final CaptchaHandler captchaHandler = LzAuthManager.getCaptchaHandler();
             if (captchaHandler != null) {
-                final Object codeValue = loginData.get(codeKey);
+                final Object codeValue = loginData.get(LzAuthManager.getAuthConfigurer().getCodeKey());
                 if (StringUtil.isEmpty(codeValue)) {
                     throw new ParamsException();
                 }
@@ -69,11 +53,10 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
             }
             // 获取用户信息
             final UserDetailsService userDetailsService = LzAuthManager.getUserDetailsService();
-            final AuthDetails<?> authDetails = userDetailsService.readUserByUserId((String) usernameValue);
+            final AuthDetails<?> authDetails = userDetailsService.readUserByIdentifier((String) identifierValue);
             // 验证用户密码
-            final String password = authDetails.getCredential();
-            final PasswordEncoder passwordEncoder = LzAuthManager.getPasswordEncoder();
-            if (!passwordEncoder.matches((String) passwordValue, password)) {
+            final CredentialEncoder credentialEncoder = LzAuthManager.getCredentialEncoder();
+            if (!credentialEncoder.matches((String) credentialValue, authDetails.getCredential())) {
                 throw new BadCredentialsException(authDetails.getIdentifier());
             }
             // 验证账号信息
@@ -86,7 +69,7 @@ public class AuthorizationHandler extends AbstractAuthorizationHandler {
         } catch (SecurityException securityException) {
             // 验证失败
             if (StringUtil.isEmpty(securityException.getResponseData())) {
-                securityException.setResponseData(usernameValue);
+                securityException.setResponseData(identifierValue);
             }
             final AuthErrorHandler authErrorHandler = LzAuthManager.getLoginErrorHandler();
             authErrorHandler.error(swRequest, swResponse, securityException);

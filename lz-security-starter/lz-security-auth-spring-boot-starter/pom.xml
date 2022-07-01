@@ -22,24 +22,7 @@
 
         <dependency>
             <groupId>cn.lz.security</groupId>
-            <artifactId>lz-security-core</artifactId>
-
-            <exclusions>
-                <exclusion>
-                    <groupId>cn.lz.security</groupId>
-                    <artifactId>lz-security-common</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.lz.security</groupId>
             <artifactId>lz-security-auth</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.lz.security</groupId>
-            <artifactId>lz-security-common</artifactId>
         </dependency>
     </dependencies>
 
