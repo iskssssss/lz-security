@@ -6,7 +6,7 @@ import cn.lz.security.arrays.UrlHashSet;
  * 认证配置
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2022 LZJ
  * @date 2022/7/1 16:38
  */
 public class AuthConfig {

@@ -18,7 +18,7 @@ import cn.lz.tool.reflect.model.ControllerMethod;
  * 认证接口过滤器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2022 LZJ
  * @date 2022/7/1 11:14
  */
 public class AuthFilter extends LzInterfacesFilter {

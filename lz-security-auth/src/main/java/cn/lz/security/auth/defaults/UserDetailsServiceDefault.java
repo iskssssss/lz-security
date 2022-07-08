@@ -8,7 +8,7 @@ import cn.lz.tool.jwt.model.AuthDetailsDefault;
  * 用户认证信息获取服务类 默认实现
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2022 LZJ
  * @date 2022/6/30 10:43
  */
 public class UserDetailsServiceDefault implements UserDetailsService {

@@ -8,7 +8,7 @@ import cn.lz.security.exception.base.SecurityException;
  * 跨域处理器
  *
  * @author 孔胜
- * @version 版权 Copyright(c)2022 杭州设维信息技术有限公司
+ * @version 版权 Copyright(c)2022 LZJ
  * @date 2022/7/5 16:32
  */
 public interface CorsHandler {
