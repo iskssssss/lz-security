@@ -217,6 +217,7 @@ public class RSAEncryptUtil {
 	public static String encryptString(byte[] bytes, RSAPrivateKey priKey) throws Exception {
 		Cipher cipher = Cipher.getInstance("RSA");
 		cipher.init(Cipher.ENCRYPT_MODE, priKey);
+		int blockSize = cipher.getBlockSize();
 		byte[] enBytes = splitByteList(cipher, bytes, MAX_ENCRYPT_BLOCK);
 		return Base64Util.encodeToString(enBytes);
 	}

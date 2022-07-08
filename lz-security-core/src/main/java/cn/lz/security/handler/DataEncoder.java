@@ -1,5 +1,7 @@
 package cn.lz.security.handler;
 
+import java.util.Map;
+
 /**
  * 数据加解密处理器
  *
@@ -10,12 +12,21 @@ package cn.lz.security.handler;
 public interface DataEncoder {
 
 	/**
+	 * 初始化
+	 *
+	 * @param params 参数
+	 */
+	void init(Map<String, String> params);
+
+	/**
 	 * 加密
 	 *
 	 * @param bytes 待加密字节数组
 	 * @return 密文
 	 */
-	byte[] encrypt(byte[] bytes);
+	default byte[] encrypt(byte[] bytes) {
+		return bytes;
+	}
 
 	/**
 	 * 解密
@@ -23,5 +34,7 @@ public interface DataEncoder {
 	 * @param bytes 带解密字节数组
 	 * @return 明文
 	 */
-	byte[] decrypt(byte[] bytes);
+	default byte[] decrypt(byte[] bytes) {
+		return bytes;
+	}
 }

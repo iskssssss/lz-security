@@ -1,14 +1,13 @@
 package cn.lz.security.auth.config;
 
+import cn.lz.security.arrays.UrlHashSet;
 import cn.lz.security.auth.LzAuthManager;
-import cn.lz.security.auth.login.AccessStatusHandler;
-import cn.lz.security.auth.login.CaptchaHandler;
-import cn.lz.security.auth.login.ICheckAccessAuthStatusHandler;
-import cn.lz.security.auth.login.AuthErrorHandler;
-import cn.lz.security.auth.login.AuthSuccessHandler;
+import cn.lz.security.auth.login.*;
 import cn.lz.security.auth.logout.LogoutService;
 import cn.lz.security.auth.service.CredentialEncoder;
 import cn.lz.security.auth.service.UserDetailsService;
+
+import java.util.Arrays;
 
 /**
  * 认证相关配置信息设置类
@@ -19,6 +18,7 @@ import cn.lz.security.auth.service.UserDetailsService;
  */
 public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 
+	private final AuthUrl authUrl = new AuthUrl();
 	/**
 	 * 认证登录信息
 	 */
@@ -27,6 +27,15 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	 * 认证登出信息
 	 */
 	protected final LogoutHandlerInfo logoutHandlerInfo = new LogoutHandlerInfo();
+
+	/**
+	 * 获取认证接口过滤设置器
+	 *
+	 * @return 接口过滤设置器
+	 */
+	public AuthUrl authUrl() {
+		return authUrl;
+	}
 
 	/**
 	 * 设置用户认证信息获取服务类
@@ -104,27 +113,6 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	public class LoginHandlerInfo {
 
 		/**
-		 * 登录地址
-		 */
-		protected String loginUrl = "/api/login/login.do";
-		/**
-		 * 存放标识的键值
-		 */
-		protected String identifierKey = "username";
-		/**
-		 * 存放凭据的键值
-		 */
-		protected String credentialKey = "password";
-		/**
-		 * 存放验证码的键值
-		 */
-		protected String codeKey = "code";
-		/**
-		 * 存放记住我的键值
-		 */
-		protected String rememberMeKey = "rememberMe";
-
-		/**
 		 * 设置认证失败处理器
 		 *
 		 * @param authErrorHandler 认证失败处理器
@@ -152,7 +140,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 * @param loginUrl 登录地址
 		 */
 		public LoginHandlerInfo loginUrl(String loginUrl) {
-			this.loginUrl = loginUrl;
+			LzAuthManager.getLoginConfig().setLoginUrl(loginUrl);
 			return this;
 		}
 
@@ -163,7 +151,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 * @return this
 		 */
 		public LoginHandlerInfo identifierKey(String identifierKey) {
-			this.identifierKey = identifierKey;
+			LzAuthManager.getLoginConfig().setIdentifierKey(identifierKey);
 			return LoginHandlerInfo.this;
 		}
 
@@ -174,7 +162,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 * @return this
 		 */
 		public LoginHandlerInfo credentialKey(String credentialKey) {
-			this.credentialKey = credentialKey;
+			LzAuthManager.getLoginConfig().setCredentialKey(credentialKey);
 			return LoginHandlerInfo.this;
 		}
 
@@ -185,7 +173,18 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 * @return this
 		 */
 		public LoginHandlerInfo codeKey(String codeKey) {
-			this.codeKey = codeKey;
+			LzAuthManager.getLoginConfig().setCodeKey(codeKey);
+			return LoginHandlerInfo.this;
+		}
+
+		/**
+		 * 设置存放键值的键值
+		 *
+		 * @param keyKey 存放键值的键值
+		 * @return this
+		 */
+		public LoginHandlerInfo keyKey(String keyKey) {
+			LzAuthManager.getLoginConfig().setKeyKey(keyKey);
 			return LoginHandlerInfo.this;
 		}
 
@@ -196,7 +195,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 * @return this
 		 */
 		public LoginHandlerInfo rememberMeKey(String rememberMeKey) {
-			this.rememberMeKey = rememberMeKey;
+			LzAuthManager.getLoginConfig().setRememberMeKey(rememberMeKey);
 			return LoginHandlerInfo.this;
 		}
 
@@ -211,10 +210,6 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 	}
 
 	public class LogoutHandlerInfo {
-		/**
-		 * 登出地址
-		 */
-		protected String logoutUrl = "/api/logout/logout.do";
 
 		/**
 		 * 设置登出地址
@@ -222,7 +217,7 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 * @param logoutUrl 登出地址
 		 */
 		public LogoutHandlerInfo logoutUrl(String logoutUrl) {
-			this.logoutUrl = logoutUrl;
+			LzAuthManager.getLogoutConfig().setLogoutUrl(logoutUrl);
 			return this;
 		}
 
@@ -244,6 +239,45 @@ public class AuthConfigurerBuilder<T extends AuthConfigurer> {
 		 */
 		public AuthConfigurerBuilder<T> and() {
 			return AuthConfigurerBuilder.this;
+		}
+	}
+
+	public class AuthUrl {
+
+		/**
+		 * 设置匿名接口
+		 *
+		 * @param anonymousUrls 匿名接口列表
+		 */
+		public AuthUrl addAnonymousUrls(String... anonymousUrls) {
+			addUrlHashSet(LzAuthManager.getAuthConfig().getAnonymousUrlList(), anonymousUrls);
+			return this;
+		}
+
+		/**
+		 * 设置需认证接口
+		 *
+		 * @param authUrls 需认证接口列表
+		 */
+		public AuthUrl addAuthUrls(String... authUrls) {
+			addUrlHashSet(LzAuthManager.getAuthConfig().getAuthUrlList(), authUrls);
+			return this;
+		}
+
+		public AuthConfigurerBuilder<T> and() {
+			return AuthConfigurerBuilder.this;
+		}
+
+
+		private void addUrlHashSet(UrlHashSet urlHashSet, String... urls) {
+			//urlHashSet.clear();
+			if (urls == null || urls.length < 1) {
+				return;
+			}
+			if (urls.length < 2) {
+				urlHashSet.add(urls[0]);
+			}
+			urlHashSet.addAll(Arrays.asList(urls));
 		}
 	}
 }

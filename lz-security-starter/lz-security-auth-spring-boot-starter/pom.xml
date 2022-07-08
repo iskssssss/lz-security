@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.lz.security</groupId>
-            <artifactId>lz-security-spring-boot-tool</artifactId>
+            <artifactId>lz-security-filter-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>

@@ -10,6 +10,8 @@ import cn.lz.tool.http.enums.MediaType;
 import cn.lz.tool.jwt.model.AuthDetails;
 import cn.lz.security.utils.ServletUtil;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * 认证成功处理器 默认实现
  *
@@ -27,6 +29,6 @@ public class AuthSuccessHandlerDefault implements AuthSuccessHandler {
 		requestResult.setCode(RCode.SUCCESS.getCode());
 		requestResult.setData(token);
 		requestResult.setMessage("登录成功。");
-		ServletUtil.printResponse(response, MediaType.APPLICATION_JSON_VALUE, RCode.SUCCESS);
+		ServletUtil.printResponse(response, MediaType.APPLICATION_JSON_VALUE, requestResult.toJson().getBytes(StandardCharsets.UTF_8));
 	}
 }

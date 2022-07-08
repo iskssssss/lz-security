@@ -1,5 +1,6 @@
 package cn.lz.security.filter.filters;
 
+import cn.lz.security.context.LzContext;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.exception.base.SecurityException;
@@ -20,9 +21,9 @@ public class StartFilter extends AbsInterfacesFilterBuilder {
     public void init() { }
 
     @Override
-    public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
+    public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, LzContext<?, ?> context, Object... params) throws SecurityException {
         lzLogger.info("过滤接口：" + request.getRequestPath());
-        return super.next(request, response, params);
+        return super.next(request, response, context, params);
     }
 
     @Override

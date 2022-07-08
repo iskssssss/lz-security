@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -38,5 +39,9 @@ public final class ObjectUtil {
 			}
 		}
 		return null;
+	}
+
+	public static boolean equals(Object anObject1, Object anObject2) {
+		return Objects.equals(anObject1, anObject2);
 	}
 }

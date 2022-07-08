@@ -2,7 +2,10 @@ package cn.lz.tool.http.enums;
 
 import cn.lz.tool.core.string.StringUtil;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @Author: lz
@@ -67,6 +70,18 @@ public enum RequestMethodEnum {
 
 	public boolean not(RequestMethodEnum requestMethodEnum) {
 		return not(requestMethodEnum.name);
+	}
+
+	public static String allJoin() {
+		return allJoin(", ");
+	}
+
+	public static String allJoin(String split) {
+		Set<String> allSet = new HashSet<>();
+		for (RequestMethodEnum value : RequestMethodEnum.values()) {
+			allSet.add(value.name);
+		}
+		return String.join(split, allSet);
 	}
 
 	public static RequestMethodEnum to(String name) {

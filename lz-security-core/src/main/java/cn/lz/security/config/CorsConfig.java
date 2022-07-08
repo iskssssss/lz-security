@@ -1,8 +1,5 @@
 package cn.lz.security.config;
 
-import cn.lz.security.context.model.BaseRequest;
-import cn.lz.security.context.model.BaseResponse;
-import cn.lz.security.exception.CorsException;
 import cn.lz.tool.core.ArraysUtil;
 import cn.lz.tool.core.string.StringUtil;
 
@@ -27,45 +24,6 @@ public class CorsConfig {
             corsRegistrationList = new LinkedList<>();
         }
         return corsRegistrationList;
-    }
-
-    public void initHeader(BaseRequest<?> baseRequest, BaseResponse<?> baseResponse) {
-        String requestOrigin = baseRequest.getHeader("Origin");
-        List<CorsConfig.CorsRegistration> corsRegistrationList = this.getCorsRegistrationList();
-        if (corsRegistrationList == null || corsRegistrationList.isEmpty()) {
-            return;
-        }
-        for (CorsConfig.CorsRegistration corsRegistration : corsRegistrationList) {
-            String pathPattern = corsRegistration.getPathPattern();
-            CorsConfig.CorsItemConfig config = corsRegistration.getConfig();
-            if (!baseRequest.matchUrl(pathPattern)) {
-                continue;
-            }
-            String allowOrigin = config.checkOrigin(requestOrigin);
-            if (allowOrigin == null) {
-                throw new CorsException();
-            }
-            if (CorsItemConfig.ALL.equals(allowOrigin)) {
-                baseResponse.setHeader("Vary", "Origin");
-            }
-            List<String> exposedHeaders = config.getExposedHeaders();
-            String allowCredentials = String.valueOf(config.getAllowCredentials());
-            String maxAge = String.valueOf(config.getMaxAge());
-            String method = baseRequest.getMethod();
-            if ("OPTIONS".equals(method)) {
-                List<String> allowedMethods = config.getAllowedMethods();
-                List<String> allowedHeaders = config.getAllowedHeaders();
-                baseResponse.addHeader("Allow", allowedMethods)
-                        .addHeader("Access-Control-Allow-Methods", allowedMethods)
-                        .addHeader("Access-Control-Allow-Headers", allowedHeaders);
-            }
-            baseResponse
-                    .setHeader("Access-Control-Allow-Credentials", allowCredentials)
-                    .setHeader("Access-Control-Allow-Origin", allowOrigin)
-                    .addHeader("Access-Control-Expose-Headers", exposedHeaders)
-                    .setHeader("Access-Control-Max-Age", maxAge)
-            ;
-        }
     }
 
     public void setCorsRegistrationList(List<CorsRegistration> corsRegistrationList) {

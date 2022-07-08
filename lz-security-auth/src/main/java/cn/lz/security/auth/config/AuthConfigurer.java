@@ -1,5 +1,8 @@
 package cn.lz.security.auth.config;
 
+import cn.lz.security.arrays.UrlHashSet;
+import cn.lz.security.auth.LzAuthManager;
+
 /**
  * 认证相关配置信息获取类
  *
@@ -10,12 +13,30 @@ package cn.lz.security.auth.config;
 public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 
 	/**
+	 * 获取匿名的接口列表
+	 *
+	 * @return 匿名的接口列表
+	 */
+	public UrlHashSet getAnonymousUrlList() {
+		return LzAuthManager.getAuthConfig().getAnonymousUrlList();
+	}
+
+	/**
+	 * 获取需认证的接口列表
+	 *
+	 * @return 需认证的接口列表
+	 */
+	public UrlHashSet getAuthUrlList() {
+		return LzAuthManager.getAuthConfig().getAuthUrlList();
+	}
+
+	/**
 	 * 获取登录地址
 	 *
 	 * @return 登录地址
 	 */
 	public String getLoginUrl() {
-		return this.loginHandlerInfo.loginUrl;
+		return LzAuthManager.getLoginConfig().getLoginUrl();
 	}
 
 	/**
@@ -24,7 +45,7 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 * @return 登出地址
 	 */
 	public String getLogoutUrl() {
-		return this.logoutHandlerInfo.logoutUrl;
+		return LzAuthManager.getLogoutConfig().getLogoutUrl();
 	}
 
 	/**
@@ -33,7 +54,7 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 * @return 存放标识的键值
 	 */
 	public String getIdentifierKey() {
-		return this.loginHandlerInfo.identifierKey;
+		return LzAuthManager.getLoginConfig().getIdentifierKey();
 	}
 
 	/**
@@ -42,7 +63,7 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 * @return 存放凭据的键值
 	 */
 	public String getCredentialKey() {
-		return this.loginHandlerInfo.credentialKey;
+		return LzAuthManager.getLoginConfig().getCredentialKey();
 	}
 
 	/**
@@ -51,7 +72,16 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 * @return 存放验证码的键值
 	 */
 	public String getCodeKey() {
-		return this.loginHandlerInfo.codeKey;
+		return LzAuthManager.getLoginConfig().getCodeKey();
+	}
+
+	/**
+	 * 获取存放键值的键值
+	 *
+	 * @return 存放键值的键值
+	 */
+	public String getKeyKey() {
+		return LzAuthManager.getLoginConfig().getKeyKey();
 	}
 
 	/**
@@ -60,6 +90,6 @@ public class AuthConfigurer extends AuthConfigurerBuilder<AuthConfigurer> {
 	 * @return 存放记住我的键值
 	 */
 	public String getRememberMeKey() {
-		return this.loginHandlerInfo.rememberMeKey;
+		return LzAuthManager.getLoginConfig().getRememberMeKey();
 	}
 }

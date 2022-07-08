@@ -3,8 +3,10 @@ package cn.lz.security.utils;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.exception.base.SecurityException;
 import cn.lz.tool.core.bytes.ByteUtil;
+import cn.lz.tool.core.enums.ICode;
 import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.core.string.StringUtil;
+import cn.lz.tool.http.enums.HeaderEnums;
 import cn.lz.tool.http.enums.MediaType;
 import cn.lz.tool.io.FileUtil;
 import cn.lz.tool.json.JsonUtil;
@@ -31,7 +33,7 @@ public final class ServletUtil {
     public static <ResponseType> void printResponse(
             BaseResponse<ResponseType> response,
             String contentType,
-            RCode rCode
+            ICode rCode
     ) {
         Map<String, Object> resultJson = new LinkedHashMap<>();
         resultJson.put("code", rCode.getCode());
@@ -79,7 +81,7 @@ public final class ServletUtil {
             return;
         }
         if (StringUtil.isNotEmpty(contentType)) {
-            response.setHeader("Content-Type", contentType);
+            response.setHeader(HeaderEnums.CONTENT_TYPE, contentType);
         }
         final int length = jsonBytes.length;
         response.print(jsonBytes, 0, length);
@@ -100,8 +102,8 @@ public final class ServletUtil {
         if (StringUtil.isEmpty(contentType)) {
             contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
         }
-        response.setHeader("Content-Type", contentType);
-        response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + "\"");
+        response.setHeader(HeaderEnums.CONTENT_TYPE, contentType);
+        response.setHeader(HeaderEnums.CONTENT_DISPOSITION, "attachment;filename=\"" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.name()) + "\"");
         final int length = fileBytes.length;
         response.print(fileBytes, 0, length);
     }

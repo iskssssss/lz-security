@@ -8,6 +8,8 @@ import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.core.model.RequestResult;
 import cn.lz.tool.http.enums.MediaType;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * 登出服务类 默认实现类
  *
@@ -24,7 +26,7 @@ public class LogoutServiceDefault implements LogoutService {
         RequestResult requestResult = new RequestResult();
         requestResult.setCode(RCode.SUCCESS.getCode());
         requestResult.setMessage("注销成功。");
-        ServletUtil.printResponse(response, MediaType.APPLICATION_JSON_VALUE, RCode.SUCCESS);
+        ServletUtil.printResponse(response, MediaType.APPLICATION_JSON_VALUE, requestResult.toJson().getBytes(StandardCharsets.UTF_8));
         return false;
     }
 }

@@ -155,7 +155,7 @@ public class LzFilterManager extends LzCoreManager {
 		BaseRequest<?> request = lzContext.getRequest();
 		BaseResponse<?> response = lzContext.getResponse();
 		IInterfacesFilter interfacesFilter = LzFilterManager.getInterfacesFilter();
-		return interfacesFilter.doFilter(request, response, params);
+		return interfacesFilter.doFilter(request, response, lzContext, params);
 	}
 
 	/**

@@ -3,6 +3,7 @@ package cn.lz.security.arrays;
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.context.LzContext;
 import cn.lz.tool.reflect.model.ControllerMethod;
+import cn.lz.tool.reflect.model.NoneControllerMethod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,8 +63,12 @@ public final class InterfacesMethodMap extends HashMap<String, Map<String, Contr
 	public ControllerMethod getMethodByInterfaceUrl(String url, String method) {
 		Map<String, ControllerMethod> methodMap = this.getMethodByInterfaceUrl(url);
 		if (methodMap == null) {
-			return null;
+			return new NoneControllerMethod();
 		}
-		return methodMap.get(method);
+		ControllerMethod controllerMethod = methodMap.get(method);
+		if (controllerMethod == null) {
+			return new NoneControllerMethod();
+		}
+		return controllerMethod;
 	}
 }

@@ -1,8 +1,7 @@
 package cn.lz.security.filter.config;
 
 import cn.lz.security.filter.LzFilterManager;
-import cn.lz.security.filter.filters.LzInterfaceFilterCore;
-import cn.lz.security.tool.config.BaseSecurityConfigurerAdapter;
+import cn.lz.security.filter.LzInterfaceFilterCore;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 public abstract class SecurityFilterConfigurerAdapter extends BaseSecurityConfigurerAdapter {
 
 	protected FilterRegistrationBean<LzInterfaceFilterCore> registration;
-	private LzInterfaceFilterCore filterContainer;
+	protected LzInterfaceFilterCore filterContainer;
 
 	/**
 	 * 初始化
@@ -32,7 +31,7 @@ public abstract class SecurityFilterConfigurerAdapter extends BaseSecurityConfig
 	 *
 	 * @param urlPatterns 接口列表
 	 */
-	protected final void addUrlPatterns(String... urlPatterns) {
+	protected void addUrlPatterns(String... urlPatterns) {
 		registration.addUrlPatterns(urlPatterns);
 	}
 

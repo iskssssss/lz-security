@@ -2,9 +2,10 @@ package cn.lz.security.filter.config;
 
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.arrays.UrlHashSet;
+import cn.lz.security.defaults.CorsHandlerDefault;
 import cn.lz.security.filter.filters.AbsInterfacesFilterBuilder;
 import cn.lz.security.fun.LzFilterAuthStrategy;
-
+import cn.lz.security.handler.CorsHandler;
 
 /**
  * 过滤配置文件
@@ -24,7 +25,8 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
         if (super.filterBeforeHandler == null) {
             synchronized (FilterConfigurer.class) {
                 if (super.filterBeforeHandler == null) {
-                    super.filterBeforeHandler = params -> { };
+                    super.filterBeforeHandler = params -> {
+                    };
                 }
             }
         }
@@ -40,7 +42,8 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
         if (super.filterAfterHandler == null) {
             synchronized (FilterConfigurer.class) {
                 if (super.filterAfterHandler == null) {
-                    super.filterAfterHandler = params -> { };
+                    super.filterAfterHandler = params -> {
+                    };
                 }
             }
         }
@@ -56,11 +59,28 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
         if (super.interceptHandler == null) {
             synchronized (FilterConfigurer.class) {
                 if (super.interceptHandler == null) {
-                    super.interceptHandler = params -> { };
+                    super.interceptHandler = params -> {
+                    };
                 }
             }
         }
         return super.interceptHandler;
+    }
+
+    /**
+     * 获取跨域信息处理器
+     *
+     * @return 跨域信息处理器
+     */
+    public CorsHandler getCorsHandler() {
+        if (super.corsHandler == null) {
+            synchronized (FilterConfigurer.class) {
+                if (super.corsHandler == null) {
+                    super.corsHandler = new CorsHandlerDefault();
+                }
+            }
+        }
+        return super.corsHandler;
     }
 
     /**
@@ -70,6 +90,15 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
      */
     public Class<? extends AbsInterfacesFilterBuilder> getLogBeforeFilterClass() {
         return super.filterConfig.logBeforeFilterClass;
+    }
+
+    /**
+     * 获取排除的接口列表
+     *
+     * @return 排除的接口列表
+     */
+    public UrlHashSet getExcludeUrls() {
+        return LzCoreManager.getFilterConfig().getExcludeUrlList();
     }
 
     /**
@@ -83,15 +112,6 @@ public final class FilterConfigurer extends FilterConfigurerBuilder<FilterConfig
             filterUrlIncludeUrls.add("/**");
         }
         return filterUrlIncludeUrls;
-    }
-
-    /**
-     * 获取排除的接口列表
-     *
-     * @return 排除的接口列表
-     */
-    public UrlHashSet getExcludeUrls() {
-        return LzCoreManager.getFilterConfig().getExcludeUrlList();
     }
 
 }

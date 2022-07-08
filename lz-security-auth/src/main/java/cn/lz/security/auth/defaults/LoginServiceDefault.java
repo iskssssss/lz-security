@@ -35,6 +35,9 @@ public class LoginServiceDefault implements LoginService {
             throw new ParamsException();
         }
         final Map loginData = JsonUtil.parseObject(bodyData, Map.class);
+        if (loginData == null) {
+            throw new ParamsException();
+        }
         Object identifierValue = null;
         try {
             identifierValue = loginData.get(LzAuthManager.getAuthConfigurer().getIdentifierKey());
@@ -45,11 +48,12 @@ public class LoginServiceDefault implements LoginService {
             // 验证验证码
             final CaptchaHandler captchaHandler = LzAuthManager.getCaptchaHandler();
             if (captchaHandler != null) {
+                final Object keyValue = loginData.get(LzAuthManager.getAuthConfigurer().getKeyKey());
                 final Object codeValue = loginData.get(LzAuthManager.getAuthConfigurer().getCodeKey());
                 if (StringUtil.isEmpty(codeValue)) {
                     throw new ParamsException();
                 }
-                captchaHandler.handler(codeValue);
+                captchaHandler.check(keyValue, codeValue);
             }
             // 获取用户信息
             final UserDetailsService userDetailsService = LzAuthManager.getUserDetailsService();
@@ -61,7 +65,9 @@ public class LoginServiceDefault implements LoginService {
             }
             // 验证账号信息
             final AccessStatusHandler accessStatusHandler = LzAuthManager.getAccessStatusHandler();
-            accessStatusHandler.verification(authDetails);
+            if (accessStatusHandler != null) {
+                accessStatusHandler.verification(authDetails);
+            }
             // 验证成功
             final AuthSuccessHandler authSuccessHandler = LzAuthManager.getLoginSuccessHandler();
             authSuccessHandler.success(swRequest, swResponse, authDetails);

@@ -47,6 +47,9 @@ public class ControllerMethod {
 	}
 
 	public <T extends Annotation> T getMethodAnnotation(Class<T> annotationClass) {
+		if (this.method == null) {
+			return null;
+		}
 		return this.method.getAnnotation(annotationClass);
 	}
 
@@ -55,6 +58,9 @@ public class ControllerMethod {
 	}
 
 	public <T extends Annotation> T getControllerAnnotation(Class<T> annotationClass) {
+		if (this.controllerClass == null) {
+			return null;
+		}
 		return this.controllerClass.getAnnotation(annotationClass);
 	}
 

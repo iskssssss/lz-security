@@ -12,6 +12,7 @@ import cn.lz.security.log.LzLogger;
 import cn.lz.security.log.LzLoggerUtil;
 import cn.lz.security.utils.ServletUtil;
 import cn.lz.security.LzConstant;
+import cn.lz.tool.core.enums.ICode;
 import cn.lz.tool.core.enums.RCode;
 import cn.lz.tool.http.enums.MediaType;
 
@@ -57,9 +58,10 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 	 * @throws SecurityException 过滤错误
 	 */
 	protected final boolean next(Object... params) throws SecurityException {
-		final BaseRequest<?> request = LzCoreManager.getLzContext().getRequest();
-		final BaseResponse<?> response = LzCoreManager.getLzContext().getResponse();
-		return nextFilter.doFilter(request, response, params);
+		LzContext<?, ?> lzContext = LzCoreManager.getLzContext();
+		final BaseRequest<?> request = lzContext.getRequest();
+		final BaseResponse<?> response = lzContext.getResponse();
+		return this.next(request, response, lzContext, params);
 	}
 
 	/**
@@ -71,37 +73,37 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 	 * @return 过滤结果
 	 * @throws SecurityException 过滤错误
 	 */
-	protected final boolean next(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
+	protected final boolean next(BaseRequest<?> request, BaseResponse<?> response, LzContext<?, ?> context, Object... params) throws SecurityException {
 		if (null == nextFilter) {
 			return yes(request);
 		}
 		// 日志处理
 		final BaseFilterLogHandler filterLogHandler = LzFilterManager.getFilterLogHandler();
 		if (filterLogHandler == null) {
-			return nextFilter.doFilter(request, response, params);
+			return nextFilter.doFilter(request, response, context, params);
 		}
 		final Class<? extends IInterfacesFilter> nextFilterClass = nextFilter.getClass();
 		final LogBeforeFilter logBeforeFilter = nextFilterClass.getAnnotation(LogBeforeFilter.class);
 		Class<? extends AbsInterfacesFilterBuilder> logBeforeFilterClass = LzFilterManager.getFilterConfigurer().getLogBeforeFilterClass();
 		// 两者都为null不记录日志。
 		if (logBeforeFilter == null && logBeforeFilterClass == null) {
-			return nextFilter.doFilter(request, response, params);
+			return nextFilter.doFilter(request, response, context, params);
 		}
 		if (logBeforeFilterClass != null) {
 			// 如{logBeforeFilter}注解的类不是{logBeforeFilterClass}类则不记录日志。
 			if (logBeforeFilter != null && !nextFilterClass.isAssignableFrom(logBeforeFilterClass)) {
-				return nextFilter.doFilter(request, response, params);
+				return nextFilter.doFilter(request, response, context, params);
 			}
 			// 如下一过滤器类不是{logBeforeFilterClass}类则不记录日志。
 			if (!nextFilterClass.isAssignableFrom(logBeforeFilterClass)) {
-				return nextFilter.doFilter(request, response, params);
+				return nextFilter.doFilter(request, response, context, params);
 			}
 		}
 		final Object logEntity = filterLogHandler.before(request, response);
 		// 暂缓
 		request.setAttribute(LzConstant.LOG_SWITCH, true);
 		request.setAttribute(LzConstant.LOG_ENTITY_CACHE_KEY, logEntity);
-		return nextFilter.doFilter(request, response, params);
+		return nextFilter.doFilter(request, response, context, params);
 	}
 
 	/**
@@ -120,7 +122,7 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 	 * @return
 	 * @throws IOException
 	 */
-	protected final boolean no(RCode rCode) throws SecurityException {
+	protected final boolean no(ICode rCode) throws SecurityException {
 		return no(LzCoreManager.getLzContext().getRequest(), LzCoreManager.getLzContext().getResponse(), rCode);
 	}
 
@@ -133,7 +135,9 @@ public abstract class AbsInterfacesFilterBuilder implements IInterfacesFilter {
 	 * @return
 	 * @throws IOException
 	 */
-	protected final boolean no(BaseRequest<?> request, BaseResponse<?> response, RCode rCode) throws SecurityException {
+	protected final boolean no(BaseRequest<?> request, BaseResponse<?> response, ICode rCode) throws SecurityException {
+		// 跨域处理
+		LzFilterManager.getFilterConfigurer().getCorsHandler().handler(request, response, false);
 		ServletUtil.printResponse(response, MediaType.APPLICATION_JSON_VALUE, rCode);
 		lzLogger.error("拦截接口：" + request.getRequestPath());
 		lzLogger.error("拦截信息：" + rCode.getMessage());

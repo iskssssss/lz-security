@@ -1,6 +1,9 @@
 package cn.lz.security.auth;
 
+import cn.lz.security.auth.config.AuthConfig;
 import cn.lz.security.auth.config.AuthConfigurer;
+import cn.lz.security.auth.config.LoginConfig;
+import cn.lz.security.auth.config.LogoutConfig;
 import cn.lz.security.auth.defaults.*;
 import cn.lz.security.auth.login.AccessStatusHandler;
 import cn.lz.security.auth.login.LoginService;
@@ -13,6 +16,7 @@ import cn.lz.security.auth.logout.LogoutService;
 import cn.lz.security.auth.logout.LogoutServiceDefault;
 import cn.lz.security.auth.service.CredentialEncoder;
 import cn.lz.security.auth.service.UserDetailsService;
+import cn.lz.security.filter.LzFilterManager;
 
 /**
  * TODO
@@ -21,7 +25,67 @@ import cn.lz.security.auth.service.UserDetailsService;
  * @version 版权 Copyright(c)2021 LZ
  * @date 2021/11/02 14:49
  */
-public class LzAuthManager {
+public class LzAuthManager extends LzFilterManager {
+
+	protected static AuthConfig authConfig = null;
+
+	/**
+	 * 设置认证配置文件
+	 *
+	 * @param authConfig 认证配置文件
+	 */
+	public static void setAuthConfig(AuthConfig authConfig) {
+		LzAuthManager.authConfig = authConfig;
+	}
+
+	/**
+	 * 获取认证配置文件
+	 *
+	 * @return 认证配置文件
+	 */
+	public static AuthConfig getAuthConfig() {
+		return authConfig;
+	}
+
+	protected static LogoutConfig logoutConfig = null;
+
+	/**
+	 * 设置登出配置文件
+	 *
+	 * @param logoutConfig 登出配置文件
+	 */
+	public static void setLogoutConfig(LogoutConfig logoutConfig) {
+		LzAuthManager.logoutConfig = logoutConfig;
+	}
+
+	/**
+	 * 获取登出配置文件
+	 *
+	 * @return 登出配置文件
+	 */
+	public static LogoutConfig getLogoutConfig() {
+		return logoutConfig;
+	}
+
+	protected static LoginConfig loginConfig = null;
+
+	/**
+	 * 设置登录配置文件
+	 *
+	 * @param loginConfig 登录配置文件
+	 */
+	public static void setLoginConfig(LoginConfig loginConfig) {
+		LzAuthManager.loginConfig = loginConfig;
+	}
+
+	/**
+	 * 获取登录配置文件
+	 *
+	 * @return 登录配置文件
+	 */
+	public static LoginConfig getLoginConfig() {
+		return loginConfig;
+	}
 
 	//====================================================================================================================================
 

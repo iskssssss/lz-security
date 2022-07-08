@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.lz.security.auth.spring.AuthBeanInject
+cn.lz.security.auth.spring.AuthBeanInject,\
+cn.lz.security.auth.spring.AuthBeanRegister

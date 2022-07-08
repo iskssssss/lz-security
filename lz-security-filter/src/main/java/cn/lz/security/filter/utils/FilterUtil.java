@@ -2,6 +2,7 @@ package cn.lz.security.filter.utils;
 
 import cn.lz.security.annotation.LogBeforeFilter;
 import cn.lz.security.arrays.UrlHashSet;
+import cn.lz.security.context.LzContext;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.exception.auth.AccountNotExistException;
@@ -203,7 +204,7 @@ public class FilterUtil {
 		}
 
 		@Override
-		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
+		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, LzContext<?, ?> context, Object... params) throws SecurityException {
 			LzLoggerUtil.info(AccessTokenFilter.class, "AccessTokenFilter-filter");
 			try {
 				AccessTokenUtil.getAuthDetails();
@@ -215,7 +216,7 @@ public class FilterUtil {
 			if (end) {
 				return yes();
 			}
-			return next(request, response, params);
+			return next(request, response, context, params);
 		}
 
 		@Override
@@ -239,7 +240,7 @@ public class FilterUtil {
 		}
 
 		@Override
-		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
+		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, LzContext<?, ?> context, Object... params) throws SecurityException {
 			LzLoggerUtil.info(IpFilter.class, "IpFilter-filter");
 			final List<String> ipList = ipListGetFun.run(params);
 			if (ipList == null || ipList.isEmpty()) {
@@ -263,7 +264,7 @@ public class FilterUtil {
 				if (end) {
 					return yes();
 				}
-				return next(request, response, params);
+				return next(request, response, context, params);
 			}
 			return no(RCode.NOT_WHITE_IP);
 		}
@@ -289,7 +290,7 @@ public class FilterUtil {
 		}
 
 		@Override
-		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException {
+		public boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, LzContext<?, ?> context, Object... params) throws SecurityException {
 			LzLoggerUtil.info(RequestInterfaceFilter.class, "RequestInterfaceFilter-filter");
 			final UrlHashSet interfaceList = interfaceListGetFun.run(params);
 			if (interfaceList == null || interfaceList.isEmpty()) {
@@ -304,7 +305,7 @@ public class FilterUtil {
 				if (end) {
 					return yes();
 				}
-				return next(request, response, params);
+				return next(request, response, context, params);
 			}
 			return no(RCode.NOT_ACCESS_INTERFACE);
 		}

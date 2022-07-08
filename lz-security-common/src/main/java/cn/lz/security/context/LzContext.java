@@ -3,6 +3,7 @@ package cn.lz.security.context;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.context.model.Storage;
+import cn.lz.tool.reflect.ReflectUtil;
 
 /**
  * 上下文
@@ -18,21 +19,27 @@ public interface LzContext<RequestType, ResponseType> {
 	 *
 	 * @return BaseRequest
 	 */
-	BaseRequest<RequestType> getRequest();
+	default BaseRequest<RequestType> getRequest() {
+		return (BaseRequest<RequestType>) LzSecurityContextThreadLocal.getRequest();
+	}
 
 	/**
 	 * 获取 BaseResponse
 	 *
 	 * @return BaseResponse
 	 */
-	BaseResponse<ResponseType> getResponse();
+	default BaseResponse<ResponseType> getResponse() {
+		return (BaseResponse<ResponseType>) LzSecurityContextThreadLocal.getResponse();
+	}
 
 	/**
 	 * 获取 LzStorage
 	 *
 	 * @return LzStorage
 	 */
-	Storage<RequestType> getStorage();
+	default Storage<RequestType> getStorage() {
+		return (Storage<RequestType>) LzSecurityContextThreadLocal.getLzStorage();
+	}
 
 	/**
 	 * 路径匹配
@@ -42,4 +49,15 @@ public interface LzContext<RequestType, ResponseType> {
 	 * @return
 	 */
 	boolean matchUrl(String pattern, String path);
+
+	/**
+	 * 创建对象
+	 *
+	 * @param tClass 创建对象类
+	 * @param <T>    创建对象类型
+	 * @return 创建对象
+	 */
+	default <T> T createBean(Class<T> tClass) {
+		return ReflectUtil.newInstance(tClass);
+	}
 }

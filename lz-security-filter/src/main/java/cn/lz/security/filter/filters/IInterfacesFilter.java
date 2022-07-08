@@ -1,5 +1,6 @@
 package cn.lz.security.filter.filters;
 
+import cn.lz.security.context.LzContext;
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.exception.base.SecurityException;
@@ -23,11 +24,12 @@ public interface IInterfacesFilter {
      *
      * @param request  请求流
      * @param response 响应流
+     * @param context  上下文
      * @param params   过滤参数
      * @return 过滤结果
      * @throws SecurityException 过滤错误
      */
-    boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, Object... params) throws SecurityException;
+    boolean doFilter(BaseRequest<?> request, BaseResponse<?> response, LzContext<?, ?> context, Object... params) throws SecurityException;
 
     /**
      * 销毁
