@@ -93,7 +93,7 @@ public class WorldTableDataReader<T> extends AbsDataReader<T> {
         @Override
         public boolean hasNext() {
             if (this.isNextTable) {
-                if ((tableIndex + 1) >= tableList.size()) {
+                if (tableIndex >= tableList.size()) {
                     return false;
                 }
                 XWPFTable table = tableList.get(tableIndex++);
