@@ -3,7 +3,9 @@ package cn.lz.tool.reflect;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +17,23 @@ import java.util.Set;
  * @Date: 2021/10/21 14:22
  */
 public class ReflectUtil {
+
+	public static Set<Method> getDeclaredMethods(Class<?> aClass) {
+		return getDeclaredMethods(new HashSet<>(), aClass);
+	}
+
+	public static Set<Method> getDeclaredMethods(Set<Method> methodSet, Class<?> aClass) {
+		if (aClass == null) {
+			return methodSet;
+		}
+		Method[] declaredMethods = aClass.getDeclaredMethods();
+		methodSet.addAll(Arrays.asList(declaredMethods));
+		return getDeclaredMethods(methodSet, aClass.getSuperclass());
+	}
+
+	public static Set<Field> getDeclaredFields(Class<?> tClass) {
+		return getDeclaredFields(new HashSet<>(), tClass);
+	}
 
 	public static Set<Field> getDeclaredFields(Set<Field> fieldList, Class<?> tClass) {
 		if (tClass == null) {

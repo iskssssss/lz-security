@@ -19,4 +19,15 @@ public class CacheUtil {
 		return new CacheManager<>();
 	}
 
+	/**
+	 * 创建缓存管理器
+	 *
+	 * @param <K> 键类型
+	 * @param <V> 值类型
+	 * @return 缓存管理器
+	 */
+	public static <K, V> CacheManager<K, V> newCacheManager(long timeout) {
+		return new CacheManager<>(timeout);
+	}
+
 }
