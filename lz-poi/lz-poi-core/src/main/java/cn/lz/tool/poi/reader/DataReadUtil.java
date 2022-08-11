@@ -1,6 +1,8 @@
 package cn.lz.tool.poi.reader;
 
 import cn.hutool.core.io.FileUtil;
+import cn.lz.tool.fun.SBiConsumer;
+import cn.lz.tool.poi.exception.DataImportException;
 import cn.lz.tool.poi.reader.abs.AbsDataReader;
 import cn.lz.tool.poi.reader.abs.AbsRowHandler;
 import cn.lz.tool.poi.reader.reader.excel.ExcelDataReader;
@@ -21,29 +23,61 @@ public final class DataReadUtil {
     public final static String PREFIX = "DATA_READER_FILE_";
 
     /**
-     * [World] 读取信息
+     * [World] 同步读取信息
      *
      * @param file       文件
      * @param rowHandler 行处理器
      * @param <T>        类型
      * @return 数据读取器
-     * @throws IOException 异常
+     * @throws DataImportException 异常
      */
-    public static <T> AbsDataReader<T> worldRead(File file, AbsRowHandler<T> rowHandler) throws IOException {
-        return readTable(file.getName(), FileUtil.getInputStream(file), rowHandler, false);
+    public static <T> AbsDataReader<T> worldReadSync(File file, AbsRowHandler<T> rowHandler) throws DataImportException {
+        return readTable(file.getName(), FileUtil.getInputStream(file), rowHandler, false).sync();
     }
 
     /**
-     * [Excel] 读取信息
+     * [World] 异步读取信息
+     *
+     * @param file       文件
+     * @param rowHandler 行处理器
+     * @param callback   回调函数
+     * @param <T>        类型
+     * @return 数据读取器
+     * @throws DataImportException 异常
+     */
+    public static <T> AbsDataReader<T> worldReadAsync(File file, AbsRowHandler<T> rowHandler, SBiConsumer<AbsDataReader<T>, DataImportException> callback) throws DataImportException {
+        AbsDataReader<T> dataReader = readTable(file.getName(), FileUtil.getInputStream(file), rowHandler, false);
+        dataReader.setCallback(callback);
+        return dataReader;
+    }
+
+    /**
+     * [Excel] 同步读取信息
      *
      * @param file       文件
      * @param rowHandler 行处理器
      * @param <T>        类型
      * @return 数据读取器
-     * @throws IOException 异常
+     * @throws DataImportException 异常
      */
-    public static <T> AbsDataReader<T> excelRead(File file, AbsRowHandler<T> rowHandler) throws IOException {
-        return readTable(file.getName(), FileUtil.getInputStream(file), rowHandler, true);
+    public static <T> AbsDataReader<T> excelReadSync(File file, AbsRowHandler<T> rowHandler) throws DataImportException {
+        return readTable(file.getName(), FileUtil.getInputStream(file), rowHandler, true).sync();
+    }
+
+    /**
+     * [Excel] 异步读取信息
+     *
+     * @param file       文件
+     * @param rowHandler 行处理器
+     * @param callback   回调函数
+     * @param <T>        类型
+     * @return 数据读取器
+     * @throws DataImportException 异常
+     */
+    public static <T> AbsDataReader<T> excelReadAsync(File file, AbsRowHandler<T> rowHandler, SBiConsumer<AbsDataReader<T>, DataImportException> callback) throws DataImportException {
+        AbsDataReader<T> dataReader = readTable(file.getName(), FileUtil.getInputStream(file), rowHandler, true);
+        dataReader.setCallback(callback);
+        return dataReader;
     }
 
     /**
@@ -57,13 +91,18 @@ public final class DataReadUtil {
      * @return 数据读取器
      * @throws IOException 异常
      */
-    public static <T> AbsDataReader<T> readTable(String fileName, InputStream fileInputStream, AbsRowHandler<T> rowHandler, boolean excel) throws IOException {
+    public static <T> AbsDataReader<T> readTable(String fileName, InputStream fileInputStream, AbsRowHandler<T> rowHandler, boolean excel) throws DataImportException {
         String suffix = FileUtil.getSuffix(fileName);
         File importExcelTemp = FileUtil.createTempFile(DataReadUtil.PREFIX, "." + suffix, null, true);
         FileUtil.writeFromStream(fileInputStream, importExcelTemp, false);
-        if (excel) {
-            return new ExcelDataReader<>(importExcelTemp, rowHandler).read();
+        try {
+            if (excel) {
+                return new ExcelDataReader<>(importExcelTemp, rowHandler).read();
+            }
+            return new WorldTableDataReader<>(importExcelTemp, rowHandler).read();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+            throw new DataImportException("读取异常。", ioException);
         }
-        return new WorldTableDataReader<>(importExcelTemp, rowHandler).read();
     }
 }

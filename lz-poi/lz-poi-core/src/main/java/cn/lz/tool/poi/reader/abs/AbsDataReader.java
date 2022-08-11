@@ -1,16 +1,21 @@
 package cn.lz.tool.poi.reader.abs;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.lz.tool.poi.reader.handler.ImportInfo;
+import cn.lz.tool.fun.SBiConsumer;
+import cn.lz.tool.poi.exception.DataImportException;
 import cn.lz.tool.poi.model.ReadCellInfo;
+import cn.lz.tool.poi.reader.model.ImportInfo;
 import cn.lz.tool.poi.reader.model.ReadData;
 
 import java.io.Closeable;
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * 抽象数据读取器
@@ -20,12 +25,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @date 2022/8/4 17:24
  */
 public abstract class AbsDataReader<T> extends ImportInfo<T> implements Runnable {
-    private final AtomicBoolean read = new AtomicBoolean(false);
-    private final CountDownLatch dataReadLatch = new CountDownLatch(1);
-    protected final AbsRowHandler<T> rowHandler;
+    private transient final AtomicBoolean read = new AtomicBoolean(false);
+    private transient final CountDownLatch dataReadLatch = new CountDownLatch(1);
+    private transient DataImportException dataImportException;
+    protected transient final AbsRowHandler<T> rowHandler;
+    protected transient boolean isAsync = true;
+    private transient SBiConsumer<AbsDataReader<T>, DataImportException> callback;
 
     protected AbsDataReader(File importFile, AbsRowHandler<T> rowHandler) {
-        super(importFile);
+        super(IdUtil.fastSimpleUUID() + System.currentTimeMillis(), importFile);
         this.rowHandler = rowHandler;
         ImportInfo.IMPORT_FILE_MAP.put(fileId, this.importFile);
         rowHandler.init(this);
@@ -41,7 +49,15 @@ public abstract class AbsDataReader<T> extends ImportInfo<T> implements Runnable
     /**
      * 写入异常信息
      */
-    public abstract void writeErrorInfo();
+    protected abstract void _writeErrorInfo();
+
+    /**
+     * 写入异常信息
+     */
+    public final void writeErrorInfo() {
+        // 判断
+        this._writeErrorInfo();
+    }
 
     /**
      * 读取数据
@@ -59,13 +75,45 @@ public abstract class AbsDataReader<T> extends ImportInfo<T> implements Runnable
 
     @Override
     public final void run() {
-        Iterator<ReadData> readIterator = this.readIterator();
-        while (readIterator.hasNext()) {
-            ReadData readData = readIterator.next();
-            T t = rowHandler._to(readData.getTableIndex(), readData.getY(), readData.getDataList());
-            super.addResult(t);
+        try {
+            Iterator<ReadData> readIterator = this.readIterator();
+            while (readIterator.hasNext()) {
+                ReadData readData = readIterator.next();
+                String tableIndex = readData.getTableIndex();
+                int y = readData.getY();
+                List<ReadCellInfo> dataList = readData.getDataList();
+                AbsRowHandler.ToResult<T> toResult = rowHandler._to(tableIndex, y, dataList);
+                T result = toResult.getResult();
+                if (toResult.isError()) {
+                    super.addError(result);
+                    toResult.copy(super.errorInfoList);
+                    continue;
+                }
+                super.addSuccess(result);
+            }
+        } catch (Exception e) {
+            this.dataImportException = new DataImportException(e);
+        } finally {
+            super.setEndTimeMillis(System.currentTimeMillis());
+            dataReadLatch.countDown();
+            if (this.isAsync && this.callback != null) {
+                this.callback.accept(this, this.dataImportException);
+                this.isAsync = false;
+                this.close();
+            }
         }
-        dataReadLatch.countDown();
+    }
+
+    @Override
+    public void close() {
+        if (this.isAsync) {
+            return;
+        }
+        super.close();
+        if (super.error) {
+            return;
+        }
+        this.del();
     }
 
     /**
@@ -91,14 +139,32 @@ public abstract class AbsDataReader<T> extends ImportInfo<T> implements Runnable
     }
 
     /**
-     * 堵塞当前线程直至数据读取结束
+     * 同步读取
      *
      * @return this
-     * @throws InterruptedException 异常
+     * @throws DataImportException 异常
      */
-    public final AbsDataReader<T> await() throws InterruptedException {
-        dataReadLatch.await();
+    public final AbsDataReader<T> sync() throws DataImportException {
+        try {
+            this.isAsync = true;
+            dataReadLatch.await();
+        } catch (InterruptedException e) {
+            this.dataImportException = new DataImportException(e);
+        }
+        if (this.dataImportException != null) {
+            throw this.dataImportException;
+        }
         return this;
+    }
+
+
+    /**
+     * 设置在异步读取下的回调函数
+     *
+     * @param callback 回调函数
+     */
+    public void setCallback(SBiConsumer<AbsDataReader<T>, DataImportException> callback) {
+        this.callback = callback;
     }
 
     /**
@@ -136,7 +202,10 @@ public abstract class AbsDataReader<T> extends ImportInfo<T> implements Runnable
         }
         for (ReadCellInfo readCellInfo : dataList) {
             Object value = readCellInfo.getValue();
-            if (StrUtil.isNotEmpty(StrUtil.toString(value).replaceAll(" ", ""))) {
+            if (value instanceof Collection) {
+                value = ((Collection<?>) value).stream().map(StrUtil::toString).filter(StrUtil::isNotBlank).collect(Collectors.joining());
+            }
+            if (StrUtil.isNotBlank(StrUtil.toString(value).replaceAll(" ", ""))) {
                 return false;
             }
         }

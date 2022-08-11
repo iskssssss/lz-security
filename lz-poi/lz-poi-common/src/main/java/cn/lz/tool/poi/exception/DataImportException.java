@@ -8,7 +8,16 @@ package cn.lz.tool.poi.exception;
  * @date 2022/8/7 17:46
  */
 public class DataImportException extends Exception {
+
     public DataImportException(String message) {
         super(message);
+    }
+
+    public DataImportException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DataImportException(Throwable cause) {
+        super(cause);
     }
 }

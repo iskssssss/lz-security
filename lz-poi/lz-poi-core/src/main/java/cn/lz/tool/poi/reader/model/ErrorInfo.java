@@ -56,4 +56,16 @@ public abstract class ErrorInfo {
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "ErrorInfo{" +
+                "tableIndex='" + tableIndex + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", title='" + title + '\'' +
+                ", value=" + value +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

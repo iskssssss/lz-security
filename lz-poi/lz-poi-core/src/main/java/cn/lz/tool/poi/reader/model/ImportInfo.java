@@ -1,20 +1,13 @@
-package cn.lz.tool.poi.reader.handler;
+package cn.lz.tool.poi.reader.model;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.lz.tool.cache.CacheManager;
 import cn.lz.tool.cache.utils.CacheUtil;
+import cn.lz.tool.io.FileUtil;
 import cn.lz.tool.poi.convert.ValueConvert;
-import cn.lz.tool.poi.reader.model.CellInfo;
-import cn.lz.tool.poi.reader.model.ErrorInfo;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,72 +19,37 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 版权 Copyright(c)2022 LZJ
  * @date 2022/8/7 12:15
  */
-public abstract class ImportInfo<T> implements Closeable, Serializable {
-    private static final long serialVersionUID = 42L;
+public abstract class ImportInfo<T> extends ImportResultModel<T> implements Closeable {
 
-    /**
-     * 文件ID
-     */
-    protected final String fileId;
     /**
      * 导入文件
      */
-    protected final File importFile;
+    protected transient final File importFile;
+    /**
+     * 导入文件-输入流
+     */
+    protected transient final InputStream fileInputStream;
     /**
      * 数据处理器
      */
-    protected final Map<String, ValueConvert<Object>> valueConvertMap = new ConcurrentHashMap<>(16);
+    protected transient final Map<String, ValueConvert<Object>> valueConvertMap = new ConcurrentHashMap<>(16);
     /**
      * 标题 : 下标
      */
-    protected final Map<Integer, String> titleIndexMap = new ConcurrentHashMap<>();
+    protected transient final Map<Integer, String> titleIndexMap = new ConcurrentHashMap<>();
     /**
      * 标题 : 单元格信息
      */
-    protected final Map<String, List<CellInfo>> titleCellInfoMap = new ConcurrentHashMap<>();
+    protected transient final Map<String, List<CellInfo>> titleCellInfoMap = new ConcurrentHashMap<>();
     /**
      * 实体类标题信息
      */
-    protected final List<String> modelTitleInfoList = new ArrayList<>();
-    /**
-     * 处理结果
-     */
-    protected final List<T> resultList = new LinkedList<>();
-    /**
-     * 错误数据
-     */
-    protected final List<ErrorInfo> errorInfoList = new LinkedList<>();
+    protected transient final List<String> modelTitleInfoList = new ArrayList<>();
 
-    protected ImportInfo(File importFile) {
-        this.fileId = IdUtil.fastSimpleUUID() + System.currentTimeMillis();
+    protected ImportInfo(String fileId, File importFile) {
+        super(fileId);
         this.importFile = importFile;
-    }
-
-    /**
-     * 添加结果
-     *
-     * @param t 转换结果
-     */
-    public final void addResult(T t) {
-        this.resultList.add(t);
-    }
-
-    /**
-     * 添加错误信息
-     *
-     * @param errorInfo 错误信息
-     */
-    public final void addErrorInfoList(ErrorInfo errorInfo) {
-        this.errorInfoList.add(errorInfo);
-    }
-
-    /**
-     * 是否再导入时发生错误
-     *
-     * @return 是否再导入时发生错误
-     */
-    public final boolean isError() {
-        return !this.errorInfoList.isEmpty();
+        this.fileInputStream = FileUtil.getInputStream(importFile);
     }
 
     /**
@@ -142,33 +100,6 @@ public abstract class ImportInfo<T> implements Closeable, Serializable {
     }
 
     /**
-     * 获取结果集
-     *
-     * @return 结果集
-     */
-    public final List<T> getResultList() {
-        return resultList;
-    }
-
-    /**
-     * 获取导入异常信息
-     *
-     * @return 导入异常信息
-     */
-    public final List<ErrorInfo> getErrorInfoList() {
-        return errorInfoList;
-    }
-
-    /**
-     * 文件id
-     *
-     * @return 文件id
-     */
-    public final String getFileId() {
-        return fileId;
-    }
-
-    /**
      * 获取导入文件
      *
      * @return 导入文件
@@ -178,15 +109,17 @@ public abstract class ImportInfo<T> implements Closeable, Serializable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.titleIndexMap.clear();
         this.titleCellInfoMap.values().parallelStream().forEach(List::clear);
         this.titleCellInfoMap.clear();
         this.modelTitleInfoList.clear();
-        this.resultList.clear();
-        this.errorInfoList.clear();
         this.valueConvertMap.values().parallelStream().forEach(ValueConvert::clear);
         this.valueConvertMap.clear();
+        try {
+            this.fileInputStream.close();
+        } catch (IOException ignored) {
+        }
     }
 
     /**

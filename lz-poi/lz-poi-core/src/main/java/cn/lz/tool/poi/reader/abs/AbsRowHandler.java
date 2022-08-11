@@ -2,15 +2,13 @@ package cn.lz.tool.poi.reader.abs;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.lz.tool.poi.anno.ImportItem;
-import cn.lz.tool.poi.reader.handler.ImportInfo;
+import cn.lz.tool.poi.reader.model.ImportInfo;
 import cn.lz.tool.poi.reader.model.CellInfo;
 import cn.lz.tool.poi.reader.model.ErrorInfo;
 import cn.lz.tool.poi.model.ReadCellInfo;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -22,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbsRowHandler<T> {
     private final AtomicBoolean init = new AtomicBoolean(false);
-    private ImportInfo<T> importInfo;
     private Map<Integer, String> titleIndexMap;
     private Map<String, List<CellInfo>> titleCellInfoMap;
 
@@ -34,7 +31,6 @@ public abstract class AbsRowHandler<T> {
             return;
         }
         init.set(true);
-        this.importInfo = importInfo;
         List<String> modelTitleInfoList = importInfo.getModelTitleInfoList();
         this.titleCellInfoMap = importInfo.getTitleCellInfoMap();
         this.titleIndexMap = importInfo.getTitleIndexMap();
@@ -61,7 +57,7 @@ public abstract class AbsRowHandler<T> {
      */
     protected abstract Class<T> importModelClass();
 
-    protected final T _to(String tableIndex, int rowIndex, List<ReadCellInfo> dataList, Object... otherParams) {
+    protected final ToResult<T> _to(String tableIndex, int rowIndex, List<ReadCellInfo> dataList, Object... otherParams) {
         if (!init.get()) {
             throw new IllegalArgumentException("未初始化");
         }
@@ -76,8 +72,9 @@ public abstract class AbsRowHandler<T> {
      * @param otherParams 其它参数
      * @return 处理结果
      */
-    protected T to(String tableIndex, int rowIndex, List<ReadCellInfo> dataList, Object... otherParams) {
+    protected ToResult<T> to(String tableIndex, int rowIndex, List<ReadCellInfo> dataList, Object... otherParams) {
         T t = ReflectUtil.newInstance(this.importModelClass());
+        List<ErrorInfo> errorInfoList = new LinkedList<>();
         for (int i = 0; i < dataList.size(); i++) {
             ReadCellInfo readCellInfo = dataList.get(i);
             String title = this.titleIndexMap.get(i);
@@ -87,9 +84,40 @@ public abstract class AbsRowHandler<T> {
                 if (errorInfo == null) {
                     continue;
                 }
-                importInfo.addErrorInfoList(errorInfo);
+                errorInfoList.add(errorInfo);
             }
         }
-        return t;
+        return new ToResult<>(t, errorInfoList);
+    }
+
+    static class ToResult<T> {
+        private final T result;
+        private final List<ErrorInfo> errorInfoList;
+
+        public ToResult(T result) {
+            this(result, Collections.emptyList());
+        }
+
+        public ToResult(T result, List<ErrorInfo> errorInfoList) {
+            this.result = result;
+            this.errorInfoList = errorInfoList;
+        }
+
+        public T getResult() {
+            return result;
+        }
+
+        public List<ErrorInfo> getErrorInfoList() {
+            return errorInfoList;
+        }
+
+        public boolean isError() {
+            return !errorInfoList.isEmpty();
+        }
+
+        public void copy(List<ErrorInfo> errorInfoList) {
+            errorInfoList.addAll(this.errorInfoList);
+            this.errorInfoList.clear();
+        }
     }
 }

@@ -1,32 +1,31 @@
 package cn.lz.tool.poi.reader.reader.excel;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.ExcelReader;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
+import cn.hutool.poi.excel.cell.CellUtil;
+import cn.lz.tool.poi.model.ReadCellInfo;
 import cn.lz.tool.poi.reader.abs.AbsDataReader;
 import cn.lz.tool.poi.reader.abs.AbsRowHandler;
-import cn.lz.tool.poi.reader.handler.ImportInfo;
 import cn.lz.tool.poi.reader.model.ErrorInfo;
-import cn.lz.tool.poi.model.ReadCellInfo;
+import cn.lz.tool.poi.reader.model.ImportInfo;
 import cn.lz.tool.poi.reader.model.ReadData;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 表格文件内容读取器
@@ -36,12 +35,12 @@ import java.util.Map;
  * @date 2022/8/4 17:26
  */
 public class ExcelDataReader<T> extends AbsDataReader<T> {
-    private final ExcelReader excelReader;
+    private final Workbook workbook;
     private ExcelIterator excelIterator;
 
-    public ExcelDataReader(File importExcelTemp, AbsRowHandler<T> rowHandler) {
+    public ExcelDataReader(File importExcelTemp, AbsRowHandler<T> rowHandler) throws IOException {
         super(importExcelTemp, rowHandler);
-        this.excelReader = ExcelUtil.getReader(importExcelTemp);
+        this.workbook = WorkbookFactory.create(super.fileInputStream, null);
     }
 
     @Override
@@ -49,119 +48,227 @@ public class ExcelDataReader<T> extends AbsDataReader<T> {
         if (this.excelIterator == null)
             synchronized (ExcelDataReader.class) {
                 if (this.excelIterator == null) {
-                    this.excelIterator = new ExcelIterator(this, this.excelReader);
+                    this.excelIterator = new ExcelIterator(this, this.workbook);
                 }
             }
         return this.excelIterator;
     }
 
     @Override
-    public void writeErrorInfo() {
-        try (ExcelWriter writer = ExcelUtil.getWriter(importFile)) {
+    public void _writeErrorInfo() {
+        if (errorInfoList == null || errorInfoList.isEmpty()) {
+            return;
+        }
+        try (BufferedOutputStream outputStream = FileUtil.getOutputStream(super.importFile)) {
+            CellStyle cellStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setColor(Font.COLOR_RED);
+            font.setBold(true);
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            cellStyle.setFont(font);
             for (ErrorInfo errorInfo : errorInfoList) {
-                int xIndex = errorInfo.getX();
-                int yIndex = errorInfo.getY();
-                writer.writeCellValue(xIndex, yIndex, errorInfo.getVal());
+                String tableIndexStr = errorInfo.getTableIndex();
+                if (!NumberUtil.isNumber(tableIndexStr)) {
+                    continue;
+                }
+                int tableIndex = Integer.parseInt(tableIndexStr);
+                Sheet sheet = workbook.getSheetAt(tableIndex);
+                Row sheetRow = sheet.getRow(errorInfo.getY());
+                sheetRow = sheetRow == null ? sheet.createRow(errorInfo.getY()) : sheetRow;
+                Cell cell = sheetRow.getCell(errorInfo.getX());
+                cell = cell == null ? sheetRow.createCell(errorInfo.getX()) : cell;
+                CellStyle style = cell.getCellStyle();
+                cellStyle.setBorderBottom(style.getBorderBottom());
+                cellStyle.setBorderLeft(style.getBorderLeft());
+                cellStyle.setBorderRight(style.getBorderRight());
+                cellStyle.setBorderTop(style.getBorderTop());
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(errorInfo.getVal());
             }
+            workbook.write(outputStream);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("[数据导入] 异常文件写入失败：" + e.getMessage());
         }
     }
 
     @Override
-    public void close() throws IOException {
-        boolean error = isError();
-        super.close();
-        if (this.excelIterator != null) {
-            this.excelIterator.close();
-        }
-        excelReader.close();
-        if (error) {
+    public void close() {
+        if (this.isAsync) {
             return;
         }
-        this.del();
+        super.close();
+        try {
+            if (this.excelIterator != null) {
+                this.excelIterator.close();
+            }
+            workbook.close();
+        } catch (IOException ignored) { }
     }
 
 
     private static class ExcelIterator implements Iterator<ReadData> {
-        private int tableIndex = 0;
-        private int rowIndex;
-        private int lastRowIndex;
-        private final ExcelReader excelReader;
+        private boolean isNextSheet = true;
+        private final Workbook workbook;
+        private final List<Sheet> sheetList = new LinkedList<>();
+        private Sheet currentSheet;
+        private int lastSheetIndex = 0, currentSheetIndex = 0;
+        private int lastRowIndex = 0, currentRowIndex = 0;
+        private int rowTotal, columnCount;
+
         private final List<String> modelTitleInfoList;
         private final Map<Integer, String> titleIndexMap;
         private final List<ReadCellInfo> dataList = new LinkedList<>();
-        private final List<CellRangeAddress> mergedRegions;
+        private List<CellRangeAddress> mergedRegions;
 
-        public ExcelIterator(ImportInfo<?> importInfo, ExcelReader excelReader) {
-            this.excelReader = excelReader;
+        public ExcelIterator(ImportInfo<?> importInfo, Workbook workbook) {
+            this.workbook = workbook;
             this.modelTitleInfoList = importInfo.getModelTitleInfoList();
             this.titleIndexMap = importInfo.getTitleIndexMap();
-            Workbook workbook = this.excelReader.getWorkbook();
-            Sheet sheet = workbook.getSheetAt(this.tableIndex);
-            this.lastRowIndex = sheet.getLastRowNum();
-            this.mergedRegions = sheet.getMergedRegions();
+            java.util.Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+            while (sheetIterator.hasNext()) {
+                this.sheetList.add(sheetIterator.next());
+            }
         }
 
         @Override
         public boolean hasNext() {
-            dataList.forEach(ReadCellInfo::close);
-            dataList.clear();
-            if (rowIndex > this.lastRowIndex) {
-                return false;
+            this.dataList.forEach(ReadCellInfo::close);
+            this.dataList.clear();
+            if (this.isNextSheet) {
+                if (this.currentSheetIndex >= this.sheetList.size()) {
+                    return false;
+                }
+                this.titleIndexMap.clear();
+                this.lastSheetIndex = this.currentSheetIndex;
+                this.currentSheet = this.sheetList.get(this.currentSheetIndex++);
+                this.rowTotal = this.currentSheet.getLastRowNum();
+                if (this.mergedRegions != null) {
+                    this.mergedRegions.clear();
+                }
+                this.mergedRegions = currentSheet.getMergedRegions();
+                this.lastRowIndex = currentRowIndex = 0;
+                this.isNextSheet = false;
             }
-            int columnCount = excelReader.getColumnCount(rowIndex);
+            if (titleIndexMap.isEmpty()) {
+                Row row = this.currentSheet.getRow(this.currentRowIndex);
+                this.columnCount = row == null ? -1 : row.getLastCellNum();
+            }
             int readRow = 1;
-            for (int i = 0; i < columnCount; i++) {
-                CellRangeAddress merged = this.checkMerged(i, rowIndex);
+            for (int i = 0; i < this.columnCount; i++) {
+                CellRangeAddress merged = this.checkMerged(i, this.currentRowIndex);
                 if (merged != null && i == 0) {
-                    int firstRow = merged.getFirstRow() + 1;
+                    int firstRow = merged.getFirstRow();
                     int lastRow = merged.getLastRow() + 1;
-                    readRow = (lastRow - firstRow) + 1;
+                    readRow = lastRow - firstRow;
                 }
                 if (readRow > 1 && merged == null) {
                     List<Object> valueList = new LinkedList<>();
-                    for (int y = rowIndex; y < rowIndex + readRow; y++) {
-                        Object cellValue = excelReader.readCellValue(i, y);
+                    for (int y = this.currentRowIndex; y < this.currentRowIndex + readRow; y++) {
+                        Object cellValue = this.readCellValue(i, y);
                         valueList.add(cellValue);
                     }
-                    Cell cell = excelReader.getCell(i, rowIndex);
                     ReadCellInfo readCellInfo = new ReadCellInfo(valueList);
-                    readCellInfo.setBackgroundColor(getColor(cell.getCellStyle()));
+                    readCellInfo.setBackgroundColor(getColor(this.getCell(i, this.currentRowIndex)));
                     dataList.add(readCellInfo);
                     continue;
                 }
-                Object cellValue = excelReader.readCellValue(i, rowIndex);
+                Object cellValue = this.readCellValue(i, this.currentRowIndex);
                 ReadCellInfo readCellInfo = new ReadCellInfo(cellValue);
-                Cell cell = excelReader.getCell(i, rowIndex);
-                readCellInfo.setBackgroundColor(getColor(cell.getCellStyle()));
+                readCellInfo.setBackgroundColor(getColor(this.getCell(i, this.currentRowIndex)));
                 dataList.add(readCellInfo);
             }
-            rowIndex = rowIndex + readRow;
+            this.lastRowIndex = this.currentRowIndex;
+            this.currentRowIndex = this.currentRowIndex + readRow;
             if (titleIndexMap.isEmpty()) {
-                this.checkTitle(dataList);
+                this.checkTitle(this.dataList);
+                this.columnCount = titleIndexMap.size();
                 return this.hasNext();
             }
+            if (this.currentRowIndex > this.rowTotal) {
+                this.isNextSheet = true;
+            }
             return true;
+        }
+
+        @Override
+        public ReadData next() {
+            return new ReadData(String.valueOf(this.lastSheetIndex), this.lastRowIndex, this.dataList);
+        }
+
+        @Override
+        public void close() throws IOException {
+            this.modelTitleInfoList.clear();
+            this.titleIndexMap.clear();
+            this.dataList.clear();
+            this.mergedRegions.clear();
+            this.sheetList.clear();
+        }
+
+        /**
+         * 获取单元格信息
+         *
+         * @param x 纵轴
+         * @param y 横轴
+         * @return 单元格信息
+         */
+        private Cell getCell(int x, int y) {
+            Row row = this.currentSheet.getRow(y);
+            if (row == null) {
+                return null;
+            }
+            return row.getCell(x);
+        }
+
+        /**
+         * 获取单元格的值
+         *
+         * @param x 纵轴
+         * @param y 横轴
+         * @return 值
+         */
+        private Object readCellValue(int x, int y) {
+            Cell cell = this.getCell(x, y);
+            if (cell == null) {
+                return null;
+            }
+            return CellUtil.getCellValue(cell);
         }
 
         /**
          * 获取单元格颜色
          *
-         * @param cellStyle 单元格样式
+         * @param cell 单元格
          * @return 颜色
          */
-        private String getColor(CellStyle cellStyle) {
-            if (cellStyle instanceof XSSFCellStyle) {
-                XSSFColor xssfcolor = ((XSSFCellStyle) cellStyle).getBottomBorderXSSFColor();
-                if (xssfcolor != null) {
-                    byte[] brgb = xssfcolor.getRGB();
-                    return String.format("%02X", brgb[0]) + String.format("%02X", brgb[1]) + String.format("%02X", brgb[2]);
-                }
+        private String getColor(Cell cell) {
+            if (cell == null) {
                 return null;
             }
+            CellStyle cellStyle = cell.getCellStyle();
+            if (cellStyle == null) {
+                return null;
+            }
+            if (cellStyle instanceof XSSFCellStyle) {
+                XSSFCellStyle xssfCellStyle = (XSSFCellStyle) cellStyle;
+                XSSFColor xssfcolor = Optional.ofNullable(xssfCellStyle.getFillForegroundColorColor()).orElse(xssfCellStyle.getFillBackgroundColorColor());
+                xssfcolor = Optional.ofNullable(xssfcolor).orElse(xssfCellStyle.getFillForegroundXSSFColor());
+                xssfcolor = Optional.ofNullable(xssfcolor).orElse(xssfCellStyle.getFillBackgroundXSSFColor());
+                xssfcolor = Optional.ofNullable(xssfcolor).orElse(xssfCellStyle.getBottomBorderXSSFColor());
+                if (xssfcolor == null) {
+                    return null;
+                }
+                byte[] brgb = xssfcolor.getRGB();
+                if (brgb == null) {
+                    return null;
+                }
+                return String.format("%02X", brgb[0]) + String.format("%02X", brgb[1]) + String.format("%02X", brgb[2]);
+            }
             if (cellStyle instanceof HSSFCellStyle) {
-                Workbook workbook = excelReader.getWorkbook();
                 short colorIndex = cellStyle.getFillForegroundColor();
-                HSSFPalette palette = ((HSSFWorkbook) workbook).getCustomPalette();
+                HSSFPalette palette = ((HSSFWorkbook) this.workbook).getCustomPalette();
                 HSSFColor hssfcolor = palette.getColor(colorIndex);
                 if (hssfcolor != null) {
                     short[] srgb = hssfcolor.getTriplet();
@@ -169,19 +276,6 @@ public class ExcelDataReader<T> extends AbsDataReader<T> {
                 }
             }
             return null;
-        }
-
-        @Override
-        public ReadData next() {
-            return new ReadData(String.valueOf(this.tableIndex), this.rowIndex, this.dataList);
-        }
-
-        @Override
-        public void close() throws IOException {
-            modelTitleInfoList.clear();
-            titleIndexMap.clear();
-            dataList.clear();
-            mergedRegions.clear();
         }
 
         /**
@@ -194,11 +288,11 @@ public class ExcelDataReader<T> extends AbsDataReader<T> {
                 ReadCellInfo readCellInfo = dataList.get(i);
                 Object data = readCellInfo.getValue();
                 String title = StrUtil.toString(data).replaceAll(" ", "").replaceAll("\r", "").replaceAll("\n", "");
-                if (!modelTitleInfoList.contains(title)) {
-                    titleIndexMap.clear();
+                if (!this.modelTitleInfoList.contains(title)) {
+                    this.titleIndexMap.clear();
                     return;
                 }
-                titleIndexMap.put(i, title);
+                this.titleIndexMap.put(i, title);
             }
         }
 
@@ -210,7 +304,7 @@ public class ExcelDataReader<T> extends AbsDataReader<T> {
          * @return 合并信息
          */
         private CellRangeAddress checkMerged(int xIndex, int yIndex) {
-            for (CellRangeAddress mergedRegion : mergedRegions) {
+            for (CellRangeAddress mergedRegion : this.mergedRegions) {
                 int firstRow = mergedRegion.getFirstRow();
                 int lastRow = mergedRegion.getLastRow();
                 int firstColumn = mergedRegion.getFirstColumn();
