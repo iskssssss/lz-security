@@ -22,6 +22,9 @@ public class ValueConvertArray implements ValueConvert<List<String>> {
         if (value instanceof List) {
             return ((List<String>) value).stream().filter(StrUtil::isNotBlank).collect(Collectors.toList());
         }
+        if (value == null) {
+            return null;
+        }
         String[] split = value.toString().split("\n");
         List<String> list = Arrays.stream(split).filter(StrUtil::isNotBlank).collect(Collectors.toList());
         return list;
