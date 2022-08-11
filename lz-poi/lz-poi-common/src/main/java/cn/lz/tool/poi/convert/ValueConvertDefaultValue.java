@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * @version 版权 Copyright(c)2022 LZJ
  * @date 2022/8/5 15:43
  */
-public class ValueHandlerByDefaultValue implements ValueConvert<String> {
+public class ValueConvertDefaultValue implements ValueConvert<String> {
     private final Map<String, String> defaultValueMap = new ConcurrentHashMap<>(4);
 
     @Override
