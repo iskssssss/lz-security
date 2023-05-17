@@ -1,5 +1,6 @@
 package cn.lz.tool.cache;
 
+import cn.lz.tool.cache.listener.CacheListener;
 import cn.lz.tool.cache.model.CacheModel;
 import cn.lz.tool.cache.utils.GlobalScheduled;
 
@@ -13,18 +14,28 @@ import java.util.concurrent.locks.StampedLock;
  * @Author: lz
  * @Date: 2021/08/25 10:49
  */
-public class CacheManager<K, V>
-		implements Runnable {
+public class CacheManager<K, V> implements Runnable {
+	private long timeout;
 	private final StampedLock lock = new StampedLock();
 	private final Map<K, CacheModel<K, V>> cacheMap;
+	private CacheListener<K, V> listener;
 	private ScheduledFuture<?> scheduledFuture;
 
 	public CacheManager() {
-		this(new ConcurrentHashMap<>());
+		this(0);
 	}
 
-	public CacheManager(Map<K, CacheModel<K, V>> cacheMap) {
+	public CacheManager(long timeout) {
+		this(new ConcurrentHashMap<>(), timeout);
+	}
+
+	public CacheManager(Map<K, CacheModel<K, V>> cacheMap, long timeout) {
 		this.cacheMap = cacheMap;
+		this.timeout = timeout;
+	}
+
+	public void put(K key, V value) {
+		this.put(key, value, this.timeout);
 	}
 
 	public void put(K key, V value, long timeout) {
@@ -39,6 +50,11 @@ public class CacheManager<K, V>
 	public void remove(K key) {
 		final long stamp = this.lock.writeLock();
 		try {
+			CacheListener<K, V> listener = this.listener;
+			if (listener != null) {
+				CacheModel<K, V> kvCacheModel = this.cacheMap.get(key);
+				listener.onRemove(key, kvCacheModel.get(false));
+			}
 			this.cacheMap.remove(key);
 		} finally {
 			this.lock.unlockWrite(stamp);
@@ -67,6 +83,14 @@ public class CacheManager<K, V>
 			return null;
 		}
 		return kvCacheModel.get(isUpdateLastAccess);
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
+
+	public void setListener(CacheListener<K, V> listener) {
+		this.listener = listener;
 	}
 
 	public void schedulePrune(long delay) {

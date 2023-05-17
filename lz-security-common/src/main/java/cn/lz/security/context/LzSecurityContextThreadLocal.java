@@ -2,8 +2,8 @@ package cn.lz.security.context;
 
 import cn.lz.security.context.model.BaseRequest;
 import cn.lz.security.context.model.BaseResponse;
-import cn.lz.security.context.model.Box;
-import cn.lz.security.context.model.LzStorage;
+import cn.lz.security.context.model.StorageBox;
+import cn.lz.security.context.model.Storage;
 
 import java.io.IOException;
 
@@ -15,56 +15,78 @@ import java.io.IOException;
  * @Date: 2021/08/20 15:49
  */
 public class LzSecurityContextThreadLocal {
+	private static final ThreadLocal<StorageBox<?, ?>> BOX_THREAD_LOCAL = new InheritableThreadLocal<>();
 
-	private static final ThreadLocal<Box> BOX_THREAD_LOCAL = new InheritableThreadLocal<>();
-
-	public static void setBox(
-			BaseRequest<?> request,
-			BaseResponse<?> response,
-			LzStorage<?> lzStorage
-	) {
-		BOX_THREAD_LOCAL.set(new Box(request, response, lzStorage));
+	/**
+	 * 设置存储器盒子
+	 */
+	public static void setStorageBox(BaseResponse<?> response, Storage<?> storage) {
+		StorageBox<?, ?> value = new StorageBox(response, storage);
+		BOX_THREAD_LOCAL.set(value);
 	}
 
+	/**
+	 * 移除存储器盒子
+	 */
 	public static void remove() {
-		final Box box = getBox();
+		final StorageBox<?, ?> storageBox = getStorageBox();
 		try {
-			if (box == null) {
+			if (storageBox == null) {
 				return;
 			}
-			box.close();
+			storageBox.close();
 		} catch (IOException ignored) {
 		} finally {
 			BOX_THREAD_LOCAL.remove();
 		}
 	}
 
-	private static Box getBox() {
-		Box box = BOX_THREAD_LOCAL.get();
-		return box;
+	/**
+	 * 获取存储器盒子
+	 *
+	 * @return 存储器盒子
+	 */
+	private static StorageBox<?, ?> getStorageBox() {
+		StorageBox<?, ?> storageBox = BOX_THREAD_LOCAL.get();
+		return storageBox;
 	}
 
-	public static BaseRequest getServletRequest() {
-		final Box box = getBox();
-		if (box == null) {
+	/**
+	 * 获取请求流
+	 *
+	 * @return 请求流
+	 */
+	public static BaseRequest<?> getRequest() {
+		final StorageBox<?, ?> storageBox = getStorageBox();
+		if (storageBox == null) {
 			return null;
 		}
-		return box.getRequest();
+		return storageBox.getRequest();
 	}
 
-	public static BaseResponse getServletResponse() {
-		final Box box = getBox();
-		if (box == null) {
+	/**
+	 * 获取响应流
+	 *
+	 * @return 响应流
+	 */
+	public static BaseResponse<?> getResponse() {
+		final StorageBox<?, ?> storageBox = getStorageBox();
+		if (storageBox == null) {
 			return null;
 		}
-		return box.getResponse();
+		return storageBox.getResponse();
 	}
 
-	public static LzStorage getLzStorage() {
-		final Box box = getBox();
-		if (box == null) {
+	/**
+	 * 获取存储器
+	 *
+	 * @return 存储器
+	 */
+	public static Storage<?> getLzStorage() {
+		final StorageBox<?, ?> storageBox = getStorageBox();
+		if (storageBox == null) {
 			return null;
 		}
-		return box.getLzStorage();
+		return storageBox.getLzStorage();
 	}
 }

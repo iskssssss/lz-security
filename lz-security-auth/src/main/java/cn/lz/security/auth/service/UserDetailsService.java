@@ -4,6 +4,7 @@ package cn.lz.security.auth.service;
 import cn.lz.tool.jwt.model.AuthDetails;
 
 /**
+ * 用户认证信息获取服务类
  * @Version 版权 Copyright(c)2021 LZ
  * @ClassName:
  * @Descripton:
@@ -12,5 +13,12 @@ import cn.lz.tool.jwt.model.AuthDetails;
  */
 public interface UserDetailsService {
 
-    AuthDetails<?> readUserByUsername(String username) throws SecurityException;
+    /**
+     * 根据标识获取信息
+     *
+     * @param identifier 标识
+     * @return 信息
+     * @throws SecurityException 获取中发生的异常
+     */
+    AuthDetails<?> readUserByIdentifier(String identifier) throws SecurityException;
 }

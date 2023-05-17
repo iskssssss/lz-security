@@ -26,7 +26,7 @@ public interface IAccessTokenHandler<T extends AuthDetails> {
 	 * @return AccessToken
 	 */
 	default String getAccessTokenInfo() {
-		final BaseRequest<?> servletRequest = LzSecurityContextThreadLocal.getServletRequest();
+		final BaseRequest<?> servletRequest = LzSecurityContextThreadLocal.getRequest();
 		if (servletRequest == null) {
 			throw new SecurityException(RCode.INTERNAL_SERVER_ERROR);
 		}

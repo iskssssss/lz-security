@@ -296,4 +296,23 @@ public class StringUtil {
         }
         return accessToken.replaceAll(delStr, "");
     }
+
+    /**
+     * 字符串前缀匹配
+     *
+     * @param source     源字符串
+     * @param prefixList 前缀列表
+     * @return 是否配对
+     */
+    public static boolean startsWith(String source, String... prefixList) {
+        if (prefixList == null || prefixList.length < 1) {
+            return false;
+        }
+        for (String prefix : prefixList) {
+            if (source.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

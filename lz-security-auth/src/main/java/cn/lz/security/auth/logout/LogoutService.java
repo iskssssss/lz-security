@@ -12,8 +12,5 @@ import cn.lz.security.context.model.BaseResponse;
  */
 public interface LogoutService {
 
-    boolean logout(
-            BaseRequest<?> request,
-            BaseResponse<?> response
-    );
+    boolean logout(BaseRequest<?> request, BaseResponse<?> response);
 }

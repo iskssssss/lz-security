@@ -1,6 +1,7 @@
 package cn.lz.security.handler;
 
 import cn.lz.security.context.model.BaseRequest;
+import cn.lz.security.context.model.BaseResponse;
 
 /**
  * 加解密开关处理器
@@ -17,7 +18,7 @@ public interface EncodeSwitchHandler {
 	 * @param request 响应流
 	 * @return 是否解密
 	 */
-	boolean isDecrypt(BaseRequest<?> request);
+	boolean isDecrypt(BaseRequest<?> request, BaseResponse<?> response);
 
 	/**
 	 * 响应数据是否加密
@@ -25,7 +26,7 @@ public interface EncodeSwitchHandler {
 	 * @param request 响应流
 	 * @return 是否加密
 	 */
-	boolean isEncrypt(BaseRequest<?> request);
+	boolean isEncrypt(BaseRequest<?> request, BaseResponse<?> response);
 
 	/**
 	 * 获取响应数据类型字符串

@@ -17,6 +17,7 @@
         <module>lz-security-auth</module>
         <module>lz-security-filter</module>
         <module>lz-tool</module>
+        <module>lz-poi</module>
     </modules>
 
     <properties>

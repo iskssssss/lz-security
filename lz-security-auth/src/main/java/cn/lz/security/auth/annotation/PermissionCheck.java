@@ -1,5 +1,7 @@
 package cn.lz.security.auth.annotation;
 
+import cn.lz.security.fun.GetStringListFunction;
+
 import java.lang.annotation.*;
 
 /**
@@ -28,4 +30,11 @@ public @interface PermissionCheck {
 	 * @return 是否启用
 	 */
 	boolean open() default true;
+
+	/**
+	 * 自定义获取方法
+	 *
+	 * @return 自定义获取方法
+	 */
+	Class<GetStringListFunction> getStringListFunction();
 }

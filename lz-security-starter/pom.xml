@@ -16,7 +16,6 @@
     <modules>
         <module>lz-security-filter-spring-boot-starter</module>
         <module>lz-security-auth-spring-boot-starter</module>
-        <module>lz-security-spring-boot-tool</module>
     </modules>
 
     <properties>
@@ -24,8 +23,6 @@
         <spring-boot.version>2.3.9.RELEASE</spring-boot.version>
         <spring-web.version>5.2.13.RELEASE</spring-web.version>
         <spring-boot-configuration-processor.version>2.3.9.RELEASE</spring-boot-configuration-processor.version>
-
-        <lz-security-spring-boot-tool.version>1.0.1</lz-security-spring-boot-tool.version>
     </properties>
 
     <dependencyManagement>
@@ -48,16 +45,17 @@
                 <version>${spring-web.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>5.3.19</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
                 <version>${spring-boot-configuration-processor.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.lz.security</groupId>
-                <artifactId>lz-security-spring-boot-tool</artifactId>
-                <version>${lz-security-spring-boot-tool.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

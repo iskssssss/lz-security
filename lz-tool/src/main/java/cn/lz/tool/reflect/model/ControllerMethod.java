@@ -2,7 +2,7 @@ package cn.lz.tool.reflect.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Set;
 
 /**
  * TODO
@@ -12,14 +12,11 @@ import java.util.List;
  * @date 2021/10/27 10:47
  */
 public class ControllerMethod {
-	private final List<String> requestPaths;
+	private final Set<String> requestPaths;
 	private final Class<?> controllerClass;
 	private final Method method;
 
-	public ControllerMethod(List<String> requestPaths,
-	                        Class<?> controllerClass,
-	                        Method method
-	) {
+	public ControllerMethod(Set<String> requestPaths, Class<?> controllerClass, Method method) {
 		this.requestPaths = requestPaths;
 		this.controllerClass = controllerClass;
 		this.method = method;
@@ -50,6 +47,9 @@ public class ControllerMethod {
 	}
 
 	public <T extends Annotation> T getMethodAnnotation(Class<T> annotationClass) {
+		if (this.method == null) {
+			return null;
+		}
 		return this.method.getAnnotation(annotationClass);
 	}
 
@@ -58,10 +58,13 @@ public class ControllerMethod {
 	}
 
 	public <T extends Annotation> T getControllerAnnotation(Class<T> annotationClass) {
+		if (this.controllerClass == null) {
+			return null;
+		}
 		return this.controllerClass.getAnnotation(annotationClass);
 	}
 
-	public List<String> getRequestPaths() {
+	public Set<String> getRequestPaths() {
 		return requestPaths;
 	}
 

@@ -23,11 +23,14 @@ public class DefaultFilterErrorHandler implements BaseFilterErrorHandler<Request
 	) {
 		final Object data = securityException.getResponseData();
 		RequestResult requestResult = new RequestResult();
-		requestResult.setCode(securityException.getResponseCode());
+		Integer responseCode = securityException.getResponseCode();
+		requestResult.setCode(responseCode);
 		requestResult.setData(data == null ? null : JsonUtil.toJsonString(data));
 		requestResult.setMessage(securityException.getMessage());
-
-		if (securityException.getResponseCode().equals(RCode.INTERNAL_SERVER_ERROR.getCode())) {
+		if (responseCode.equals(RCode.INTERNAL_SERVER_ERROR.getCode())) {
+			response.setStatus(requestResult.getCode());
+		}
+		if (responseCode.equals(403)) {
 			response.setStatus(requestResult.getCode());
 		}
 		return requestResult;

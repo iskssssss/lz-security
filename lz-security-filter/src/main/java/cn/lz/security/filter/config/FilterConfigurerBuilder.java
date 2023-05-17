@@ -2,10 +2,13 @@ package cn.lz.security.filter.config;
 
 import cn.lz.security.LzCoreManager;
 import cn.lz.security.arrays.UrlHashSet;
+import cn.lz.security.context.model.BaseRequest;
+import cn.lz.security.context.model.BaseResponse;
 import cn.lz.security.filter.LzFilterManager;
 import cn.lz.security.filter.filters.AbsInterfacesFilterBuilder;
 import cn.lz.security.fun.LzFilterAuthStrategy;
 import cn.lz.security.handler.BaseFilterErrorHandler;
+import cn.lz.security.handler.CorsHandler;
 import cn.lz.security.log.BaseFilterLogHandler;
 
 import java.util.Arrays;
@@ -21,8 +24,10 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 
 	protected final FilterUrl filterUrl = new FilterUrl();
 	protected final FilterConfig filterConfig = new FilterConfig();
-	protected LzFilterAuthStrategy filterAfterHandler = null;
-	protected LzFilterAuthStrategy filterBeforeHandler = null;
+	protected LzFilterAuthStrategy filterAfterHandler = params -> { };
+	protected LzFilterAuthStrategy filterBeforeHandler = params -> { };
+	protected LzFilterAuthStrategy interceptHandler = params -> { };
+	protected CorsHandler corsHandler = null;
 
 	/**
 	 * 获取接口过滤设置器
@@ -78,6 +83,28 @@ public class FilterConfigurerBuilder<T extends FilterConfigurer> {
 	 */
 	public FilterConfigurerBuilder<T> setFilterAfterHandler(LzFilterAuthStrategy filterAfterHandler) {
 		this.filterAfterHandler = filterAfterHandler;
+		return this;
+	}
+
+	/**
+	 * 过滤被拦截处理器
+	 *
+	 * @param interceptHandler 过滤被拦截处理器
+	 * @return this
+	 */
+	public FilterConfigurerBuilder<T> setInterceptHandler(LzFilterAuthStrategy interceptHandler) {
+		this.interceptHandler = interceptHandler;
+		return this;
+	}
+
+	/**
+	 * 跨域信息处理器
+	 *
+	 * @param corsHandler 跨域信息处理器
+	 * @return this
+	 */
+	public FilterConfigurerBuilder<T> setCorsHandler(CorsHandler corsHandler) {
+		this.corsHandler = corsHandler;
 		return this;
 	}
 

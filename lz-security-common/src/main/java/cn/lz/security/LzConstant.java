@@ -27,4 +27,9 @@ public final class LzConstant {
 	public static final String PREFIX_TOKEN_SPLIT = " ";
 
 	public static final String PREFIX_TOKEN_SPLIT_FOR_COOKIE = " ";
+
+	/**
+	 * 跨域处理状态
+	 */
+	public static final String CORS_HANDLER_STATUS_KEY = "CORS_HANDLER_STATUS";
 }

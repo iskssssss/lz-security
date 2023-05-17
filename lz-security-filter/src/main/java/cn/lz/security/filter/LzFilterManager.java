@@ -12,7 +12,6 @@ import cn.lz.security.filter.filters.StartFilter;
 import cn.lz.security.handler.BaseFilterErrorHandler;
 import cn.lz.security.log.BaseFilterLogHandler;
 import cn.lz.security.filter.defaults.DefaultFilterErrorHandler;
-import cn.lz.security.filter.defaults.DefaultFilterLogHandler;
 import cn.lz.security.filter.filters.AbsInterfacesFilterBuilder;
 import cn.lz.security.filter.handler.FilterDataHandler;
 import cn.lz.tool.core.enums.RCode;
@@ -97,13 +96,6 @@ public class LzFilterManager extends LzCoreManager {
 	 * @return 日志处理器
 	 */
 	public static BaseFilterLogHandler getFilterLogHandler() {
-		if (LzFilterManager.filterLogHandler == null) {
-			synchronized (LzFilterManager.class) {
-				if (LzFilterManager.filterLogHandler == null) {
-					LzFilterManager.filterLogHandler = new DefaultFilterLogHandler();
-				}
-			}
-		}
 		return LzFilterManager.filterLogHandler;
 	}
 
@@ -163,7 +155,7 @@ public class LzFilterManager extends LzCoreManager {
 		BaseRequest<?> request = lzContext.getRequest();
 		BaseResponse<?> response = lzContext.getResponse();
 		IInterfacesFilter interfacesFilter = LzFilterManager.getInterfacesFilter();
-		return interfacesFilter.doFilter(request, response, params);
+		return interfacesFilter.doFilter(request, response, lzContext, params);
 	}
 
 	/**

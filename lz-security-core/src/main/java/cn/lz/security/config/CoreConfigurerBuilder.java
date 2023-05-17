@@ -42,7 +42,7 @@ public class CoreConfigurerBuilder<T extends CoreConfigurer> {
 	 * @param dataEncoder 请求加解密处理器
 	 */
 	public CoreConfigurerBuilder<T> setRequestDataEncryptHandler(DataEncoder dataEncoder) {
-		LzCoreManager.setRequestDataEncryptHandler(dataEncoder);
+		LzCoreManager.setDataEncryptHandler(dataEncoder);
 		return this;
 	}
 

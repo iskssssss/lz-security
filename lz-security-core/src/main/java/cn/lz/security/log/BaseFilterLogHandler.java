@@ -33,6 +33,5 @@ public interface BaseFilterLogHandler {
      * @param logEntity 由{@link BaseFilterLogHandler#before(BaseRequest, BaseResponse)}方法提供
      */
     default void after(BaseRequest<?> request, BaseResponse<?> response, Object logEntity, Exception ex) {
-
     }
 }

@@ -3,11 +3,10 @@ package cn.lz.security;
 import cn.lz.security.arrays.InterfacesMethodMap;
 import cn.lz.security.cache.BaseCacheManager;
 import cn.lz.security.config.*;
+import cn.lz.security.config.encrypt.EncryptConfig;
 import cn.lz.security.context.LzContext;
-import cn.lz.security.context.model.LzStorage;
-import cn.lz.security.defaults.DefaultCacheManager;
-import cn.lz.security.defaults.DefaultDataEncoder;
-import cn.lz.security.defaults.DefaultEncodeSwitchHandler;
+import cn.lz.security.defaults.CacheManagerDefault;
+import cn.lz.security.defaults.EncodeSwitchHandlerDefault;
 import cn.lz.security.defaults.token.UUIDAccessTokenHandler;
 import cn.lz.security.handler.DataEncoder;
 import cn.lz.security.handler.EncodeSwitchHandler;
@@ -114,6 +113,35 @@ public class LzCoreManager {
 
 	//====================================================================================================================================
 
+	protected static CorsConfig corsConfig = null;
+
+	/**
+	 * 设置配置文件
+	 *
+	 * @param corsConfig 配置文件
+	 */
+	public static void setCorsConfig(CorsConfig corsConfig) {
+		LzCoreManager.corsConfig = corsConfig;
+	}
+
+	/**
+	 * 获取配置文件
+	 *
+	 * @return 配置文件
+	 */
+	public static CorsConfig getCorsConfig() {
+		if (LzCoreManager.corsConfig == null) {
+			synchronized (LzCoreManager.class) {
+				if (LzCoreManager.corsConfig == null) {
+					LzCoreManager.corsConfig = new CorsConfig();
+				}
+			}
+		}
+		return LzCoreManager.corsConfig;
+	}
+
+	//====================================================================================================================================
+
 	protected static LzContext<?, ?> lzContext = null;
 
 	/**
@@ -152,8 +180,8 @@ public class LzCoreManager {
 	 * @param cacheManager 设置缓存管理器
 	 */
 	public static void setCacheManager(BaseCacheManager cacheManager) {
-		if (LzCoreManager.cacheManager instanceof DefaultCacheManager) {
-			((DefaultCacheManager) cacheManager).destroy();
+		if (LzCoreManager.cacheManager instanceof CacheManagerDefault) {
+			((CacheManagerDefault) cacheManager).destroy();
 		}
 		LzCoreManager.cacheManager = cacheManager;
 	}
@@ -167,7 +195,7 @@ public class LzCoreManager {
 		if (LzCoreManager.cacheManager == null) {
 			synchronized (LzCoreManager.class) {
 				if (LzCoreManager.cacheManager == null) {
-					LzCoreManager.cacheManager = new DefaultCacheManager();
+					LzCoreManager.cacheManager = new CacheManagerDefault();
 				}
 			}
 		}
@@ -183,7 +211,7 @@ public class LzCoreManager {
 	 *
 	 * @param interfacesMethodMap 接口方法映射集合
 	 */
-	public static void setInterfacesMethodMap(Map<String, ControllerMethod> interfacesMethodMap) {
+	public static void setInterfacesMethodMap(Map<String, Map<String, ControllerMethod>> interfacesMethodMap) {
 		INTERFACES_METHOD_MAP.putInterfacesMethodMap(interfacesMethodMap);
 	}
 
@@ -193,8 +221,19 @@ public class LzCoreManager {
 	 * @param url 请求接口
 	 * @return 方法
 	 */
-	public static ControllerMethod getMethodByInterfaceUrl(String url) {
+	public static Map<String, ControllerMethod> getMethodByInterfaceUrl(String url) {
 		return INTERFACES_METHOD_MAP.getMethodByInterfaceUrl(url);
+	}
+
+	/**
+	 * 获取请求接口对应的方法
+	 *
+	 * @param url    请求接口
+	 * @param method 请求类型
+	 * @return 方法
+	 */
+	public static ControllerMethod getMethodByInterfaceUrl(String url, String method) {
+		return INTERFACES_METHOD_MAP.getMethodByInterfaceUrl(url, method);
 	}
 
 	//====================================================================================================================================
@@ -246,8 +285,9 @@ public class LzCoreManager {
 	 *
 	 * @param dataEncoder 请求加解密处理器
 	 */
-	public static void setRequestDataEncryptHandler(DataEncoder dataEncoder) {
+	public static void setDataEncryptHandler(DataEncoder dataEncoder) {
 		LzCoreManager.dataEncoder = dataEncoder;
+		LzCoreManager.getDataEncryptHandler().init(getEncryptConfig().getParams());
 	}
 
 	/**
@@ -255,11 +295,13 @@ public class LzCoreManager {
 	 *
 	 * @return 请求加解密处理器
 	 */
-	public static DataEncoder getRequestDataEncryptHandler() {
+	public static DataEncoder getDataEncryptHandler() {
 		if (LzCoreManager.dataEncoder == null) {
 			synchronized (LzCoreManager.class) {
 				if (LzCoreManager.dataEncoder == null) {
-					LzCoreManager.dataEncoder = new DefaultDataEncoder();
+					Class<? extends DataEncoder> encryptHandlerClass = getEncryptConfig().getEncryptHandlerClass();
+					DataEncoder dataEncoder = getLzContext().createBean(encryptHandlerClass);
+					LzCoreManager.setDataEncryptHandler(dataEncoder);
 				}
 			}
 		}
@@ -277,7 +319,7 @@ public class LzCoreManager {
 		if (LzCoreManager.encodeSwitchHandler == null) {
 			synchronized (LzCoreManager.class) {
 				if (LzCoreManager.encodeSwitchHandler == null) {
-					LzCoreManager.encodeSwitchHandler = new DefaultEncodeSwitchHandler();
+					LzCoreManager.encodeSwitchHandler = new EncodeSwitchHandlerDefault();
 				}
 			}
 		}
@@ -285,13 +327,4 @@ public class LzCoreManager {
 	}
 
 	//====================================================================================================================================
-
-	/**
-	 * 从{@link LzCoreManager#getLzContext()}中获取存储信息
-	 *
-	 * @return 存储信息
-	 */
-	public static LzStorage<?> getStorage() {
-		return LzCoreManager.getLzContext().getStorage();
-	}
 }
