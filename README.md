@@ -4,7 +4,9 @@
 
 ## 前言
 
-木有前言。
+lz-security是一个Java权限认证框架，解决：登录认证，权限认证。
+
+lz-security is a Java permission authentication framework that addresses : login authentication, permission authentication.
 
 ## 引用
 
