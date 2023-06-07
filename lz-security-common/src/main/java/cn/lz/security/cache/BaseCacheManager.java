@@ -133,7 +133,7 @@ public interface BaseCacheManager {
 		for (int i = 0; i < length; i++) {
 			final Object key = keys[i];
 			try {
-				if (this.refreshKey(key, timeout)) {
+				if (!this.refreshKey(key, timeout)) {
 					// TODO 刷新失败处理
 				}
 				keys[i] = null;

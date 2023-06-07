@@ -1,8 +1,8 @@
 package cn.lz.security.auth.annotation;
 
-import cn.lz.security.fun.GetStringListFunction;
-
 import java.lang.annotation.*;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * 角色注解
@@ -36,5 +36,5 @@ public @interface RoleCheck {
 	 *
 	 * @return 自定义获取方法
 	 */
-	Class<GetStringListFunction> getStringListFunction();
+	Class<Supplier<Set<String>>> getStringListFunction();
 }
